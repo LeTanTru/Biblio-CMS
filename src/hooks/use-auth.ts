@@ -22,7 +22,6 @@ const useAuth = () => {
     profile,
     kind: profile?.kind,
     permissionCode: permissionCode,
-    accessToken,
     loading
   };
 };

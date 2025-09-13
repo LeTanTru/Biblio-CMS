@@ -2,7 +2,7 @@
 import route from '@/routes';
 import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
 import { usePathname } from 'next/navigation';
-import { validatePermission } from '@/utils';
+import { getAccessTokenFromLocalStorage, validatePermission } from '@/utils';
 import { useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { motion } from 'framer-motion';
@@ -21,6 +21,7 @@ export default function PermissionGuard({
   } = useAuth();
   const { setLoading } = useProfileStore();
   const navigate = useNavigate(false);
+  const accessToken = getAccessTokenFromLocalStorage();
   const [ready, setReady] = useState(false);
   const pathname = usePathname();
   const firstActiveRoute = useFirstActiveRoute();
@@ -61,17 +62,21 @@ export default function PermissionGuard({
 
   // navigate to login if not login
   useEffect(() => {
-    if (!isAuthenticated || matchedRoute?.path === route.home.path) {
-      navigate(route.login.path);
-    } else {
-      if (
-        matchedRoute?.path === route.home.path ||
-        matchedRoute?.path === route.login.path
-      ) {
-        navigate(firstActiveRoute);
+    if (!accessToken && !isAuthenticated) {
+      if (pathname !== route.login.path) {
+        navigate(route.login.path);
+      }
+      return;
+    }
+
+    if (isAuthenticated) {
+      if (pathname === route.home.path || pathname === route.login.path) {
+        if (firstActiveRoute && pathname !== firstActiveRoute) {
+          navigate(firstActiveRoute);
+        }
       }
     }
-  }, [isAuthenticated, ready, navigate, firstActiveRoute, matchedRoute?.path]);
+  }, [accessToken, isAuthenticated, pathname, navigate, firstActiveRoute]);
 
   // if logged in, set loading to false
   useEffect(() => {
@@ -91,7 +96,8 @@ export default function PermissionGuard({
     (!isAuthenticated && pathname !== route.login.path) ||
     !ready ||
     loading ||
-    (isAuthenticated && pathname === route.login.path);
+    (isAuthenticated && pathname === route.login.path) ||
+    (isAuthenticated && pathname === route.home.path);
 
   // check authorization
   if (!hasPermission && isAuthenticated && ready) {
