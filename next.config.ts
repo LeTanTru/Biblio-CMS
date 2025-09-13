@@ -1,0 +1,25 @@
+import type { NextConfig } from 'next';
+import createBundleAnalyzer from '@next/bundle-analyzer';
+
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'api-book.moviehub.biz',
+        pathname: '/**'
+      }
+    ]
+  }
+};
+
+const withBundleAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true'
+});
+
+export default withBundleAnalyzer(nextConfig);
