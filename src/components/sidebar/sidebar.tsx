@@ -31,15 +31,19 @@ import menuConfig from '@/constants/menu-config';
 import { createPortal } from 'react-dom';
 
 function CollapsibleMenuItem({ item }: { item: MenuItem }) {
-  const pathname = usePathname();
   const navigate = useNavigate();
+  const pathname = usePathname();
   const { state } = useSidebar();
 
   const storeOpen = useSidebarStore((s) => s.openMenus[item.key]);
-  const toggleMenu = useSidebarStore((s) => s.toggleMenu);
-  const setMenu = useSidebarStore((s) => s.setMenu);
-  const setSidebarState = useSidebarStore((s) => s.setSidebarState);
+  const { toggleMenu, setMenu, setSidebarState } = useSidebarStore();
 
+  const [hovered, setHovered] = useState(false);
+  const [flyoutHovered, setFlyoutHovered] = useState(false);
+  const showFlyout = state === 'collapsed' && (hovered || flyoutHovered);
+  const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Initial open when reload
   const isInitiallyOpen = useMemo(
     () =>
       item.children?.some(
@@ -47,42 +51,39 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
       ) ?? false,
     [item.children, pathname]
   );
-
   const open = storeOpen ?? isInitiallyOpen;
-
   useEffect(() => {
     if (isInitiallyOpen) {
       setMenu(item.key, true);
     }
   }, [isInitiallyOpen, item.key, setMenu]);
 
+  // state is collapsed -> close all
   useEffect(() => {
     if (state === 'collapsed') {
       setMenu(item.key, false);
     }
   }, [state, item.key, setMenu]);
 
-  // useEffect(() => {
-  //   if (
-  //     item.children?.find(
-  //       (child) => child.path && pathname.includes(child.path)
-  //     )
-  //   ) {
-  //     setMenu(item.key, true);
-  //   }
-  // }, [item.children, pathname, item.key, setMenu]);
+  // open parent menu if child path match pathname
+  useEffect(() => {
+    if (
+      item.children?.find(
+        (child) => child.path && pathname.includes(child.path)
+      )
+    ) {
+      setMenu(item.key, true);
+    }
+  }, [item.children, pathname, item.key, setMenu]);
 
+  // handle click on sub menu item
   const handleSubItemClick = (path?: string) => {
     if (!path || path === pathname) return;
     setSidebarState('expanded');
     navigate(path);
   };
 
-  const [hovered, setHovered] = useState(false);
-  const [flyoutHovered, setFlyoutHovered] = useState(false);
-  const showFlyout = state === 'collapsed' && (hovered || flyoutHovered);
-  const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-
+  // handle show float sub menu when sidebar state is collapsed
   const handleMouseEnter = (e: MouseEvent<HTMLLIElement>) => {
     if (state === 'expanded') return;
     const target = e.currentTarget as HTMLLIElement;
@@ -285,6 +286,8 @@ const AppSidebar = () => {
   const [clientMenu, setClientMenu] = useState<MenuItem[]>([]);
   const openLastMenu = useSidebarStore((s) => s.openLastMenu);
   const { state } = useSidebar();
+
+  // handle open last opened menu when sidebar changed state from collapsed -> expanded
   useEffect(() => {
     if (state === 'expanded') {
       openLastMenu();

@@ -1,7 +1,7 @@
 import { SidebarStateType } from '@/types';
 import { create } from 'zustand';
 
-export const useSidebarStore = create<SidebarStateType>((set) => ({
+const useSidebarStore = create<SidebarStateType>((set) => ({
   state: 'expanded',
   openMenus: {},
   lastOpenedMenu: null,
@@ -29,10 +29,11 @@ export const useSidebarStore = create<SidebarStateType>((set) => ({
 
   openLastMenu: () =>
     set((state) => ({
-      openMenus: state.lastOpenedMenu ? { [state.lastOpenedMenu]: true } : {}
+      openMenus: {
+        ...state.openMenus,
+        ...(state.lastOpenedMenu ? { [state.lastOpenedMenu]: true } : {})
+      }
     })),
-
-  reset: () => set({ openMenus: {}, lastOpenedMenu: null }),
 
   setSidebarState: (state: 'expanded' | 'collapsed') => set({ state })
 }));

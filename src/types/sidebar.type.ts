@@ -5,6 +5,5 @@ export type SidebarStateType = {
   toggleMenu: (key: string) => void;
   setMenu: (key: string, open: boolean) => void;
   openLastMenu: () => void;
-  reset: () => void;
   setSidebarState: (state: 'expanded' | 'collapsed') => void;
 };
