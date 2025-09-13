@@ -11,18 +11,18 @@ import { loginSchema } from '@/schemaValidations';
 import { LoginBodyType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import PasswordField from '@/components/form/password-field';
 import { useProfileStore } from '@/store';
 import { CircleLoading } from '@/components/loading';
+import { useNavigate } from '@/hooks';
 
 export default function LoginForm() {
   const loginMutation = useLoginMutation();
-  const router = useRouter();
+  const navigate = useNavigate(false);
   const { setAuthenticated, setLoading } = useProfileStore();
   const defaultValues: LoginBodyType = {
-    email: '',
-    password: ''
+    email: 'admin@example.com',
+    password: 'admin1236545'
   };
 
   const onSubmit = async (values: LoginBodyType) => {
@@ -33,7 +33,7 @@ export default function LoginForm() {
           setData(storageKeys.ACCESS_TOKEN, res.data?.token!);
           setAuthenticated(true);
           setLoading(true);
-          router.push(route.home.path);
+          navigate(route.home.path);
         } else {
           const errCode = res.code;
           if (errCode) {

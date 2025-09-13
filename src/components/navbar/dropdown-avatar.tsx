@@ -1,9 +1,7 @@
 'use client';
-
 import { AvatarField } from '@/components/form';
 import List from '@/components/list';
 import ListItem from '@/components/list/ListItem';
-import { CircleLoading } from '@/components/loading';
 import { storageKeys } from '@/constants';
 import { useNavigate, useQueryParams } from '@/hooks';
 import { logger } from '@/logger';
@@ -17,19 +15,23 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 export default function DropdownAvatar() {
-  const navigate = useNavigate();
-  const { profile } = useProfileStore();
+  const navigate = useNavigate(false);
+  const { profile, setLoading, setAuthenticated, setProfile } =
+    useProfileStore();
   const [open, setOpen] = useState(false);
   const logoutMutation = useLogoutMutation();
   const pathname = usePathname();
   const { searchParams } = useQueryParams();
 
   const handleLogout = async () => {
+    setLoading(true);
     await logoutMutation.mutateAsync(undefined, {
       onSuccess: (res) => {
         if (res.result) {
           removeData(storageKeys.ACCESS_TOKEN);
           notify.success('Đăng xuất thành công');
+          setAuthenticated(false);
+          setProfile(null);
           navigate(route.login.path);
         } else {
           notify.error('Đăng xuất thất bại');
@@ -38,6 +40,9 @@ export default function DropdownAvatar() {
       onError: (error) => {
         logger.error('Error while logging out: ', error);
         notify.error('Đăng xuất thất bại');
+      },
+      onSettled: () => {
+        setLoading(false);
       }
     });
   };
@@ -91,13 +96,7 @@ export default function DropdownAvatar() {
                 className='flex w-full cursor-pointer items-center gap-2 rounded-md bg-transparent px-2 py-2 text-sm font-normal text-black transition-all duration-200 ease-linear hover:bg-gray-100'
                 onClick={handleLogout}
               >
-                {logoutMutation.isPending ? (
-                  <CircleLoading className='size-5 stroke-black' />
-                ) : (
-                  <>
-                    <LogOut className='size-5' /> Đăng xuất
-                  </>
-                )}
+                <LogOut className='size-5' /> Đăng xuất
               </ListItem>
             </List>
           </motion.div>

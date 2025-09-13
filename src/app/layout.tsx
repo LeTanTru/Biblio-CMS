@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { AppProvider, QueryProvider } from '@/components/providers';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Metadata } from 'next';
-import { Redirect } from '@/components/redirect';
+import { PermissionGuard } from '@/components/permission-guard';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -37,7 +37,9 @@ export default async function RootLayout({
         >
           <QueryProvider>
             <AppProvider>
-              <Suspense>{children}</Suspense>
+              <Suspense>
+                <PermissionGuard>{children}</PermissionGuard>
+              </Suspense>
               <NextTopLoader showSpinner={false} />
             </AppProvider>
           </QueryProvider>

@@ -4,7 +4,7 @@ export type ProfileStoreType = {
   profile: ProfileResType | null;
   isAuthenticated: boolean;
   loading: boolean;
-  setProfile: (profile: ProfileResType) => void;
+  setProfile: (profile: ProfileResType | null) => void;
   setAuthenticated: (isAuthenticated: boolean) => void;
   setLoading: (loading: boolean) => void;
 };

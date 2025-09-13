@@ -4,7 +4,7 @@ import { useProfileStore } from '@/store';
 import { decodeJwt, getAccessTokenFromLocalStorage } from '@/utils';
 
 const useAuth = () => {
-  const { profile, loading } = useProfileStore();
+  const { profile, loading, isAuthenticated } = useProfileStore();
   const accessToken = getAccessTokenFromLocalStorage();
   let permissionCode: string[] = [];
   if (accessToken) {
@@ -18,7 +18,7 @@ const useAuth = () => {
   }
 
   return {
-    isAuthenticated: !!profile,
+    isAuthenticated: isAuthenticated || !!profile,
     profile,
     kind: profile?.kind,
     permissionCode: permissionCode,

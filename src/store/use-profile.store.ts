@@ -3,8 +3,8 @@ import { create } from 'zustand';
 const useProfileStore = create<ProfileStoreType>((set) => ({
   profile: null,
   isAuthenticated: false,
-  loading: false,
-  setProfile: (profile: ProfileResType) => set({ profile }),
+  loading: true,
+  setProfile: (profile: ProfileResType | null) => set({ profile }),
   setAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setLoading: (loading: boolean) => set({ loading })
 }));

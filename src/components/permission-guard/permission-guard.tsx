@@ -1,11 +1,13 @@
 'use client';
-
-import { Unauthorized } from '@/components/unauthorized';
 import route from '@/routes';
-import { useAuth } from '@/hooks';
+import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
 import { usePathname } from 'next/navigation';
 import { validatePermission } from '@/utils';
 import { useEffect, useState } from 'react';
+import { Unauthorized } from '@/components/unauthorized';
+import { motion } from 'framer-motion';
+import { Loader } from 'lucide-react';
+import { useProfileStore } from '@/store';
 
 export default function PermissionGuard({
   children
@@ -17,30 +19,29 @@ export default function PermissionGuard({
     permissionCode: userPermissions,
     isAuthenticated
   } = useAuth();
-  const pathname = usePathname();
+  const { setLoading } = useProfileStore();
+  const navigate = useNavigate(false);
   const [ready, setReady] = useState(false);
+  const pathname = usePathname();
+  const firstActiveRoute = useFirstActiveRoute();
 
   function pathToRegex(path: string): RegExp {
     const regexString = path.replace(/:[^/]+/g, '[^/]+').replace(/\//g, '\\/');
     return new RegExp(`^${regexString}$`);
   }
 
+  // find current path in route
   function findRouteByPath(obj: Record<string, any>, pathname: string): any {
     for (const key in obj) {
       const item = obj[key];
-
       if (item?.path) {
         const regex = pathToRegex(item.path);
-        if (regex.test(pathname)) {
-          return item;
-        }
+        if (regex.test(pathname)) return item;
       }
-
       if (item?.children) {
         const result = findRouteByPath(item.children, pathname);
         if (result) return result;
       }
-
       if (typeof item === 'object') {
         const result = findRouteByPath(item, pathname);
         if (result) return result;
@@ -49,31 +50,70 @@ export default function PermissionGuard({
     return null;
   }
 
+  const matchedRoute = findRouteByPath(route, pathname);
+
+  // ready if loading is false
   useEffect(() => {
     if (!loading) {
       setReady(true);
     }
   }, [loading]);
 
-  const matchedRoute = findRouteByPath(route, pathname);
+  // navigate to login if not login
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate(route.login.path);
+    } else {
+      navigate(firstActiveRoute);
+    }
+  }, [isAuthenticated, ready, navigate, firstActiveRoute]);
 
-  if (matchedRoute?.auth === false) {
-    return <>{children}</>;
-  }
+  // if logged in, set loading to false
+  useEffect(() => {
+    if (isAuthenticated) setLoading(false);
+  }, [isAuthenticated, setLoading]);
 
-  if (!isAuthenticated && ready) {
-    return <Unauthorized />;
-  }
-
+  // get route permission
   const requiredPermissions = matchedRoute?.permissionCode ?? [];
 
+  // check permission
   const hasPermission =
     requiredPermissions.length === 0 ||
     validatePermission({ requiredPermissions, userPermissions });
 
-  if (!hasPermission && ready) {
+  // show overlay
+  const showOverlay =
+    (!isAuthenticated && pathname !== route.login.path) ||
+    !ready ||
+    loading ||
+    (isAuthenticated && pathname === route.login.path);
+
+  // check authorization
+  if (!hasPermission && isAuthenticated && ready) {
     return <Unauthorized />;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <motion.div
+        key='content'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showOverlay ? 0 : 1 }}
+      >
+        {children}
+      </motion.div>
+
+      <motion.div
+        key='loading'
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: showOverlay ? 1 : 0,
+          zIndex: showOverlay ? 9999 : -9999
+        }}
+        className='fixed inset-0 z-50 flex h-dvh w-full items-center justify-center bg-white'
+      >
+        <Loader className='size-8 animate-spin' />
+      </motion.div>
+    </>
+  );
 }
