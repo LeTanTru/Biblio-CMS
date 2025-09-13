@@ -61,12 +61,17 @@ export default function PermissionGuard({
 
   // navigate to login if not login
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || matchedRoute?.path === route.home.path) {
       navigate(route.login.path);
     } else {
-      navigate(firstActiveRoute);
+      if (
+        matchedRoute?.path === route.home.path ||
+        matchedRoute?.path === route.login.path
+      ) {
+        navigate(firstActiveRoute);
+      }
     }
-  }, [isAuthenticated, ready, navigate, firstActiveRoute]);
+  }, [isAuthenticated, ready, navigate, firstActiveRoute, matchedRoute?.path]);
 
   // if logged in, set loading to false
   useEffect(() => {
