@@ -21,8 +21,8 @@ export default function LoginForm() {
   const router = useRouter();
   const { setAuthenticated, setLoading } = useProfileStore();
   const defaultValues: LoginBodyType = {
-    email: 'admin@example.com',
-    password: 'admin1236545'
+    email: '',
+    password: ''
   };
 
   const onSubmit = async (values: LoginBodyType) => {
