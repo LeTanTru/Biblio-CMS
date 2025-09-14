@@ -1,12 +1,23 @@
 'use client';
-import { Button, Col, Row } from '@/components/form';
+import { Button, Col, Row, ToolTip } from '@/components/form';
 import { CircleLoading } from '@/components/loading';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
 import useNavigate from '@/hooks/use-navigate';
 import { logger } from '@/logger';
 import { ApiConfig, ApiResponse } from '@/types';
 import { http, notify } from '@/utils';
+import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Save } from 'lucide-react';
+import { ArrowLeftFromLine, Info, LogOut, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -85,7 +96,6 @@ export default function useSaveBase<T extends FieldValues>({
         queryClient.invalidateQueries({
           queryKey: [key, id]
         });
-        navigate(listPageUrl);
         notify.success(`Cập nhật ${objectName} thành công`);
       } else {
         logger.error(`Error while creating ${objectName}:`, res);
@@ -103,19 +113,63 @@ export default function useSaveBase<T extends FieldValues>({
   const handleSubmit = async (values: T) => {
     const mutation = isCreate ? createMutation : updateMutation;
     await mutation.mutateAsync(isCreate ? { ...values } : { ...values, id });
+    navigate(listPageUrl);
   };
 
   const renderActions = (form: UseFormReturn<T>) => (
     <Row className='my-0 justify-end'>
       <Col span={4}>
-        <Button
-          type='button'
-          variant={'ghost'}
-          onClick={() => navigate(listPageUrl)}
-          className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
-        >
-          Hủy
-        </Button>
+        {!form.formState.isDirty ? (
+          <Button
+            type='button'
+            variant={'ghost'}
+            onClick={() => navigate(listPageUrl)}
+            className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
+          >
+            <ArrowLeftFromLine />
+            Hủy
+          </Button>
+        ) : (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                type='button'
+                variant={'ghost'}
+                className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
+              >
+                <ArrowLeftFromLine />
+                Hủy
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%]'>
+              <AlertDialogHeader>
+                <AlertDialogTitle className='text-md flex items-center gap-2 font-normal'>
+                  <Info className='size-8 fill-orange-500 stroke-white' />
+                  Bạn có chắc chắn muốn quay lại không ?
+                </AlertDialogTitle>
+                <AlertDialogDescription></AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel asChild>
+                  <Button
+                    variant='outline'
+                    className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                  >
+                    Không
+                  </Button>
+                </AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <Button
+                    onClick={() => navigate(listPageUrl)}
+                    className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                  >
+                    Có
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </Col>
       <Col span={4}>
         <Button
@@ -140,7 +194,7 @@ export default function useSaveBase<T extends FieldValues>({
 
   return {
     data,
-    loading,
+    loading: loading || itemQuery.isLoading || itemQuery.isFetching,
     handleSubmit,
     renderActions
   };

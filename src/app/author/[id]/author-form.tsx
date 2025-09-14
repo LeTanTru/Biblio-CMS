@@ -10,6 +10,7 @@ import {
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
+import { CircleLoading } from '@/components/loading';
 import {
   apiConfig,
   countryOptions,
@@ -26,21 +27,22 @@ import { useEffect, useMemo, useState } from 'react';
 
 export default function AuthorForm() {
   const [avatarPath, setAvatarPath] = useState<string>('');
-  const { data, handleSubmit, renderActions } = useSaveBase<AuthorBodyType>({
-    apiConfig: apiConfig.author,
-    options: {
-      key: 'author',
-      objectName: 'tác giả',
-      listPageUrl: route.author.getList.path
-    }
-  });
+  const { data, loading, handleSubmit, renderActions } =
+    useSaveBase<AuthorBodyType>({
+      apiConfig: apiConfig.author,
+      options: {
+        key: 'author',
+        objectName: 'tác giả',
+        listPageUrl: route.author.getList.path
+      }
+    });
   const uploadImageMutation = useUploadImageMutation();
 
   const defaultValues: AuthorBodyType = {
     avatarPath: '',
     bio: '',
     country: '',
-    dateOfBirth: '',
+    dateOfBirth: '01/01/1970',
     gender: GENDER_MALE,
     name: ''
   };
@@ -51,7 +53,7 @@ export default function AuthorForm() {
       bio: data?.bio ?? '',
       avatarPath: data?.avatarPath ?? '',
       gender: Number(data?.gender) ?? 0,
-      dateOfBirth: data?.dateOfBirth ?? '',
+      dateOfBirth: data?.dateOfBirth ?? '01/01/1970',
       country: data?.country ?? ''
     };
   }, [
@@ -77,7 +79,7 @@ export default function AuthorForm() {
       defaultValues={defaultValues}
       schema={authorSchema}
       initialValues={initialValues}
-      className='w-200 rounded-lg bg-white p-4'
+      className='relative w-200 rounded-lg bg-white p-4'
     >
       {(form) => (
         <>
@@ -161,6 +163,11 @@ export default function AuthorForm() {
             </Col>
           </Row>
           <>{renderActions(form)}</>
+          {loading && (
+            <div className='absolute inset-0 bg-white/80'>
+              <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
+            </div>
+          )}
         </>
       )}
     </BaseForm>

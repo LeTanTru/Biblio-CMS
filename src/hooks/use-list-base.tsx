@@ -161,6 +161,7 @@ export default function useListBase<
       onSuccess: (res) => {
         if (res.result) {
           notify.success(`Xoá ${objectName} thành công`);
+          listQuery.refetch();
         } else {
           notify.error(`Xoá ${objectName} thất bại`);
         }

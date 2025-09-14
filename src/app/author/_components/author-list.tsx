@@ -4,7 +4,7 @@ import { AvatarField } from '@/components/form';
 import { PageWrapper } from '@/components/layout';
 import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { BaseTable } from '@/components/table';
-import { apiConfig, FieldTypes, groupKinds } from '@/constants';
+import { apiConfig, countryOptions, STATUS_ACTIVE } from '@/constants';
 import useListBase from '@/hooks/use-list-base';
 import { cn } from '@/lib';
 import route from '@/routes';
@@ -22,6 +22,11 @@ export default function AuthorList() {
     apiConfig: apiConfig.author,
     options: {
       objectName: 'tác giả'
+    },
+    override: (handlers) => {
+      handlers.additionalParams = () => ({
+        status: STATUS_ACTIVE
+      });
     }
   });
 
@@ -63,7 +68,8 @@ export default function AuthorList() {
     {
       title: 'Quốc tịch',
       dataIndex: 'country',
-      render: (value) => value ?? '---',
+      render: (value) =>
+        countryOptions.find((ctr) => ctr.value === value)?.label ?? '---',
       width: 150,
       align: 'center'
     },
