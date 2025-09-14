@@ -174,7 +174,7 @@ export default function GroupList() {
     kind: ''
   };
 
-  const initialValues = useMemo(() => Object.fromEntries(searchParams), []);
+  const initialValues = useMemo(() => searchParams, []);
 
   const onSubmit = async (values: GroupSearchParamType) => {
     const filtered = Object.entries(values).filter(

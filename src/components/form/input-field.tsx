@@ -78,14 +78,16 @@ export default function InputField<T extends FieldValues>({
                 {...field}
                 className={cn(
                   className,
-                  'focus-visible:ring-dodger-blue pt-0! pb-0 placeholder:text-gray-300 focus-visible:ring-[1px]',
+                  'pt-0! pb-0 focus-visible:border-transparent focus-visible:ring-[2px]',
                   {
                     'pl-10': prefixIcon,
                     'pr-10': suffixIcon,
                     'cursor-not-allowed opacity-50': disabled,
                     'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500':
                       fieldState.error
-                  }
+                  },
+                  !fieldState.error &&
+                    'focus-visible:ring-dodger-blue focus-visible:border-transparent'
                 )}
               />
               {suffixIcon && (

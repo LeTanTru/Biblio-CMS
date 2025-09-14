@@ -1,17 +1,22 @@
 import Footer from '@/components/footer';
 import { Breadcrumb } from '@/components/form';
+import { cn } from '@/lib';
 import { BreadcrumbType } from '@/types';
 
 export default function PageWrapper({
   children,
   breadcrumbs,
+  loading,
   ...props
 }: React.HTMLAttributes<HTMLElement> & {
   breadcrumbs: BreadcrumbType[];
+  loading?: boolean;
 }) {
   return (
     <main
-      className='bg-page-wrapper h-[calc(100vh_-_64px)] overflow-y-auto'
+      className={cn('bg-page-wrapper h-[calc(100vh_-_64px)]', {
+        'overflow-y-auto': !loading
+      })}
       {...props}
     >
       <div className='min-h-[calc(100vh_-_128px)]'>

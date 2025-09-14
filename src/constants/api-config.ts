@@ -342,7 +342,7 @@ const apiConfig = defineApiConfig({
   },
   author: {
     getList: {
-      baseUrl: `${AppConstants.apiUrl}v1/author/list`,
+      baseUrl: `${AppConstants.apiUrl}v1/author/private/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'AUTH_L'
@@ -360,7 +360,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'AUTH_U'
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}v1/author/get/:id`,
+      baseUrl: `${AppConstants.apiUrl}v1/author/private/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'AUTH_V'

@@ -13,6 +13,7 @@ export type Column<T> = {
   ) => React.ReactNode;
   width?: string | number;
   align?: 'left' | 'right' | 'center';
+  fixed?: boolean;
   key?: string;
 };
 

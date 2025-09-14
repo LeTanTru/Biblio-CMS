@@ -1,4 +1,5 @@
 'use client';
+
 import route from '@/routes';
 import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
 import { usePathname } from 'next/navigation';

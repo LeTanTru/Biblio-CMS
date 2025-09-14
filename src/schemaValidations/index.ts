@@ -1,5 +1,6 @@
 export * from './account.schema';
 export * from './auth.schema';
+export * from './author.schema';
 export * from './category.schema';
 export * from './group-permission.schema';
 export * from './group.schema';
@@ -9,3 +10,4 @@ export * from './product-variant.image';
 export * from './product.schema';
 export * from './publisher.schema';
 export * from './search.schema';
+export * from './translator.schema';

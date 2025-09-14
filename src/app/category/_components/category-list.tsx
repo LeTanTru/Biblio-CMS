@@ -201,7 +201,7 @@ export default function CategoryList() {
     name: ''
   };
 
-  const initialValues = useMemo(() => Object.fromEntries(searchParams), []);
+  const initialValues = useMemo(() => searchParams, []);
 
   const onSubmit = async (values: CategorySearchParamType) => {
     const filtered = Object.entries(values).filter(

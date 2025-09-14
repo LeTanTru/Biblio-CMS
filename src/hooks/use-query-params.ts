@@ -44,7 +44,14 @@ const useQueryParams = <T extends Record<string, any>>() => {
     router.push(queryString ? `${pathname}?${queryString}` : pathname);
   };
 
-  return { getQueryParam, setQueryParam, setQueryParams, searchParams };
+  const paramsObject = Object.fromEntries(searchParams.entries()) as Partial<T>;
+
+  return {
+    getQueryParam,
+    setQueryParam,
+    setQueryParams,
+    searchParams: paramsObject
+  };
 };
 
 export default useQueryParams;

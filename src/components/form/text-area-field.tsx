@@ -72,7 +72,7 @@ export default function TextAreaField<T extends FieldValues>({
                 rows={rows ?? 4}
                 className={cn(
                   floatLabel && 'bg-background pt-6',
-                  'field-sizing-fixed placeholder:text-gray-300 focus-visible:ring-[1px]',
+                  'field-sizing-fixed placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-[2px]',
                   className
                 )}
                 {...field}

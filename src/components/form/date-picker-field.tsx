@@ -1,6 +1,7 @@
 'use client';
+
 import { Control } from 'react-hook-form';
-import { format, Locale, parse } from 'date-fns';
+import { format, Locale } from 'date-fns';
 import {
   FormControl,
   FormDescription,
@@ -19,6 +20,7 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { vi } from 'date-fns/locale';
 import { Button } from '@/components/form';
+import { useState } from 'react';
 
 type Props = {
   control: Control<any>;
@@ -39,22 +41,22 @@ export default function DatePickerField({
   label,
   description,
   className,
-  format: dateFormat = 'yyyy-MM-dd',
+  format: dateFormat = 'dd/MM/yyyy',
   disabled,
   required,
   placeholder,
   labelClassName
 }: Props) {
   const calendarLocale: Locale = vi;
+  const [open, setOpen] = useState(false);
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => {
         const parsedValue =
-          typeof field.value === 'string'
-            ? parse(field.value, dateFormat, new Date())
-            : field.value;
+          typeof field.value === 'string' ? new Date(field.value) : field.value;
 
         return (
           <FormItem
@@ -68,20 +70,23 @@ export default function DatePickerField({
                 {required && <span className='text-destructive'>*</span>}
               </FormLabel>
             )}
-            <Popover>
+            <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
                     variant='outline'
                     className={cn(
                       'w-full justify-start text-left font-normal',
+                      'data-[state=open]:border-[dodgerblue] data-[state=open]:ring-1 data-[state=open]:ring-[dodgerblue]',
                       !field.value && 'text-muted-foreground'
                     )}
                     disabled={disabled}
                   >
-                    <CalendarIcon className='mr-2 h-4 w-4' />
+                    <CalendarIcon className='mr-1 h-4 w-4' />
                     {field.value
-                      ? format(parsedValue, dateFormat)
+                      ? format(parsedValue, dateFormat, {
+                          locale: calendarLocale
+                        })
                       : placeholder}
                   </Button>
                 </FormControl>
@@ -92,20 +97,32 @@ export default function DatePickerField({
                   mode='single'
                   selected={parsedValue}
                   onSelect={(date) => {
-                    if (!date) return;
-                    const withTime = parsedValue || new Date();
-                    withTime.setFullYear(
-                      date.getFullYear(),
-                      date.getMonth(),
-                      date.getDate()
-                    );
-                    field.onChange(format(withTime, dateFormat));
+                    if (date) {
+                      field.onChange(date);
+                      setOpen(false);
+                    }
+                  }}
+                  classNames={{
+                    day_button:
+                      'data-[selected-single=true]:bg-dodger-blue data-[selected-single=true]:text-white cursor-pointer !ring-0 !focus-visible:ring-0 !focus-visible:ring-offset-0'
                   }}
                 />
+                <Button
+                  type='button'
+                  variant='outline'
+                  className='w-full'
+                  onClick={() => {
+                    const today = new Date();
+                    field.onChange(today);
+                    setOpen(false);
+                  }}
+                >
+                  Hôm nay
+                </Button>
               </PopoverContent>
             </Popover>
             {description && <FormDescription>{description}</FormDescription>}
-            <FormMessage className={'mb-0 ml-1'} />
+            <FormMessage className='mb-0 ml-1' />
           </FormItem>
         );
       }}
