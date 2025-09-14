@@ -2,7 +2,7 @@ import { SidebarLayout } from '@/components/layout';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Danh mục'
+  title: 'Tác giả'
 };
 
 export default function AuthorLayout({

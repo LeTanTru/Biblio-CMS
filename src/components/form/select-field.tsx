@@ -24,6 +24,8 @@ import {
 import { cn } from '@/lib/utils';
 import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
+import Image from 'next/image';
+import { emptyData } from '@/assets';
 
 type AutoCompleteFieldProps<
   TFieldValues extends FieldValues,
@@ -49,6 +51,14 @@ type AutoCompleteFieldProps<
   onValueChange?: (value: string | number | (string | number)[]) => void;
 };
 
+const normalizeText = (text: string): string => {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+};
+
 export default function SelectField<
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
@@ -67,12 +77,31 @@ export default function SelectField<
   getPrefix,
   allowClear,
   searchText,
-  notFoundContent,
+  notFoundContent = 'Không có kết quả nào',
   labelClassName,
   disabled = false,
   onValueChange
 }: AutoCompleteFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState('');
+
+  function isFuzzyMatch(input: string, target: string): boolean {
+    let i = 0,
+      j = 0;
+    while (i < input.length && j < target.length) {
+      if (input[i] === target[j]) i++;
+      j++;
+    }
+    return i === input.length;
+  }
+
+  const normalizedSearch = normalizeText(searchValue);
+
+  const filteredOptions = options.filter((option) => {
+    const label = String(getLabel(option));
+    const normalizedLabel = normalizeText(label);
+    return isFuzzyMatch(normalizedSearch, normalizedLabel);
+  });
 
   return (
     <FormField
@@ -123,11 +152,11 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'w-full flex-wrap justify-between border-1 py-0 opacity-80 focus-visible:shadow-none',
-                    open && 'border-[dodgerblue] ring-1 ring-[dodgerblue]',
+                    'w-full flex-wrap justify-between border-1 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
                     {
                       'pl-1!': selectedValues.length > 1,
-                      'cursor-not-allowed opacity-50': disabled
+                      'cursor-not-allowed opacity-50': disabled,
+                      'border-dodger-blue ring-dodger-blue ring-1': open
                     }
                   )}
                 >
@@ -207,11 +236,24 @@ export default function SelectField<
               )}
 
               <PopoverContent className='w-[var(--radix-popover-trigger-width)] p-0'>
-                <Command className='bg-background'>
-                  <CommandInput placeholder={searchText} />
-                  <CommandEmpty>{notFoundContent}</CommandEmpty>
-                  <CommandGroup className='max-h-100 overflow-y-scroll max-[1560px]:max-h-50'>
-                    {options.map((opt) => {
+                <Command className='bg-background' shouldFilter={false}>
+                  <CommandInput
+                    placeholder={searchText}
+                    value={searchValue}
+                    onValueChange={setSearchValue}
+                  />
+                  <CommandEmpty className='mx-auto pt-4 pb-2 text-center text-sm'>
+                    <Image
+                      src={emptyData.src}
+                      width={120}
+                      height={50}
+                      className='mx-auto mt-2'
+                      alt={notFoundContent as string}
+                    />
+                    {notFoundContent}
+                  </CommandEmpty>
+                  <CommandGroup className='max-h-100 overflow-y-auto max-[1560px]:max-h-50'>
+                    {filteredOptions.map((opt) => {
                       const val = getValue(opt);
                       return (
                         <CommandItem
@@ -227,7 +269,7 @@ export default function SelectField<
                               {getPrefix(opt)}
                             </span>
                           )}
-                          {getLabel(opt)}
+                          {getLabel(opt) ?? 'Không có kết quả nào'}
                         </CommandItem>
                       );
                     })}

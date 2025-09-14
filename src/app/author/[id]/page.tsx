@@ -13,7 +13,7 @@ export default async function AuthorDetailPage({
     <PageWrapper
       breadcrumbs={[
         { label: 'Trang chủ', href: route.home.path },
-        { label: 'Danh mục', href: route.author.getList.path },
+        { label: 'Tác giả', href: route.author.getList.path },
         { label: `${isCreate ? 'Thêm mới' : 'Chỉnh sửa'} tác giả` }
       ]}
     >

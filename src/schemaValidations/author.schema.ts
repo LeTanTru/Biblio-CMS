@@ -7,9 +7,11 @@ export const authorSchema = z.object({
   avatarPath: z.string(),
   gender: z.number(),
   dateOfBirth: z.preprocess((val) => {
-    if (val instanceof Date) return val.toISOString().split('T')[0];
+    if (val instanceof Date) {
+      return val.toLocaleDateString();
+    }
     return val;
-  }, z.string()),
+  }, z.string('Bắt buộc')),
   country: z.string()
 });
 

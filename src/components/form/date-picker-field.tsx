@@ -20,7 +20,16 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { vi } from 'date-fns/locale';
 import { Button } from '@/components/form';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { DropdownProps } from 'react-day-picker';
 
 type Props = {
   control: Control<any>;
@@ -49,6 +58,14 @@ export default function DatePickerField({
 }: Props) {
   const calendarLocale: Locale = vi;
   const [open, setOpen] = useState(false);
+  // const [popoverWidth, setPopoverWidth] = useState<number | undefined>();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  // useEffect(() => {
+  //   if (triggerRef.current) {
+  //     setPopoverWidth(triggerRef.current.offsetWidth);
+  //   }
+  // }, [open]);
 
   return (
     <FormField
@@ -74,10 +91,12 @@ export default function DatePickerField({
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
+                    ref={triggerRef}
                     variant='outline'
                     className={cn(
-                      'w-full justify-start text-left font-normal',
-                      'data-[state=open]:border-[dodgerblue] data-[state=open]:ring-1 data-[state=open]:ring-[dodgerblue]',
+                      'w-full justify-start text-left font-normal text-black opacity-100',
+                      'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
+                      'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue data-[state=open]:ring-1',
                       !field.value && 'text-muted-foreground'
                     )}
                     disabled={disabled}
@@ -91,11 +110,16 @@ export default function DatePickerField({
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className='w-auto space-y-2 p-4' align='start'>
+              <PopoverContent
+                className='w-90 origin-top space-y-2 p-4'
+                align='center'
+              >
                 <Calendar
                   locale={calendarLocale}
+                  className='w-full'
                   mode='single'
                   selected={parsedValue}
+                  components={{ Dropdown: CustomSelectDropdown }}
                   onSelect={(date) => {
                     if (date) {
                       field.onChange(date);
@@ -104,7 +128,27 @@ export default function DatePickerField({
                   }}
                   classNames={{
                     day_button:
-                      'data-[selected-single=true]:bg-dodger-blue data-[selected-single=true]:text-white cursor-pointer !ring-0 !focus-visible:ring-0 !focus-visible:ring-offset-0'
+                      'data-[selected-single=true]:bg-dodger-blue data-[selected-single=true]:text-white cursor-pointer !ring-0 !focus-visible:ring-0 !focus-visible:ring-offset-0',
+                    button_next:
+                      'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-dodger-blue',
+                    button_previous:
+                      'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-dodger-blue'
+                  }}
+                  captionLayout='dropdown'
+                  defaultMonth={new Date(field.value)}
+                  startMonth={new Date(1900, 0)}
+                  endMonth={new Date(2050, 12)}
+                  formatters={{
+                    formatMonthDropdown: (date) =>
+                      date.toLocaleString('vi-VN', { month: 'long' })
+                  }}
+                  onMonthChange={(month: Date) => {
+                    const firstDay = new Date(
+                      month.getFullYear(),
+                      month.getMonth(),
+                      1
+                    );
+                    field.onChange(firstDay);
                   }}
                 />
                 <Button
@@ -127,5 +171,43 @@ export default function DatePickerField({
         );
       }}
     />
+  );
+}
+
+function CustomSelectDropdown(props: DropdownProps) {
+  const { options, value, onChange } = props;
+
+  const handleValueChange = (newValue: string) => {
+    if (onChange) {
+      const syntheticEvent = {
+        target: {
+          value: newValue
+        }
+      } as React.ChangeEvent<HTMLSelectElement>;
+
+      onChange(syntheticEvent);
+    }
+  };
+
+  return (
+    <Select value={value?.toString()} onValueChange={handleValueChange}>
+      <SelectTrigger className='z-9999 cursor-pointer justify-center gap-1!'>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {options?.map((option) => (
+            <SelectItem
+              className='cursor-pointer text-center'
+              key={option.value}
+              value={option.value.toString()}
+              disabled={option.disabled}
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }

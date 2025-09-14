@@ -185,7 +185,7 @@ export default function UploadImageField<T extends FieldValues>({
             type='button'
             style={{ width: size, height: size }}
             className={cn(
-              'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden rounded border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
+              'border-input hover:bg-accent/50 focus-visible:border-ring relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-dashed p-0 transition-colors outline-none focus-visible:ring-[3px]',
               className
             )}
             onClick={openFileDialog}
@@ -201,7 +201,7 @@ export default function UploadImageField<T extends FieldValues>({
               <AvatarField
                 disablePreview
                 src={value}
-                className='size-full rounded object-cover'
+                className='size-full rounded-lg object-cover'
                 size={size}
               />
             ) : (

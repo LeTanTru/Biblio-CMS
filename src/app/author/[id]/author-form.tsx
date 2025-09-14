@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  AutoCompleteField,
   Col,
   DatePickerField,
   InputField,
@@ -111,7 +110,7 @@ export default function AuthorForm() {
               />
             </Col>
             <Col span={12}>
-              <AutoCompleteField
+              <SelectField
                 getLabel={(option) => option.label}
                 getValue={(option) => option.value}
                 options={genderOptions}
