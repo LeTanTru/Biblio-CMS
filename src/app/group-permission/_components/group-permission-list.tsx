@@ -142,7 +142,7 @@ export default function GroupPermissionList() {
                   <AlertDialogAction asChild>
                     <Button
                       onClick={() => handleDelete(record)}
-                      className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                      variant={'primary'}
                     >
                       Có
                     </Button>
@@ -229,10 +229,7 @@ export default function GroupPermissionList() {
               apiConfig.groupPermission.create.permissionCode
             ]}
           >
-            <Button
-              onClick={handleAdd}
-              className='bg-dodger-blue hover:bg-dodger-blue/80 font-normal'
-            >
+            <Button onClick={handleAdd} variant={'primary'}>
               <PlusIcon />
               Thêm mới
             </Button>
@@ -299,9 +296,7 @@ export default function GroupPermissionList() {
                           updateGroupPermissionMutation.isPending
                         }
                         type='submit'
-                        className={
-                          'bg-dodger-blue hover:bg-dodger-blue hover:opacity-80 disabled:pointer-events-auto disabled:cursor-not-allowed'
-                        }
+                        variant={'primary'}
                       >
                         {createGroupPermissionMutation.isPending ||
                         updateGroupPermissionMutation.isPending ? (

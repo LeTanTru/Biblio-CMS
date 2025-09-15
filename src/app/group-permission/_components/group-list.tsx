@@ -142,7 +142,7 @@ export default function GroupList() {
                   <AlertDialogAction asChild>
                     <Button
                       onClick={() => handleDelete(record)}
-                      className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                      variant={'primary'}
                     >
                       Có
                     </Button>
@@ -206,7 +206,7 @@ export default function GroupList() {
           requiredPermissions={[apiConfig.group.create.permissionCode]}
         >
           <Link href={`${route.group.getList.path}/create`}>
-            <Button className='bg-dodger-blue hover:bg-dodger-blue/80 font-normal'>
+            <Button variant={'primary'}>
               <PlusIcon />
               Thêm mới
             </Button>
@@ -243,10 +243,7 @@ export default function GroupList() {
                   />
                 </Col>
                 <Col className='w-9'>
-                  <Button
-                    type='submit'
-                    className='bg-dodger-blue hover:bg-dodger-blue/80'
-                  >
+                  <Button type='submit' variant={'primary'}>
                     <Search />
                   </Button>
                 </Col>

@@ -2,10 +2,10 @@ import { SidebarLayout } from '@/components/layout';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Danh mục'
+  title: 'Nhà xuất bản'
 };
 
-export default function CategoryLayout({
+export default function PublisherLayout({
   children
 }: {
   children: React.ReactNode;

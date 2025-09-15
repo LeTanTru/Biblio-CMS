@@ -78,7 +78,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
 
   // handle click on sub menu item
   const handleSubItemClick = (path?: string) => {
-    if (!path || path === pathname) return;
+    if (!path || pathname.includes(path)) return;
     setSidebarState('expanded');
     navigate(path);
   };

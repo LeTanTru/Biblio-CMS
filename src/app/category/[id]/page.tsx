@@ -14,7 +14,7 @@ export default async function CategoryDetailPage({
       breadcrumbs={[
         { label: 'Trang chủ', href: route.home.path },
         { label: 'Danh mục', href: route.category.getList.path },
-        { label: `${isCreate ? 'Thêm mới' : 'Chỉnh sửa'} danh mục` }
+        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} danh mục` }
       ]}
     >
       <CategoryForm />

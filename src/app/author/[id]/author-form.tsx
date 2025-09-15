@@ -25,13 +25,13 @@ import { AuthorBodyType } from '@/types/author.type';
 import { renderImageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 
-export default function AuthorForm() {
+export default function AuthorForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
   const { data, loading, handleSubmit, renderActions } =
     useSaveBase<AuthorBodyType>({
       apiConfig: apiConfig.author,
       options: {
-        key: 'author',
+        queryKey,
         objectName: 'tác giả',
         listPageUrl: route.author.getList.path
       }

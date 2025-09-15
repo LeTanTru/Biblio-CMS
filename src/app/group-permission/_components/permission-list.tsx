@@ -261,7 +261,7 @@ export default function PermissionList() {
                                       </AlertDialogCancel>
                                       <AlertDialogAction asChild>
                                         <Button
-                                          className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                                          variant={'primary'}
                                           onClick={() =>
                                             handleDelete(permission)
                                           }
@@ -432,9 +432,7 @@ export default function PermissionList() {
                           updatePermissionMutation.isPending
                         }
                         type='submit'
-                        className={
-                          'bg-dodger-blue hover:bg-dodger-blue hover:opacity-80 disabled:pointer-events-auto disabled:cursor-not-allowed'
-                        }
+                        variant={'primary'}
                       >
                         {createPermissionMutation.isPending ||
                         updatePermissionMutation.isPending ? (

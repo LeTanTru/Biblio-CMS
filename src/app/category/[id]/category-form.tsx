@@ -186,9 +186,7 @@ export default function CategoryForm() {
                   updateCategoryMutation.isPending
                 }
                 type='submit'
-                className={
-                  'bg-dodger-blue hover:bg-dodger-blue hover:opacity-80 disabled:pointer-events-auto disabled:cursor-not-allowed'
-                }
+                variant={'primary'}
               >
                 {createCategoryMutation.isPending ||
                 updateCategoryMutation.isPending ? (

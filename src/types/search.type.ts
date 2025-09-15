@@ -9,6 +9,7 @@ export type BaseSearchParamType = {
 export type OptionType<V = string | number> = {
   label: string;
   value: V;
+  color?: string;
 };
 
 export type SearchFormProps<S extends FieldValues> = {

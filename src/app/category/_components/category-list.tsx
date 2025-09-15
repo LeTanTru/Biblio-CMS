@@ -182,7 +182,7 @@ export default function CategoryList() {
                     <AlertDialogAction asChild>
                       <Button
                         onClick={() => handleDelete(record)}
-                        className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                        variant={'primary'}
                       >
                         Có
                       </Button>
@@ -234,7 +234,7 @@ export default function CategoryList() {
             requiredPermissions={[apiConfig.category.create.permissionCode]}
           >
             <Link href={`${route.category.getList.path}/create`}>
-              <Button className='bg-dodger-blue hover:bg-dodger-blue/80 font-normal'>
+              <Button variant={'primary'}>
                 <PlusIcon />
                 Thêm mới
               </Button>
@@ -260,10 +260,7 @@ export default function CategoryList() {
                     />
                   </Col>
                   <Col className='w-9'>
-                    <Button
-                      type='submit'
-                      className='bg-dodger-blue hover:bg-dodger-blue/80'
-                    >
+                    <Button type='submit' variant={'primary'}>
                       <Search />
                     </Button>
                   </Col>
@@ -302,7 +299,8 @@ export default function CategoryList() {
               <Button
                 onClick={handleUpdate}
                 disabled={!isChanged || loading}
-                className='bg-dodger-blue hover:bg-dodger-blue/80 w-40 disabled:pointer-events-auto disabled:cursor-not-allowed'
+                className='w-40'
+                variant={'primary'}
               >
                 {loading ? (
                   <CircleLoading />

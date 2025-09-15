@@ -9,20 +9,20 @@ import { logger } from '@/logger';
 import { useLogoutMutation } from '@/queries';
 import route from '@/routes';
 import { useProfileStore } from '@/store';
-import { notify, removeData, renderImageUrl, setData } from '@/utils';
+import { getData, notify, removeData, renderImageUrl, setData } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, CircleUserRound, LogOut, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 export default function DropdownAvatar() {
-  const navigate = useNavigate(false);
+  const navigate = useNavigate();
   const { profile, setLoading, setAuthenticated, setProfile } =
     useProfileStore();
   const [open, setOpen] = useState(false);
   const logoutMutation = useLogoutMutation();
   const pathname = usePathname();
-  const { searchParams } = useQueryParams();
+  const { queryString } = useQueryParams();
 
   const handleLogout = async () => {
     setLoading(true);
@@ -49,9 +49,13 @@ export default function DropdownAvatar() {
   };
 
   const handleProfileClick = () => {
+    if (getData(storageKeys.PREVIOUS_PATH) === pathname) {
+      setOpen(false);
+      return;
+    }
     setData(
       storageKeys.PREVIOUS_PATH,
-      `${pathname}?${searchParams.toString()}`
+      queryString ? `${pathname}?=${queryString}` : pathname
     );
     navigate(route.profile.savePage.path);
   };

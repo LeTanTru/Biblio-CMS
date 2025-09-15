@@ -12,5 +12,11 @@ export type PublisherSearchParamTYpe = z.infer<
   BaseSearchParamType;
 
 export type PublisherResType = {
-  name: '';
+  id: string;
+  name: string;
+  description: string;
+  logoPath: string;
+  createdDate: Date;
+  modifiedDate: Date;
+  status: number;
 };

@@ -338,6 +338,12 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'PUB_D'
+    },
+    recover: {
+      baseUrl: `${AppConstants.apiUrl}v1/publisher/recover/:id`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'PUB_U'
     }
   },
   author: {
@@ -370,6 +376,12 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'AUTH_D'
+    },
+    recover: {
+      baseUrl: `${AppConstants.apiUrl}v1/author/recover/:id`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'AUTH_U'
     }
   },
   translator: {
@@ -402,6 +414,12 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'TRANS_D'
+    },
+    recover: {
+      baseUrl: `${AppConstants.apiUrl}v1/translator/recover/:id`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'AUTH_U'
     }
   }
 });

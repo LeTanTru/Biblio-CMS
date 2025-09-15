@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Button,
   Col,
@@ -158,7 +157,7 @@ export default function ProfileForm() {
             <Col span={4}>
               <Button
                 disabled={!form.formState.isDirty || profileMutation.isPending}
-                className='bg-dodger-blue hover:bg-dodger-blue/80 flex disabled:pointer-events-auto disabled:cursor-not-allowed'
+                variant={'primary'}
               >
                 {profileMutation.isPending ? (
                   <CircleLoading />

@@ -260,7 +260,8 @@ export default function UploadImageField<T extends FieldValues>({
               </div>
               <Button
                 type='button'
-                className='bg-dodger-blue hover:bg-dodger-blue/80 -my-1 w-25'
+                variant={'primary'}
+                className='-my-1 w-25'
                 onClick={handleApply}
                 disabled={!previewUrl || loading}
               >

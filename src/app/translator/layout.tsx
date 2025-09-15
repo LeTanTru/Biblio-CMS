@@ -2,7 +2,7 @@ import { SidebarLayout } from '@/components/layout';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Danh mục'
+  title: 'Dịch giả'
 };
 
 export default function TranslatorLayout({

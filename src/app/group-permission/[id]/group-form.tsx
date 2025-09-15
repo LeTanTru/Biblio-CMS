@@ -326,9 +326,7 @@ export default function GroupForm() {
                   updateGroupMutation.isPending
                 }
                 type='submit'
-                className={
-                  'bg-dodger-blue hover:bg-dodger-blue hover:opacity-80 disabled:pointer-events-auto disabled:cursor-not-allowed'
-                }
+                variant={'primary'}
               >
                 {createGroupMutation.isPending ||
                 updateGroupMutation.isPending ? (

@@ -1,6 +1,8 @@
 'use client';
 
-import { AvatarField } from '@/components/form';
+import { authorApiRequest } from '@/api-requests';
+import { AvatarField, Button, ToolTip } from '@/components/form';
+import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
 import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { BaseTable } from '@/components/table';
@@ -11,24 +13,55 @@ import route from '@/routes';
 import { authorSchemaParamSchema } from '@/schemaValidations';
 import { Column, SearchFormProps } from '@/types';
 import { AuthorResType, AuthorSearchParamType } from '@/types/author.type';
-import { formatDate, renderImageUrl } from '@/utils';
-import { CircleUserRound } from 'lucide-react';
+import { formatDate, notify, renderImageUrl } from '@/utils';
+import { useMutation } from '@tanstack/react-query';
+import { CircleUserRound, RotateCcw } from 'lucide-react';
 
-export default function AuthorList() {
-  const { data, pagination, loading, handlers, queryFilter } = useListBase<
-    AuthorResType,
-    AuthorSearchParamType
-  >({
-    apiConfig: apiConfig.author,
-    options: {
-      objectName: 'tác giả'
-    },
-    override: (handlers) => {
-      handlers.additionalParams = () => ({
-        status: STATUS_ACTIVE
-      });
-    }
+export default function AuthorList({ queryKey }: { queryKey: string }) {
+  const recoverMutation = useMutation({
+    mutationKey: ['author-recover'],
+    mutationFn: (id: string | number) => authorApiRequest.recover(id)
   });
+
+  const { data, pagination, loading, handlers, queryFilter, listQuery } =
+    useListBase<AuthorResType, AuthorSearchParamType>({
+      apiConfig: apiConfig.author,
+      options: {
+        queryKey,
+        objectName: 'tác giả'
+      },
+      override: (handlers) => {
+        handlers.additionalColumns = () => ({
+          recover: (
+            record: AuthorResType,
+            buttonProps?: Record<string, any>
+          ) => {
+            return (
+              <HasPermission
+                requiredPermissions={[apiConfig.author.recover.permissionCode]}
+              >
+                <ToolTip title={`Khôi phục`}>
+                  <span>
+                    <Button
+                      disabled={record.status === STATUS_ACTIVE}
+                      onClick={async () => {
+                        await recoverMutation.mutateAsync(record.id);
+                        notify.success('Khôi phục thành công');
+                        listQuery.refetch();
+                      }}
+                      className='border-none bg-transparent shadow-none hover:bg-transparent'
+                      {...buttonProps}
+                    >
+                      <RotateCcw className='stroke-dodger-blue size-3.5' />
+                    </Button>
+                  </span>
+                </ToolTip>
+              </HasPermission>
+            );
+          }
+        });
+      }
+    });
 
   const columns: Column<AuthorResType>[] = [
     {
@@ -73,8 +106,9 @@ export default function AuthorList() {
       width: 150,
       align: 'center'
     },
+    handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, delete: true },
+      actions: { edit: true, recover: true, delete: true },
       columnProps: { fixed: true }
     })
   ];

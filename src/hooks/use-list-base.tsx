@@ -14,10 +14,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import {
   DEFAULT_TABLE_PAGE_SIZE,
   DEFAULT_TABLE_PAGE_START,
-  FieldTypes
+  FieldTypes,
+  statusOptions as defaultStatusOptions
 } from '@/constants';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
@@ -28,12 +30,18 @@ import {
   ApiResponseList,
   BaseSearchParamType,
   Column,
+  OptionType,
   PaginationType,
   SearchFormProps
 } from '@/types';
 import { http, notify } from '@/utils';
 import { Separator } from '@radix-ui/react-separator';
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient
+} from '@tanstack/react-query';
 import { Edit2, Info, PlusIcon, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -60,6 +68,13 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
     schema: SearchFormProps<S>['schema'];
     initialValues: SearchFormProps<S>['initialValues'];
   }) => React.ReactNode | any;
+  renderStatusColumn: ({
+    statusOptions,
+    columnProps
+  }?: {
+    statusOptions?: OptionType[];
+    columnProps?: Record<string, any>;
+  }) => Column<T>;
 };
 
 type UseListBaseProps<
@@ -74,6 +89,7 @@ type UseListBaseProps<
     delete: ApiConfig;
   };
   options: {
+    queryKey: string;
     objectName: string;
     pageSize?: number;
   };
@@ -85,11 +101,16 @@ export default function useListBase<
   S extends BaseSearchParamType
 >({
   apiConfig,
-  options: { objectName = '', pageSize = DEFAULT_TABLE_PAGE_SIZE },
+  options: {
+    queryKey = '',
+    objectName = '',
+    pageSize = DEFAULT_TABLE_PAGE_SIZE
+  },
   override
 }: UseListBaseProps<T, S>) {
   const navigate = useNavigate();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
 
   const [pagination, setPagination] = useState<PaginationType>({
     current: DEFAULT_TABLE_PAGE_START,
@@ -113,7 +134,7 @@ export default function useListBase<
 
   // query
   const listQuery = useQuery({
-    queryKey: [`${objectName}-list`, queryFilter],
+    queryKey: [`${queryKey}-list`, queryFilter],
     queryFn: () =>
       http.get<ApiResponseList<T>>(apiConfig.getList, {
         params: { ...queryFilter, ...handlers.additionalParams() },
@@ -122,7 +143,7 @@ export default function useListBase<
     placeholderData: keepPreviousData
   });
   const deleteMutation = useMutation({
-    mutationKey: [`delete-${objectName}`],
+    mutationKey: [`delete-${queryKey}`],
     mutationFn: (id: string) =>
       http.delete<ApiResponse<any>>(apiConfig.delete, {
         pathParams: {
@@ -161,13 +182,14 @@ export default function useListBase<
       onSuccess: (res) => {
         if (res.result) {
           notify.success(`Xoá ${objectName} thành công`);
+          queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
           listQuery.refetch();
         } else {
           notify.error(`Xoá ${objectName} thất bại`);
         }
       },
       onError: (error: Error) => {
-        logger.error(`Error while deleting ${objectName}: `, error);
+        logger.error(`Error while deleting ${queryKey}: `, error);
         notify.error('Có lỗi xảy ra khi xóa');
       }
     });
@@ -237,7 +259,7 @@ export default function useListBase<
                 <AlertDialogAction asChild>
                   <Button
                     onClick={() => handleDelete(record)}
-                    className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                    variant={'primary'}
                   >
                     Có
                   </Button>
@@ -293,13 +315,39 @@ export default function useListBase<
     };
   };
 
+  const renderStatusColumn = (options?: {
+    statusOptions?: OptionType[];
+    columnProps?: Record<string, any>;
+  }): Column<T> => {
+    return {
+      title: 'Trạng thái',
+      width: 150,
+      dataIndex: 'status',
+      align: 'center',
+      ...options?.columnProps,
+      render: (value) => {
+        const status = (options?.statusOptions || defaultStatusOptions).find(
+          (st) => st.value === value
+        );
+        return (
+          <Badge
+            className='text-sm font-normal'
+            style={{ backgroundColor: status?.color }}
+          >
+            {status?.label}
+          </Badge>
+        );
+      }
+    };
+  };
+
   const renderAddButton = () => {
     if (!apiConfig.create) throw new Error('apiConfig.create is not defined !');
     if (!apiConfig.create.permissionCode) return null;
     return (
       <HasPermission requiredPermissions={[apiConfig.create.permissionCode]}>
         <Link href={`${pathname}/create`}>
-          <Button className='bg-dodger-blue hover:bg-dodger-blue/80 font-normal'>
+          <Button variant={'primary'}>
             <PlusIcon />
             Thêm mới
           </Button>
@@ -376,7 +424,8 @@ export default function useListBase<
       additionalPathParams,
       additionalColumns,
       renderAddButton,
-      renderSearchForm
+      renderSearchForm,
+      renderStatusColumn
     };
 
     override?.(handlers);
@@ -391,6 +440,7 @@ export default function useListBase<
     loading:
       listQuery.isLoading || listQuery.isFetching || deleteMutation.isPending,
     handlers,
-    queryFilter
+    queryFilter,
+    listQuery
   };
 }

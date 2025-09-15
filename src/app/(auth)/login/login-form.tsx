@@ -97,9 +97,7 @@ export default function LoginForm() {
             <Col>
               <Button
                 disabled={!form.formState.isDirty || loginMutation.isPending}
-                className={
-                  'bg-dodger-blue hover:bg-dodger-blue hover:opacity-80 disabled:pointer-events-auto disabled:cursor-not-allowed'
-                }
+                variant={'primary'}
               >
                 {loginMutation.isPending ? <CircleLoading /> : 'Đăng nhập'}
               </Button>

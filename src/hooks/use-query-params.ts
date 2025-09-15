@@ -45,12 +45,16 @@ const useQueryParams = <T extends Record<string, any>>() => {
   };
 
   const paramsObject = Object.fromEntries(searchParams.entries()) as Partial<T>;
+  const queryString = new URLSearchParams(
+    paramsObject as Record<string, string>
+  ).toString();
 
   return {
     getQueryParam,
     setQueryParam,
     setQueryParams,
-    searchParams: paramsObject
+    searchParams: paramsObject,
+    queryString
   };
 };
 

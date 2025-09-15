@@ -1,5 +1,5 @@
 'use client';
-import { Button, Col, Row, ToolTip } from '@/components/form';
+import { Button, Col, Row } from '@/components/form';
 import { CircleLoading } from '@/components/loading';
 import {
   AlertDialog,
@@ -17,7 +17,7 @@ import { ApiConfig, ApiResponse } from '@/types';
 import { http, notify } from '@/utils';
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeftFromLine, Info, LogOut, Save } from 'lucide-react';
+import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -34,14 +34,14 @@ type UseSaveBaseProps<T> = {
   options: {
     objectName: string;
     listPageUrl?: string;
-    key: string;
+    queryKey: string;
   };
   override?: (handlers: HandlerType<T>) => HandlerType<T> | void;
 };
 
 export default function useSaveBase<T extends FieldValues>({
   apiConfig,
-  options: { key = '', objectName = '', listPageUrl = '' },
+  options: { queryKey = '', objectName = '', listPageUrl = '' },
   override
 }: UseSaveBaseProps<T>) {
   const queryClient = useQueryClient();
@@ -72,7 +72,7 @@ export default function useSaveBase<T extends FieldValues>({
       if (res.result) {
         notify.success(`Thêm mới ${objectName} thành công`);
         queryClient.invalidateQueries({
-          queryKey: [key, id]
+          queryKey: [queryKey, id]
         });
       } else {
         logger.error(`Error while creating ${objectName}:`, res);
@@ -94,7 +94,7 @@ export default function useSaveBase<T extends FieldValues>({
     onSuccess: (res) => {
       if (res.result) {
         queryClient.invalidateQueries({
-          queryKey: [key, id]
+          queryKey: [queryKey, id]
         });
         notify.success(`Cập nhật ${objectName} thành công`);
       } else {
@@ -161,7 +161,7 @@ export default function useSaveBase<T extends FieldValues>({
                 <AlertDialogAction asChild>
                   <Button
                     onClick={() => navigate(listPageUrl)}
-                    className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                    variant={'primary'}
                   >
                     Có
                   </Button>
@@ -175,9 +175,7 @@ export default function useSaveBase<T extends FieldValues>({
         <Button
           disabled={!form.formState.isDirty || loading}
           type='submit'
-          className={
-            'bg-dodger-blue hover:bg-dodger-blue hover:opacity-80 disabled:pointer-events-auto disabled:cursor-not-allowed'
-          }
+          variant={'primary'}
         >
           {loading ? (
             <CircleLoading />

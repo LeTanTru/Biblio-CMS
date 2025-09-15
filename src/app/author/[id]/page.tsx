@@ -14,10 +14,10 @@ export default async function AuthorDetailPage({
       breadcrumbs={[
         { label: 'Trang chủ', href: route.home.path },
         { label: 'Tác giả', href: route.author.getList.path },
-        { label: `${isCreate ? 'Thêm mới' : 'Chỉnh sửa'} tác giả` }
+        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} tác giả` }
       ]}
     >
-      <AuthorForm />
+      <AuthorForm queryKey='author' />
     </PageWrapper>
   );
 }

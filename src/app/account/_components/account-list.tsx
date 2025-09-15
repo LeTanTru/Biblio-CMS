@@ -165,7 +165,7 @@ export default function AccountList() {
                       disabled={
                         profile?.id === record.id || profile?.isSuperAdmin
                       }
-                      className='border-none bg-transparent shadow-none hover:bg-transparent disabled:pointer-events-auto disabled:cursor-not-allowed'
+                      className='border-none bg-transparent shadow-none hover:bg-transparent'
                     >
                       <Trash className='size-3.5 stroke-red-600' />
                     </Button>
@@ -192,7 +192,7 @@ export default function AccountList() {
                   <AlertDialogAction asChild>
                     <Button
                       onClick={() => handleDelete(record)}
-                      className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
+                      variant={'primary'}
                     >
                       Có
                     </Button>
@@ -288,10 +288,7 @@ export default function AccountList() {
                     />
                   </Col>
                   <Col className='w-9'>
-                    <Button
-                      type='submit'
-                      className='bg-dodger-blue hover:bg-dodger-blue/80'
-                    >
+                    <Button type='submit' variant={'primary'}>
                       <Search />
                     </Button>
                   </Col>

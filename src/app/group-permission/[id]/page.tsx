@@ -14,7 +14,7 @@ export default async function GroupDetailPage({
       breadcrumbs={[
         { label: 'Trang chủ', href: route.home.path },
         { label: 'Nhóm quyền', href: route.group.getList.path },
-        { label: `${isCreate ? 'Thêm mới' : 'Chỉnh sửa'} quyền` }
+        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền` }
       ]}
     >
       <GroupForm />
