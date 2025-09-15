@@ -4,6 +4,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
 import { SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
+import { useEffect } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import z from 'zod';
 
@@ -52,7 +53,8 @@ export default function SearchForm<S extends FieldValues>({
   };
 
   const handleReset = (form: UseFormReturn<z.infer<typeof schema>>) => {
-    handleSearchReset(form);
+    handleSearchReset(initialValues);
+    form.reset(initialValues);
   };
 
   return (
@@ -80,6 +82,12 @@ export default function SearchForm<S extends FieldValues>({
                       getLabel={(option) => option.label}
                       getValue={(option) => option.value}
                       className='focus-visible:ring-dodger-blue'
+                      onValueChange={(val) => {
+                        if (sf.submitOnChanged) {
+                          form.setValue(sf.key as string, val);
+                          form.handleSubmit(onSubmit)();
+                        }
+                      }}
                     />
                   ) : (
                     <InputField

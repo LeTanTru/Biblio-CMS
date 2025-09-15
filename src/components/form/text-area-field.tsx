@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   FormControl,
   FormField,
@@ -24,6 +24,7 @@ type TextAreaFieldProps<T extends FieldValues> = {
   floatLabel?: boolean;
   maxLength?: number;
   rows?: number;
+  maxRows?: number;
 };
 
 export default function TextAreaField<T extends FieldValues>({
@@ -37,16 +38,30 @@ export default function TextAreaField<T extends FieldValues>({
   readOnly = false,
   floatLabel = false,
   maxLength,
-  rows
+  rows = 8,
+  maxRows = 15
 }: TextAreaFieldProps<T>) {
   const id = useId();
   const [charCount, setCharCount] = useState(0);
-
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const resizeTextarea = () => {
+    if (!textareaRef.current) return;
+    textareaRef.current.style.height = 'auto';
+    const scrollHeight = textareaRef.current.scrollHeight;
+    const lineHeight = parseInt(
+      window.getComputedStyle(textareaRef.current).lineHeight || '20'
+    );
+    const maxHeight = maxRows ? maxRows * lineHeight : Infinity;
+    textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+  };
+  useEffect(() => {
+    resizeTextarea();
+  }, [charCount]);
   return (
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem>
           <div className={cn('relative', floatLabel && 'group')}>
             {label && (
@@ -72,13 +87,19 @@ export default function TextAreaField<T extends FieldValues>({
                 rows={rows ?? 4}
                 className={cn(
                   floatLabel && 'bg-background pt-6',
-                  'field-sizing-fixed placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-[2px]',
+                  'focus-visible:ring-dodger-blue field-sizing-fixed shadow-none placeholder:text-gray-300 focus-visible:border-transparent focus-visible:ring-[2px] aria-invalid:ring-transparent',
+                  {
+                    'aria-invalid:border-1 aria-invalid:border-gray-200 aria-invalid:ring-[2px] aria-invalid:focus-visible:border-transparent aria-invalid:focus-visible:ring-[2px] aria-invalid:focus-visible:ring-red-500':
+                      fieldState.invalid && required
+                  },
                   className
                 )}
                 {...field}
+                ref={textareaRef}
                 onChange={(e) => {
                   field.onChange(e);
                   setCharCount(e.target.value.length);
+                  resizeTextarea();
                 }}
               />
             </FormControl>

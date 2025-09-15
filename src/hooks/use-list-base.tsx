@@ -46,7 +46,6 @@ import { Edit2, Info, PlusIcon, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
   changePagination: (page: number) => void;
@@ -55,7 +54,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
     buttonProps?: Record<string, any>;
     columnProps?: Record<string, any>;
   }) => Column<T>;
-  additionalParams: () => Partial<S> | Record<string, any>;
+  additionalParams: () => Partial<S>;
   additionalPathParams: () => Record<string, any>;
   additionalColumns: () => React.ReactNode | any;
   renderAddButton: () => React.ReactNode | any;
@@ -75,6 +74,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
     statusOptions?: OptionType[];
     columnProps?: Record<string, any>;
   }) => Column<T>;
+  setQueryParam: (key: keyof S, value: S[keyof S] | null) => void;
 };
 
 type UseListBaseProps<
@@ -92,6 +92,7 @@ type UseListBaseProps<
     queryKey: string;
     objectName: string;
     pageSize?: number;
+    defaultFilters?: Partial<S>;
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -104,7 +105,8 @@ export default function useListBase<
   options: {
     queryKey = '',
     objectName = '',
-    pageSize = DEFAULT_TABLE_PAGE_SIZE
+    pageSize = DEFAULT_TABLE_PAGE_SIZE,
+    defaultFilters = {} as Partial<S>
   },
   override
 }: UseListBaseProps<T, S>) {
@@ -118,15 +120,29 @@ export default function useListBase<
     total: 0
   });
   const { searchParams, setQueryParams, setQueryParam } = useQueryParams<S>();
+  const mergedSearchParams = useMemo(() => {
+    return { ...defaultFilters, ...searchParams };
+  }, [searchParams, defaultFilters]);
   const queryFilter = useMemo(() => {
     return {
-      ...searchParams,
-      page: searchParams.page
-        ? Number(searchParams.page) - 1
+      ...mergedSearchParams,
+      page: mergedSearchParams.page
+        ? Number(mergedSearchParams.page) - 1
         : DEFAULT_TABLE_PAGE_START,
       size: pageSize
     } as S;
-  }, [searchParams, pageSize]);
+  }, [mergedSearchParams, pageSize]);
+
+  useEffect(() => {
+    Object.entries(defaultFilters).forEach(([key, value]) => {
+      if (
+        searchParams[key as keyof S] === undefined ||
+        searchParams[key as keyof S] === null
+      ) {
+        setQueryParam(key as keyof S, value as S[keyof S]);
+      }
+    });
+  }, [defaultFilters, searchParams, setQueryParam]);
 
   const additionalPathParams = () => ({});
 
@@ -256,14 +272,12 @@ export default function useListBase<
                     Không
                   </Button>
                 </AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Button
-                    onClick={() => handleDelete(record)}
-                    variant={'primary'}
-                  >
-                    Có
-                  </Button>
-                </AlertDialogAction>
+                <Button
+                  variant={'primary'}
+                  onClick={() => handleDelete(record)}
+                >
+                  Có
+                </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -356,25 +370,6 @@ export default function useListBase<
     );
   };
 
-  const handleSearchSubmit = (values: any) => {
-    const filtered = Object.entries(values).filter(
-      ([, value]) =>
-        value !== null && value !== undefined && value.toString().trim() !== ''
-    );
-    if (filtered.length === 0) return;
-    setQueryParams({ ...searchParams, ...Object.fromEntries(filtered) });
-  };
-
-  const handleSearchReset = (form: UseFormReturn<any>) => {
-    form.reset();
-    setPagination({
-      current: DEFAULT_TABLE_PAGE_START + 1,
-      pageSize: DEFAULT_TABLE_PAGE_SIZE,
-      total: 0
-    });
-    setQueryParams({});
-  };
-
   const renderSearchForm = ({
     searchFields,
     schema,
@@ -405,6 +400,27 @@ export default function useListBase<
         })
       )
     };
+
+    const handleSearchSubmit = (values: any) => {
+      const filtered = Object.entries(values).filter(
+        ([, value]) =>
+          value !== null &&
+          value !== undefined &&
+          value.toString().trim() !== ''
+      );
+      if (filtered.length === 0) return;
+      setQueryParams({ ...searchParams, ...Object.fromEntries(filtered) });
+    };
+
+    const handleSearchReset = () => {
+      setPagination({
+        current: DEFAULT_TABLE_PAGE_START + 1,
+        pageSize: DEFAULT_TABLE_PAGE_SIZE,
+        total: 0
+      });
+      setQueryParams({ ...defaultFilters });
+    };
+
     return (
       <SearchForm<S>
         initialValues={mergedValues}
@@ -425,7 +441,8 @@ export default function useListBase<
       additionalColumns,
       renderAddButton,
       renderSearchForm,
-      renderStatusColumn
+      renderStatusColumn,
+      setQueryParam
     };
 
     override?.(handlers);

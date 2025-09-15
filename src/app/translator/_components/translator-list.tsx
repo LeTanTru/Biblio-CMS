@@ -6,7 +6,13 @@ import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
 import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { BaseTable } from '@/components/table';
-import { apiConfig, countryOptions, STATUS_ACTIVE } from '@/constants';
+import {
+  apiConfig,
+  contributorStatuses,
+  countryOptions,
+  FieldTypes,
+  STATUS_ACTIVE
+} from '@/constants';
 import useListBase from '@/hooks/use-list-base';
 import { cn } from '@/lib';
 import route from '@/routes';
@@ -32,7 +38,10 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
       apiConfig: apiConfig.translator,
       options: {
         queryKey,
-        objectName: 'dịch giả'
+        objectName: 'dịch giả',
+        defaultFilters: {
+          status: STATUS_ACTIVE
+        }
       },
       override: (handlers) => {
         handlers.additionalColumns = () => ({
@@ -120,7 +129,16 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
   ];
 
   const searchFields: SearchFormProps<TranslatorSearchParamType>['searchFields'] =
-    [{ key: 'name', placeholder: 'Họ tên' }];
+    [
+      { key: 'name', placeholder: 'Họ tên' },
+      {
+        key: 'status',
+        type: FieldTypes.SELECT,
+        options: contributorStatuses,
+        placeholder: 'Trạng thái',
+        submitOnChanged: true
+      }
+    ];
 
   return (
     <PageWrapper
@@ -133,7 +151,7 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
         searchForm={handlers.renderSearchForm({
           searchFields,
           schema: translatorSchemaParamSchema,
-          initialValues: { ...queryFilter, kind: null }
+          initialValues: { ...queryFilter }
         })}
         actionBar={handlers.renderAddButton()}
       >

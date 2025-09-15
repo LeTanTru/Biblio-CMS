@@ -7,5 +7,6 @@ export const publisherSchema = z.object({
 });
 
 export const publisherSearchParamSchema = z.object({
-  name: z.string().optional()
+  name: z.string().optional(),
+  status: z.number().optional()
 });

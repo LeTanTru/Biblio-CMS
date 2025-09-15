@@ -17,5 +17,6 @@ export const translatorSchema = z.object({
 
 export const translatorSchemaParamSchema = z.object({
   name: z.string().optional(),
-  kind: z.number().optional().nullable()
+  kind: z.number().optional().nullable(),
+  status: z.number().nullable()
 });

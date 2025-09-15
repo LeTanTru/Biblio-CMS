@@ -156,7 +156,6 @@ export default function TranslatorForm({ queryKey }: { queryKey: string }) {
                 name='bio'
                 label='Mô tả'
                 placeholder='Nhập mô tả'
-                rows={5}
                 className='focus-visible:ring-dodger-blue'
                 required
               />

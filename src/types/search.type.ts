@@ -21,8 +21,8 @@ export type SearchFormProps<S extends FieldValues> = {
     options?: OptionType[];
     submitOnChanged?: boolean;
   }[];
-  initialValues: Record<string, any>;
+  initialValues: Partial<S>;
   schema: ZodObject;
   handleSearchSubmit: (values: any) => void;
-  handleSearchReset: (form: UseFormReturn<any>) => void;
+  handleSearchReset: (initialValues: Partial<S>) => void;
 };

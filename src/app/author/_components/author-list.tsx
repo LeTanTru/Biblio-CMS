@@ -6,7 +6,13 @@ import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
 import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { BaseTable } from '@/components/table';
-import { apiConfig, countryOptions, STATUS_ACTIVE } from '@/constants';
+import {
+  apiConfig,
+  contributorStatuses,
+  countryOptions,
+  FieldTypes,
+  STATUS_ACTIVE
+} from '@/constants';
 import useListBase from '@/hooks/use-list-base';
 import { cn } from '@/lib';
 import route from '@/routes';
@@ -23,12 +29,15 @@ export default function AuthorList({ queryKey }: { queryKey: string }) {
     mutationFn: (id: string | number) => authorApiRequest.recover(id)
   });
 
-  const { data, pagination, loading, handlers, queryFilter, listQuery } =
+  const { data, pagination, loading, queryFilter, handlers, listQuery } =
     useListBase<AuthorResType, AuthorSearchParamType>({
       apiConfig: apiConfig.author,
       options: {
         queryKey,
-        objectName: 'tác giả'
+        objectName: 'tác giả',
+        defaultFilters: {
+          status: STATUS_ACTIVE
+        }
       },
       override: (handlers) => {
         handlers.additionalColumns = () => ({
@@ -114,7 +123,14 @@ export default function AuthorList({ queryKey }: { queryKey: string }) {
   ];
 
   const searchFields: SearchFormProps<AuthorSearchParamType>['searchFields'] = [
-    { key: 'name', placeholder: 'Họ tên' }
+    { key: 'name', placeholder: 'Họ tên' },
+    {
+      key: 'status',
+      type: FieldTypes.SELECT,
+      options: contributorStatuses,
+      placeholder: 'Trạng thái',
+      submitOnChanged: true
+    }
   ];
 
   return (
@@ -128,7 +144,7 @@ export default function AuthorList({ queryKey }: { queryKey: string }) {
         searchForm={handlers.renderSearchForm({
           searchFields,
           schema: authorSchemaParamSchema,
-          initialValues: { ...queryFilter, kind: null }
+          initialValues: { ...queryFilter }
         })}
         actionBar={handlers.renderAddButton()}
       >

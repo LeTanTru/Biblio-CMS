@@ -158,14 +158,12 @@ export default function useSaveBase<T extends FieldValues>({
                     Không
                   </Button>
                 </AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Button
-                    onClick={() => navigate(listPageUrl)}
-                    variant={'primary'}
-                  >
-                    Có
-                  </Button>
-                </AlertDialogAction>
+                <Button
+                  onClick={() => navigate(listPageUrl)}
+                  variant={'primary'}
+                >
+                  Có
+                </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

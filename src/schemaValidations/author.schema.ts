@@ -17,5 +17,6 @@ export const authorSchema = z.object({
 
 export const authorSchemaParamSchema = z.object({
   name: z.string().optional(),
-  kind: z.number().optional().nullable()
+  kind: z.number().optional().nullable(),
+  status: z.number().optional()
 });

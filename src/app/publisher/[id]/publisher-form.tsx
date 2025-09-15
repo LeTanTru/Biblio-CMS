@@ -94,10 +94,14 @@ export default function PublisherForm({ queryKey }: { queryKey: string }) {
                 name='description'
                 label='Mô tả'
                 placeholder='Nhập mô tả'
-                rows={5}
-                className='focus-visible:ring-dodger-blue'
                 required
               />
+              {/* <RichTextField
+                label='Mô tả'
+                placeholder='Nhập mô tả'
+                control={form.control}
+                name='description'
+              /> */}
             </Col>
           </Row>
           <>{renderActions(form)}</>

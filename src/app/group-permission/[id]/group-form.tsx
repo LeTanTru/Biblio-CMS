@@ -173,7 +173,6 @@ export default function GroupForm() {
                 name='description'
                 label='Mô tả'
                 placeholder='Nhập mô tả'
-                rows={5}
                 className='focus-visible:ring-dodger-blue'
                 required
               />

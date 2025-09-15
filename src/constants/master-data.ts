@@ -279,3 +279,16 @@ export const genderOptions: OptionType[] = [
   { value: GENDER_FEMALE, label: 'Nữ' },
   { value: GENDER_OTHER, label: 'Khác' }
 ];
+
+export const contributorStatuses = [
+  {
+    value: STATUS_ACTIVE,
+    label: 'Hoạt động',
+    color: '#28a745'
+  },
+  {
+    value: STATUS_DELETED,
+    label: 'Đã xóa',
+    color: '#dc3545'
+  }
+];
