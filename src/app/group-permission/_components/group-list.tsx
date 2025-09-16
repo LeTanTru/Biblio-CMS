@@ -1,4 +1,5 @@
 'use client';
+
 import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
