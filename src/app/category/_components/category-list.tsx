@@ -40,7 +40,10 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
     apiConfig: apiConfig.category,
     options: {
       queryKey,
-      objectName: 'danh mục'
+      objectName: 'danh mục',
+      defaultFilters: {
+        status: STATUS_ACTIVE
+      }
     },
     override: (handlers) => {
       handlers.additionalColumns = () => ({
