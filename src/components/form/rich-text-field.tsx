@@ -1,8 +1,6 @@
-'use client';
-
+'use client';;
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import envConfig from '@/config';
 import { Editor } from '@tinymce/tinymce-react';
 import { useIsMounted } from '@/hooks';
 import {
@@ -55,7 +53,8 @@ export default function RichTextField<T extends FieldValues>({
 
           <FormControl>
             <Editor
-              apiKey={envConfig.NEXT_PUBLIC_TINY_API_KEY}
+              tinymceScriptSrc='/tinymce/tinymce.min.js'
+              licenseKey='gpl'
               value={field.value || ''}
               disabled={disabled || readOnly}
               init={{
@@ -108,9 +107,35 @@ export default function RichTextField<T extends FieldValues>({
                 tabfocus_elements: ':prev,:next',
                 setup: (editor: TinyMCEEditor) => {
                   editor.on('keydown', (e: KeyboardEvent) => {
-                    if (e.key === 'Tab') {
+                    if (e.key === 'Tab' && !e.shiftKey) {
                       e.preventDefault();
-                      editor.execCommand('mceInsertContent', false, '&emsp;');
+                      editor.execCommand('mceInsertContent', false, '\u2003');
+                    } else if (e.key === 'Tab' && e.shiftKey) {
+                      e.preventDefault();
+
+                      editor.undoManager.transact(() => {
+                        const rng = editor.selection.getRng();
+                        const startContainer = rng.startContainer as Text;
+
+                        if (startContainer.nodeType === Node.TEXT_NODE) {
+                          const text = startContainer.textContent || '';
+                          const caretOffset = rng.startOffset;
+
+                          if (text.startsWith('\u2003')) {
+                            const newText = text.replace(/^\u2003/, '');
+                            startContainer.textContent = newText;
+
+                            const sel = editor.selection;
+                            const newRange = document.createRange();
+                            const newOffset = Math.max(caretOffset - 1, 0);
+                            newRange.setStart(startContainer, newOffset);
+                            newRange.collapse(true);
+                            sel.setRng(newRange);
+                          } else {
+                            editor.execCommand('Outdent');
+                          }
+                        }
+                      });
                     }
                   });
                 }

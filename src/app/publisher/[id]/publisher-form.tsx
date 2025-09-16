@@ -88,13 +88,6 @@ export default function PublisherForm({ queryKey }: { queryKey: string }) {
           </Row>
           <Row>
             <Col>
-              {/* <TextAreaField
-                control={form.control}
-                name='description'
-                label='Mô tả'
-                placeholder='Nhập mô tả'
-                required
-              /> */}
               <RichTextField
                 label='Mô tả'
                 placeholder='Nhập mô tả'

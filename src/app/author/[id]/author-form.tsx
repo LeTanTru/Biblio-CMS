@@ -4,9 +4,9 @@ import {
   Col,
   DatePickerField,
   InputField,
+  RichTextField,
   Row,
   SelectField,
-  TextAreaField,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -150,12 +150,11 @@ export default function AuthorForm({ queryKey }: { queryKey: string }) {
           </Row>
           <Row>
             <Col>
-              <TextAreaField
+              <RichTextField
+                label='Tiểu sử'
+                placeholder='Nhập tiểu sử'
                 control={form.control}
                 name='bio'
-                label='Mô tả'
-                placeholder='Nhập mô tả'
-                className='focus-visible:ring-dodger-blue'
                 required
               />
             </Col>

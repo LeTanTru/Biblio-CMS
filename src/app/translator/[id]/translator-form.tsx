@@ -4,9 +4,9 @@ import {
   Col,
   DatePickerField,
   InputField,
+  RichTextField,
   Row,
   SelectField,
-  TextAreaField,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
@@ -79,7 +79,6 @@ export default function TranslatorForm({ queryKey }: { queryKey: string }) {
       defaultValues={defaultValues}
       schema={translatorSchema}
       initialValues={initialValues}
-      className='relative w-200 rounded-lg bg-white p-4'
     >
       {(form) => (
         <>
@@ -151,12 +150,11 @@ export default function TranslatorForm({ queryKey }: { queryKey: string }) {
           </Row>
           <Row>
             <Col>
-              <TextAreaField
+              <RichTextField
+                label='Tiểu sử'
+                placeholder='Nhập tiểu sử'
                 control={form.control}
                 name='bio'
-                label='Mô tả'
-                placeholder='Nhập mô tả'
-                className='focus-visible:ring-dodger-blue'
                 required
               />
             </Col>

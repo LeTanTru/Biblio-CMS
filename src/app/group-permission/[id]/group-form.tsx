@@ -136,7 +136,6 @@ export default function GroupForm() {
       initialValues={initialValues}
       onSubmit={onSubmit}
       schema={groupSchema}
-      className='w-200 rounded-lg bg-white p-4'
     >
       {(form) => (
         <>
@@ -239,7 +238,8 @@ export default function GroupForm() {
                     <CardContent className='p-4'>
                       <div
                         className={cn('grid gap-4', {
-                          'grid-cols-3': permissions?.length > 0
+                          'grid-cols-4 max-[1560px]:grid-cols-3':
+                            permissions?.length > 0
                         })}
                       >
                         {permissions?.length > 0 ? (

@@ -262,6 +262,7 @@ export default function GroupPermissionList() {
               initialValues={initialValues}
               onSubmit={onSubmit}
               schema={groupPermissionSchema}
+              className='w-full p-0'
             >
               {(form) => (
                 <>

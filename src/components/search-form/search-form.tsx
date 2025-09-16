@@ -63,11 +63,10 @@ export default function SearchForm<S extends FieldValues>({
       defaultValues={defaultValues}
       schema={schema}
       initialValues={initialValues}
-      className='px-0'
     >
       {(form) => (
         <>
-          <Row className='my-0 gap-2'>
+          <Row className='gap-2'>
             {searchFields.map((sf) => {
               return (
                 <Col

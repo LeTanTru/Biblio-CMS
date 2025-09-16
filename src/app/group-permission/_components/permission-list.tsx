@@ -16,7 +16,6 @@ import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -259,16 +258,12 @@ export default function PermissionList() {
                                           Không
                                         </Button>
                                       </AlertDialogCancel>
-                                      <AlertDialogAction asChild>
-                                        <Button
-                                          variant={'primary'}
-                                          onClick={() =>
-                                            handleDelete(permission)
-                                          }
-                                        >
-                                          Có
-                                        </Button>
-                                      </AlertDialogAction>
+                                      <Button
+                                        variant={'primary'}
+                                        onClick={() => handleDelete(permission)}
+                                      >
+                                        Có
+                                      </Button>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
                                 </AlertDialog>
@@ -326,6 +321,7 @@ export default function PermissionList() {
               initialValues={initialValues}
               onSubmit={onSubmit}
               schema={permissionSchema}
+              className='w-full p-0'
             >
               {(form) => (
                 <>
