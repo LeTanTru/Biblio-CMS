@@ -1,6 +1,12 @@
 'use client';
 
-import { Col, InputField, RichTextField, Row, UploadImageField } from '@/components/form';
+import {
+  Col,
+  InputField,
+  RichTextField,
+  Row,
+  UploadImageField
+} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig } from '@/constants';
