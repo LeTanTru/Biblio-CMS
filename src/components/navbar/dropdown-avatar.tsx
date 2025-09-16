@@ -55,7 +55,7 @@ export default function DropdownAvatar() {
     }
     setData(
       storageKeys.PREVIOUS_PATH,
-      queryString ? `${pathname}?=${queryString}` : pathname
+      queryString ? `${pathname}?${queryString}` : pathname
     );
     navigate(route.profile.savePage.path);
   };
