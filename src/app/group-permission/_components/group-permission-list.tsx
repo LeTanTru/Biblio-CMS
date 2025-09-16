@@ -89,6 +89,7 @@ export default function GroupPermissionList({
     setIsEditing(false);
     open();
     setSelectedRow(null);
+    setDetailId('');
   };
 
   const handleClose = () => {
