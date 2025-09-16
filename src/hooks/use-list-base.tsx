@@ -5,14 +5,13 @@ import { HasPermission } from '@/components/has-permission';
 import { SearchForm } from '@/components/search-form';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -50,7 +49,7 @@ import { useEffect, useMemo, useState } from 'react';
 type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
   changePagination: (page: number) => void;
   renderActionColumn: (options?: {
-    actions?: Record<string, boolean>;
+    actions?: Record<'edit' | 'delete' | string, ActionCondition<T>>;
     buttonProps?: Record<string, any>;
     columnProps?: Record<string, any>;
   }) => Column<T>;
@@ -76,6 +75,8 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
   }) => Column<T>;
   setQueryParam: (key: keyof S, value: S[keyof S] | null) => void;
 };
+
+type ActionCondition<T> = boolean | ((record: T) => boolean);
 
 type UseListBaseProps<
   T extends { id: string },
@@ -287,18 +288,15 @@ export default function useListBase<
   });
 
   const renderActionColumn = (options?: {
-    actions?: Record<string, boolean>;
+    actions?: Record<'edit' | 'delete' | string, ActionCondition<T>>;
     buttonProps?: Record<string, any>;
     columnProps?: Record<string, any>;
   }): Column<T> => {
     const extraColumns = handlers.additionalColumns?.() || {};
-    const actionsObj = { ...actionColumn(), ...extraColumns };
-
-    const actionsOrder = options?.actions
-      ? Object.keys(options.actions).filter(
-          (key) => options.actions![key] && actionsObj[key]
-        )
-      : Object.keys(actionsObj);
+    const actionsObj: Record<
+      string,
+      (record: T, buttonProps?: any) => React.ReactNode
+    > = { ...actionColumn(), ...extraColumns };
 
     return {
       title: 'Hành động',
@@ -306,8 +304,15 @@ export default function useListBase<
       width: 120,
       ...options?.columnProps,
       render: (_: any, record: T) => {
-        const actions = actionsOrder
-          .map((key) => actionsObj[key](record, options?.buttonProps))
+        if (!options?.actions) return null;
+
+        const actions = Object.keys(options.actions)
+          .filter((key) => {
+            const condition = options.actions?.[key];
+            if (typeof condition === 'function') return condition(record);
+            return condition === true;
+          })
+          .map((key) => actionsObj[key]?.(record, options?.buttonProps))
           .filter(Boolean);
 
         return (

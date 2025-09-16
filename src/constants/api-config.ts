@@ -310,7 +310,7 @@ const apiConfig = defineApiConfig({
   },
   publisher: {
     getList: {
-      baseUrl: `${AppConstants.apiUrl}v1/publisher/list`,
+      baseUrl: `${AppConstants.apiUrl}v1/publisher/private/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'PUB_L'

@@ -10,7 +10,8 @@ import {
   apiConfig,
   contributorStatuses,
   FieldTypes,
-  STATUS_ACTIVE
+  STATUS_ACTIVE,
+  STATUS_DELETED
 } from '@/constants';
 import useListBase from '@/hooks/use-list-base';
 import { cn } from '@/lib';
@@ -99,20 +100,23 @@ export default function PublisherList({ queryKey }: { queryKey: string }) {
       )
     },
     {
-      title: 'Tên',
+      title: 'Tên nhà xuất bản',
       dataIndex: 'name',
       render: (value) => value ?? '---'
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, recover: true, delete: true },
-      columnProps: { fixed: true }
+      actions: {
+        edit: (record: PublisherResType) => record.status === STATUS_ACTIVE,
+        recover: (record: PublisherResType) => record.status === STATUS_DELETED,
+        delete: (record: PublisherResType) => record.status === STATUS_ACTIVE
+      }
     })
   ];
 
   const searchFields: SearchFormProps<PublisherSearchParamTYpe>['searchFields'] =
     [
-      { key: 'name', placeholder: 'Họ tên' },
+      { key: 'name', placeholder: 'Tên nhà xuất bản' },
       {
         key: 'status',
         type: FieldTypes.SELECT,

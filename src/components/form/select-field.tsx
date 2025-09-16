@@ -259,10 +259,13 @@ export default function SelectField<
                         <CommandItem
                           key={val}
                           onSelect={() => toggleValue(val)}
-                          className={cn('cursor-pointer rounded select-none', {
-                            'bg-accent text-accent-foreground':
-                              selectedValues.includes(val)
-                          })}
+                          className={cn(
+                            'cursor-pointer rounded transition-all duration-150 ease-linear select-none',
+                            {
+                              'bg-accent text-accent-foreground':
+                                selectedValues.includes(val)
+                            }
+                          )}
                         >
                           {getPrefix?.(opt) && (
                             <span className='mr-1 font-mono text-xs opacity-70'>

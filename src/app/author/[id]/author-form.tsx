@@ -79,7 +79,6 @@ export default function AuthorForm({ queryKey }: { queryKey: string }) {
       defaultValues={defaultValues}
       schema={authorSchema}
       initialValues={initialValues}
-      className='relative w-200 rounded-lg bg-white p-4'
     >
       {(form) => (
         <>

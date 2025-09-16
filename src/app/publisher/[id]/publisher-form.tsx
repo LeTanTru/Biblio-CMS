@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Col,
-  InputField,
-  Row,
-  TextAreaField,
-  UploadImageField
-} from '@/components/form';
+import { Col, InputField, RichTextField, Row, UploadImageField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig } from '@/constants';
@@ -54,7 +48,6 @@ export default function PublisherForm({ queryKey }: { queryKey: string }) {
       defaultValues={defaultValues}
       schema={publisherSchema}
       initialValues={initialValues}
-      className='relative w-200 rounded-lg bg-white p-4'
     >
       {(form) => (
         <>
@@ -89,19 +82,20 @@ export default function PublisherForm({ queryKey }: { queryKey: string }) {
           </Row>
           <Row>
             <Col>
-              <TextAreaField
+              {/* <TextAreaField
                 control={form.control}
                 name='description'
                 label='Mô tả'
                 placeholder='Nhập mô tả'
                 required
-              />
-              {/* <RichTextField
+              /> */}
+              <RichTextField
                 label='Mô tả'
                 placeholder='Nhập mô tả'
                 control={form.control}
                 name='description'
-              /> */}
+                required
+              />
             </Col>
           </Row>
           <>{renderActions(form)}</>

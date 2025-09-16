@@ -123,8 +123,7 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, recover: true, delete: true },
-      columnProps: { fixed: true }
+      actions: { edit: true, recover: true, delete: true }
     })
   ];
 

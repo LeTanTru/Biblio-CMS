@@ -1,21 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
-import {
-  Control,
-  FieldPath,
-  FieldValues,
-  useController
-} from 'react-hook-form';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import Link from '@tiptap/extension-link';
-import Image from '@tiptap/extension-image';
-import { Button } from '@/components/form';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import Bold from '@tiptap/extension-bold';
-import Paragraph from '@tiptap/extension-paragraph';
+import envConfig from '@/config';
+import { Editor } from '@tinymce/tinymce-react';
+import { useIsMounted } from '@/hooks';
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage
+} from '@/components/ui/form';
+import './rich-text-editor.css';
 
 type RichTextFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -28,6 +25,8 @@ type RichTextFieldProps<T extends FieldValues> = {
   readOnly?: boolean;
 };
 
+import type { Editor as TinyMCEEditor } from 'tinymce';
+
 export default function RichTextField<T extends FieldValues>({
   control,
   name,
@@ -38,108 +37,91 @@ export default function RichTextField<T extends FieldValues>({
   disabled = false,
   readOnly = false
 }: RichTextFieldProps<T>) {
-  const { field, fieldState } = useController({
-    control,
-    name,
-    rules: { required }
-  });
-
-  const editor = useEditor({
-    extensions: [StarterKit, Underline, Link, Image, Bold, Paragraph],
-    content: field.value || '',
-    editable: !disabled && !readOnly,
-    editorProps: {
-      attributes: {
-        class: 'outline-none'
-      }
-    },
-    immediatelyRender: false,
-    onUpdate({ editor }) {
-      field.onChange(editor.getHTML());
-    }
-  });
-
-  useEffect(() => {
-    if (editor && field.value !== editor.getHTML()) {
-      editor.commands.setContent(field.value || '');
-    }
-  }, [field.value, editor]);
-
-  if (!editor) return null; // tránh SSR lỗi
+  const isMounted = useIsMounted();
+  if (!isMounted) return null;
 
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
-      {label && (
-        <label className='font-medium'>
-          {label} {required && <span className='text-destructive'>*</span>}
-        </label>
+    <FormField
+      control={control}
+      name={name}
+      rules={{ required }}
+      render={({ field }) => (
+        <FormItem className={cn('flex flex-col gap-1', className)}>
+          {label && (
+            <FormLabel className='ml-1'>
+              {label} {required && <span className='text-destructive'>*</span>}
+            </FormLabel>
+          )}
+
+          <FormControl>
+            <Editor
+              apiKey={envConfig.NEXT_PUBLIC_TINY_API_KEY}
+              value={field.value || ''}
+              disabled={disabled || readOnly}
+              init={{
+                height: 300,
+                menubar: 'file edit view insert format tools table help',
+                language: 'vi',
+                plugins: [
+                  'preview',
+                  'importcss',
+                  'searchreplace',
+                  'autolink',
+                  'autosave',
+                  'save',
+                  'directionality',
+                  'code',
+                  'visualblocks',
+                  'visualchars',
+                  'fullscreen',
+                  'image',
+                  'link',
+                  'media',
+                  'codesample',
+                  'table',
+                  'charmap',
+                  'pagebreak',
+                  'nonbreaking',
+                  'anchor',
+                  'insertdatetime',
+                  'advlist',
+                  'lists',
+                  'wordcount',
+                  'charmap',
+                  'quickbars',
+                  'emoticons'
+                ],
+                toolbar:
+                  'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+                placeholder: placeholder,
+                content_style: `
+                  body { 
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+                    font-size: 14px; 
+                    line-height: 1.6; 
+                  }`,
+                paste_data_images: true,
+                paste_as_text: false,
+                paste_auto_cleanup_on_paste: true,
+                branding: false,
+                promotion: false,
+                tabfocus_elements: ':prev,:next',
+                setup: (editor: TinyMCEEditor) => {
+                  editor.on('keydown', (e: KeyboardEvent) => {
+                    if (e.key === 'Tab') {
+                      e.preventDefault();
+                      editor.execCommand('mceInsertContent', false, '&emsp;');
+                    }
+                  });
+                }
+              }}
+              onEditorChange={(content) => field.onChange(content)}
+            />
+          </FormControl>
+
+          <FormMessage />
+        </FormItem>
       )}
-
-      <div
-        className={cn(
-          'focus-within:border-dodger-blue min-h-[120px] rounded border p-2',
-          {
-            'border-red-500': fieldState.invalid,
-            'cursor-not-allowed opacity-50': disabled || readOnly
-          }
-        )}
-      >
-        {/* Toolbar */}
-        <div className='mb-2 flex gap-2'>
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            className={
-              editor.isActive('bold') ? 'bg-dodger-blue text-white' : ''
-            }
-          >
-            B
-          </Button>
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={
-              editor.isActive('italic') ? 'bg-dodger-blue text-white' : ''
-            }
-          >
-            I
-          </Button>
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={
-              editor.isActive('underline') ? 'bg-dodger-blue text-white' : ''
-            }
-          >
-            U
-          </Button>
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={
-              editor.isActive('strike') ? 'bg-dodger-blue text-white' : ''
-            }
-          >
-            S
-          </Button>
-        </div>
-
-        <EditorContent editor={editor} placeholder={placeholder} />
-      </div>
-
-      {fieldState.invalid && required && (
-        <span className='mt-1 text-sm text-red-500'>
-          Trường này là bắt buộc
-        </span>
-      )}
-    </div>
+    />
   );
 }
