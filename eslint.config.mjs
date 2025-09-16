@@ -15,6 +15,9 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    ignores: ['**/public/**']
+  },
   ...compat.extends('next/core-web-vitals', 'next/typescript', 'prettier'),
   {
     files: ['**/*.{ts,tsx}'],

@@ -3,7 +3,6 @@ import { Button, Col, Row } from '@/components/form';
 import { CircleLoading } from '@/components/loading';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -19,13 +18,14 @@ import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type HandlerType<T> = {
   id: () => any;
 };
 
-type UseSaveBaseProps<T> = {
+type UseSaveBaseProps<R, T> = {
   apiConfig: {
     getById: ApiConfig;
     create: ApiConfig;
@@ -39,22 +39,30 @@ type UseSaveBaseProps<T> = {
   override?: (handlers: HandlerType<T>) => HandlerType<T> | void;
 };
 
-export default function useSaveBase<T extends FieldValues>({
+export default function useSaveBase<
+  R extends FieldValues,
+  T extends FieldValues
+>({
   apiConfig,
   options: { queryKey = '', objectName = '', listPageUrl = '' },
   override
-}: UseSaveBaseProps<T>) {
+}: UseSaveBaseProps<R, T>) {
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
+  const [detailId, setDetailId] = useState('');
   const navigate = useNavigate();
-  const isCreate = id === 'create';
+  const isCreate = !detailId || detailId === 'create';
+
+  useEffect(() => {
+    if (id) setDetailId(id);
+  }, [id]);
 
   const itemQuery = useQuery({
-    queryKey: [objectName, id],
+    queryKey: [queryKey, detailId],
     queryFn: () =>
-      http.get<ApiResponse<T>>(apiConfig.getById, {
+      http.get<ApiResponse<R>>(apiConfig.getById, {
         pathParams: {
-          id
+          id: detailId
         }
       }),
     enabled: !isCreate
@@ -62,8 +70,12 @@ export default function useSaveBase<T extends FieldValues>({
 
   const data = itemQuery.data?.data;
 
+  useEffect(() => {
+    if (detailId) itemQuery.refetch();
+  }, [detailId]);
+
   const createMutation = useMutation({
-    mutationKey: [`create-${objectName}`],
+    mutationKey: [`create-${queryKey}`],
     mutationFn: (body: T) =>
       http.get<ApiResponse<any>>(apiConfig.create, {
         body
@@ -72,7 +84,7 @@ export default function useSaveBase<T extends FieldValues>({
       if (res.result) {
         notify.success(`Thêm mới ${objectName} thành công`);
         queryClient.invalidateQueries({
-          queryKey: [queryKey, id]
+          queryKey: [queryKey, detailId]
         });
       } else {
         logger.error(`Error while creating ${objectName}:`, res);
@@ -86,7 +98,7 @@ export default function useSaveBase<T extends FieldValues>({
   });
 
   const updateMutation = useMutation({
-    mutationKey: [`update-${objectName}`],
+    mutationKey: [`update-${queryKey}`],
     mutationFn: (body: T) =>
       http.get<ApiResponse<any>>(apiConfig.update, {
         body
@@ -94,7 +106,7 @@ export default function useSaveBase<T extends FieldValues>({
     onSuccess: (res) => {
       if (res.result) {
         queryClient.invalidateQueries({
-          queryKey: [queryKey, id]
+          queryKey: [queryKey, detailId]
         });
         notify.success(`Cập nhật ${objectName} thành công`);
       } else {
@@ -103,7 +115,7 @@ export default function useSaveBase<T extends FieldValues>({
       }
     },
     onError: (error) => {
-      logger.error(`Error while updateing ${objectName}:`, error);
+      logger.error(`Error while updating ${objectName}:`, error);
       notify.error(`Có lỗi xảy ra khi cập nhật ${objectName}`);
     }
   });
@@ -112,18 +124,25 @@ export default function useSaveBase<T extends FieldValues>({
 
   const handleSubmit = async (values: T) => {
     const mutation = isCreate ? createMutation : updateMutation;
-    await mutation.mutateAsync(isCreate ? { ...values } : { ...values, id });
-    navigate(listPageUrl);
+    await mutation.mutateAsync(
+      isCreate ? { ...values } : { ...values, id: values.id ?? id }
+    );
+    if (listPageUrl) navigate(listPageUrl);
   };
 
-  const renderActions = (form: UseFormReturn<T>) => (
+  const renderActions = (
+    form: UseFormReturn<T>,
+    options?: { onCancel?: () => void }
+  ) => (
     <Row className='my-0 justify-end'>
       <Col span={4}>
         {!form.formState.isDirty ? (
           <Button
             type='button'
             variant={'ghost'}
-            onClick={() => navigate(listPageUrl)}
+            onClick={() =>
+              listPageUrl ? navigate(listPageUrl) : options?.onCancel?.()
+            }
             className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
           >
             <ArrowLeftFromLine />
@@ -190,8 +209,11 @@ export default function useSaveBase<T extends FieldValues>({
 
   return {
     data,
-    loading: loading || itemQuery.isLoading || itemQuery.isFetching,
+    detailId,
     handleSubmit,
-    renderActions
+    itemQuery,
+    loading: loading || itemQuery.isLoading || itemQuery.isFetching,
+    renderActions,
+    setDetailId
   };
 }

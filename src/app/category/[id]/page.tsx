@@ -17,7 +17,7 @@ export default async function CategoryDetailPage({
         { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} danh mục` }
       ]}
     >
-      <CategoryForm />
+      <CategoryForm queryKey='category' />
     </PageWrapper>
   );
 }

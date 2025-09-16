@@ -2,47 +2,39 @@
 
 import {
   AutoCompleteField,
-  Button,
   Col,
   InputField,
+  RichTextField,
   Row,
-  TextAreaField,
   UploadImageField
 } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
-import { categoryErrorMaps, STATUS_ACTIVE, statusOptions } from '@/constants';
-import { useNavigate } from '@/hooks';
-import { logger } from '@/logger';
-import {
-  useCategoryQuery,
-  useCreateCategoryMutation,
-  useUpdateCategoryMutation,
-  useUploadImageMutation
-} from '@/queries';
+import { apiConfig, STATUS_ACTIVE, statusOptions } from '@/constants';
+import { useSaveBase } from '@/hooks';
+import { useUploadImageMutation } from '@/queries';
 import route from '@/routes';
 import { categorySchema } from '@/schemaValidations';
-import { CategoryBodyType } from '@/types';
-import { applyFormErrors, notify, renderImageUrl } from '@/utils';
-import { useQueryClient } from '@tanstack/react-query';
-import { Save } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { CategoryBodyType, CategoryResType } from '@/types';
+import { renderImageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
 
-export default function CategoryForm() {
+export default function CategoryForm({ queryKey }: { queryKey: string }) {
   const [imageUrl, setImageUrl] = useState<string>('');
-  const queryClient = useQueryClient();
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const isCreate = id === 'create';
-
-  const categoryQuery = useCategoryQuery(id);
-  const createCategoryMutation = useCreateCategoryMutation();
-  const updateCategoryMutation = useUpdateCategoryMutation();
+  const {
+    data: category,
+    loading,
+    handleSubmit,
+    renderActions
+  } = useSaveBase<CategoryResType, CategoryBodyType>({
+    apiConfig: apiConfig.category,
+    options: {
+      queryKey,
+      objectName: 'danh mục',
+      listPageUrl: route.category.getList.path
+    }
+  });
   const uploadImageMutation = useUploadImageMutation();
-
-  const category = categoryQuery.data?.data;
 
   const defaultValues: CategoryBodyType = {
     name: '',
@@ -69,37 +61,8 @@ export default function CategoryForm() {
     if (category?.imageUrl) setImageUrl(category?.imageUrl);
   }, [category]);
 
-  const onSubmit = async (
-    values: CategoryBodyType,
-    form: UseFormReturn<CategoryBodyType>
-  ) => {
-    const mutation = isCreate ? createCategoryMutation : updateCategoryMutation;
-    await mutation.mutateAsync(
-      isCreate ? { ...values, imageUrl } : { ...values, imageUrl, id },
-      {
-        onSuccess: (res) => {
-          if (res.result) {
-            notify.success(
-              `${isCreate ? 'Thêm mới' : 'Cập nhật'} danh mục thành công`
-            );
-            queryClient.invalidateQueries({ queryKey: ['category', id] });
-            navigate(route.category.getList.path);
-          } else {
-            const errCode = res.code;
-            if (errCode) {
-              applyFormErrors(form, errCode, categoryErrorMaps);
-            } else {
-              logger.error('Error while creating/updating group:', res);
-              notify.error('Có lỗi xảy ra');
-            }
-          }
-        },
-        onError: (error) => {
-          logger.error('Error while creating/updating group:', error);
-          notify.error('Có lỗi xảy ra');
-        }
-      }
-    );
+  const onSubmit = async (values: CategoryBodyType) => {
+    await handleSubmit({ ...values, imageUrl: imageUrl });
   };
 
   return (
@@ -108,7 +71,6 @@ export default function CategoryForm() {
       initialValues={initialValues}
       onSubmit={onSubmit}
       schema={categorySchema}
-      className='w-200 rounded-lg bg-white p-4'
     >
       {(form) => (
         <>
@@ -156,49 +118,21 @@ export default function CategoryForm() {
           </Row>
           <Row>
             <Col>
-              <TextAreaField
+              <RichTextField
                 control={form.control}
                 name='description'
                 label='Mô tả'
                 placeholder='Nhập mô tả'
-                className='focus-visible:ring-dodger-blue'
                 required
               />
             </Col>
           </Row>
-          <Row className='my-0 justify-end'>
-            <Col span={4}>
-              <Button
-                type='button'
-                variant={'ghost'}
-                onClick={() => navigate(route.category.getList.path)}
-                className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
-              >
-                Hủy
-              </Button>
-            </Col>
-            <Col span={4}>
-              <Button
-                disabled={
-                  !form.formState.isDirty ||
-                  createCategoryMutation.isPending ||
-                  updateCategoryMutation.isPending
-                }
-                type='submit'
-                variant={'primary'}
-              >
-                {createCategoryMutation.isPending ||
-                updateCategoryMutation.isPending ? (
-                  <CircleLoading />
-                ) : (
-                  <>
-                    <Save />
-                    {isCreate ? 'Thêm' : 'Cập nhật'}
-                  </>
-                )}
-              </Button>
-            </Col>
-          </Row>
+          <>{renderActions(form)}</>
+          {loading && (
+            <div className='absolute inset-0 bg-white/80'>
+              <CircleLoading className='stroke-dodger-blue mt-20 size-8' />
+            </div>
+          )}
         </>
       )}
     </BaseForm>

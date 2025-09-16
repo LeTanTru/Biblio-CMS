@@ -74,6 +74,8 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
     columnProps?: Record<string, any>;
   }) => Column<T>;
   setQueryParam: (key: keyof S, value: S[keyof S] | null) => void;
+  handleEditClick: (id: string) => void;
+  handleDeleteClick: (id: string) => void;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -84,9 +86,9 @@ type UseListBaseProps<
 > = {
   apiConfig: {
     getList: ApiConfig;
-    getById: ApiConfig;
-    create: ApiConfig;
-    update: ApiConfig;
+    getById?: ApiConfig;
+    create?: ApiConfig;
+    update?: ApiConfig;
     delete: ApiConfig;
   };
   options: {
@@ -194,8 +196,8 @@ export default function useListBase<
     navigate(`${pathname}/${id}`);
   };
 
-  const handleDelete = async (record: T) => {
-    await deleteMutation.mutateAsync(record.id, {
+  const handleDeleteClick = async (id: string) => {
+    await deleteMutation.mutateAsync(id, {
       onSuccess: (res) => {
         if (res.result) {
           notify.success(`Xoá ${objectName} thành công`);
@@ -275,7 +277,7 @@ export default function useListBase<
                 </AlertDialogCancel>
                 <Button
                   variant={'primary'}
-                  onClick={() => handleDelete(record)}
+                  onClick={() => handleDeleteClick(record.id)}
                 >
                   Có
                 </Button>
@@ -447,7 +449,9 @@ export default function useListBase<
       renderAddButton,
       renderSearchForm,
       renderStatusColumn,
-      setQueryParam
+      setQueryParam,
+      handleEditClick,
+      handleDeleteClick
     };
 
     override?.(handlers);

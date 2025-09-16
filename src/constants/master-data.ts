@@ -292,3 +292,16 @@ export const contributorStatuses = [
     color: '#dc3545'
   }
 ];
+
+export const categoryStatuses = [
+  {
+    value: STATUS_ACTIVE,
+    label: 'Hoạt động',
+    color: '#28a745'
+  },
+  {
+    value: STATUS_DELETED,
+    label: 'Đã xóa',
+    color: '#dc3545'
+  }
+];

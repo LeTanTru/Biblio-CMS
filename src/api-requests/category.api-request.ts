@@ -48,6 +48,12 @@ const categoryApiRequest = {
   updateOrdering: async (body: UpdateOrderingType) =>
     await http.put<ApiResponse<any>>(apiConfig.category.updateOrdering, {
       body
+    }),
+  recover: async (id: string) =>
+    await http.put<ApiResponse<any>>(apiConfig.category.recover, {
+      pathParams: {
+        id
+      }
     })
 };
 

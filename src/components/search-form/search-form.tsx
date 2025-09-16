@@ -1,10 +1,10 @@
 'use client';
+
 import { Button, Col, InputField, Row, SelectField } from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
 import { SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
-import { useEffect } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import z from 'zod';
 
@@ -66,7 +66,7 @@ export default function SearchForm<S extends FieldValues>({
     >
       {(form) => (
         <>
-          <Row className='gap-2'>
+          <Row className='my-0 -ml-4 gap-2'>
             {searchFields.map((sf) => {
               return (
                 <Col

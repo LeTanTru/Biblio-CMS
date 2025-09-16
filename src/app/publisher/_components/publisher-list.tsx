@@ -13,7 +13,7 @@ import {
   STATUS_ACTIVE,
   STATUS_DELETED
 } from '@/constants';
-import useListBase from '@/hooks/use-list-base';
+import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import route from '@/routes';
 import { publisherSearchParamSchema } from '@/schemaValidations';
@@ -30,7 +30,7 @@ import { CircleUserRound, RotateCcw } from 'lucide-react';
 export default function PublisherList({ queryKey }: { queryKey: string }) {
   const recoverMutation = useMutation({
     mutationKey: [`${queryKey}-recover`],
-    mutationFn: (id: string | number) => publisherApiRequest.recover(id)
+    mutationFn: (id: string) => publisherApiRequest.recover(id)
   });
 
   const { data, pagination, loading, handlers, queryFilter, listQuery } =

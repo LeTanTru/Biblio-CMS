@@ -11,9 +11,10 @@ import {
   contributorStatuses,
   countryOptions,
   FieldTypes,
-  STATUS_ACTIVE
+  STATUS_ACTIVE,
+  STATUS_DELETED
 } from '@/constants';
-import useListBase from '@/hooks/use-list-base';
+import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import route from '@/routes';
 import { translatorSchemaParamSchema } from '@/schemaValidations';
@@ -30,7 +31,7 @@ import { CircleUserRound, RotateCcw } from 'lucide-react';
 export default function TranslatorList({ queryKey }: { queryKey: string }) {
   const recoverMutation = useMutation({
     mutationKey: [`${queryKey}-recover`],
-    mutationFn: (id: string | number) => translatorApiRequest.recover(id)
+    mutationFn: (id: string) => translatorApiRequest.recover(id)
   });
 
   const { data, pagination, loading, handlers, queryFilter, listQuery } =
@@ -123,7 +124,12 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, recover: true, delete: true }
+      actions: {
+        edit: (record: TranslatorResType) => record.status === STATUS_ACTIVE,
+        recover: (record: TranslatorResType) =>
+          record.status === STATUS_DELETED,
+        delete: (record: TranslatorResType) => record.status === STATUS_ACTIVE
+      }
     })
   ];
 

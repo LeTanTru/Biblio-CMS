@@ -14,21 +14,23 @@ import { useSaveBase } from '@/hooks';
 import { useUploadImageMutation } from '@/queries';
 import route from '@/routes';
 import { publisherSchema } from '@/schemaValidations';
-import { PublisherBodyType } from '@/types';
+import { PublisherBodyType, PublisherResType } from '@/types';
 import { renderImageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function PublisherForm({ queryKey }: { queryKey: string }) {
   const [logoPath, setLogoPath] = useState<string>('');
-  const { data, loading, handleSubmit, renderActions } =
-    useSaveBase<PublisherBodyType>({
-      apiConfig: apiConfig.publisher,
-      options: {
-        queryKey,
-        objectName: 'nhà xuất bản',
-        listPageUrl: route.publisher.getList.path
-      }
-    });
+  const { data, loading, handleSubmit, renderActions } = useSaveBase<
+    PublisherResType,
+    PublisherBodyType
+  >({
+    apiConfig: apiConfig.publisher,
+    options: {
+      queryKey,
+      objectName: 'nhà xuất bản',
+      listPageUrl: route.publisher.getList.path
+    }
+  });
   const uploadImageMutation = useUploadImageMutation();
   const defaultValues: PublisherBodyType = {
     logoPath: '',

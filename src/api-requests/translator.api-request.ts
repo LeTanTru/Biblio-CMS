@@ -3,7 +3,7 @@ import { ApiResponse } from '@/types';
 import { http } from '@/utils';
 
 const translatorApiRequest = {
-  recover: async (id: string | number) =>
+  recover: async (id: string) =>
     await http.put<ApiResponse<any>>(apiConfig.translator.recover, {
       pathParams: {
         id

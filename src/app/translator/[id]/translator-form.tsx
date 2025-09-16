@@ -21,21 +21,23 @@ import { useSaveBase } from '@/hooks';
 import { useUploadImageMutation } from '@/queries';
 import route from '@/routes';
 import { translatorSchema } from '@/schemaValidations';
-import { TranslatorBodyType } from '@/types';
+import { TranslatorBodyType, TranslatorResType } from '@/types';
 import { renderImageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function TranslatorForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
-  const { data, loading, handleSubmit, renderActions } =
-    useSaveBase<TranslatorBodyType>({
-      apiConfig: apiConfig.translator,
-      options: {
-        queryKey,
-        objectName: 'dịch giả',
-        listPageUrl: route.translator.getList.path
-      }
-    });
+  const { data, loading, handleSubmit, renderActions } = useSaveBase<
+    TranslatorResType,
+    TranslatorBodyType
+  >({
+    apiConfig: apiConfig.translator,
+    options: {
+      queryKey,
+      objectName: 'dịch giả',
+      listPageUrl: route.translator.getList.path
+    }
+  });
   const uploadImageMutation = useUploadImageMutation();
 
   const defaultValues: TranslatorBodyType = {

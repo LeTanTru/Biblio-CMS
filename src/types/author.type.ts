@@ -9,7 +9,7 @@ export type AuthorResType = {
   avatarPath: string;
   kind: number;
   gender: number;
-  dateOfBirth: Date;
+  dateOfBirth: string;
   country: string;
   createdDate: Date;
   modifiedDate: Date;

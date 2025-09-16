@@ -1,7 +1,7 @@
 import z from 'zod';
 
 export const authorSchema = z.object({
-  id: z.union([z.string(), z.number()]).optional(),
+  id: z.string().optional(),
   name: z.string().nonempty('Bắt buộc'),
   bio: z.string().nonempty('Bắt buộc'),
   avatarPath: z.string(),

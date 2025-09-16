@@ -18,11 +18,15 @@ export default function GroupPermissionPage() {
   const isMounted = useIsMounted();
 
   const tabs = [
-    { value: 'tab-1', label: 'Vai trò', component: <GroupList /> },
+    {
+      value: 'tab-1',
+      label: 'Vai trò',
+      component: <GroupList queryKey='group' />
+    },
     {
       value: 'tab-2',
       label: 'Nhóm quyền',
-      component: <GroupPermissionList />
+      component: <GroupPermissionList queryKey='group-permission' />
     },
     { value: 'tab-3', label: 'Quyền', component: <PermissionList /> }
   ];

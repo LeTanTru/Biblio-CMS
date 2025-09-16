@@ -7,7 +7,7 @@
 
     var global$4 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-     
+    /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
         var _a;
         if (predicate(v, constructor.prototype)) {
@@ -407,7 +407,7 @@
         div.innerHTML = html;
         if (!div.hasChildNodes() || div.childNodes.length > 1) {
             const message = 'HTML does not have a single root node';
-             
+            // eslint-disable-next-line no-console
             console.error(message, html);
             throw new Error(message);
         }
@@ -616,7 +616,7 @@
             dom.setAttribute(key, value + '');
         }
         else {
-             
+            // eslint-disable-next-line no-console
             console.error('Invalid call to Attribute.set. Key ', key, ':: Value ', value, ':: Element ', dom);
             throw new Error('Attribute value was not simple');
         }
@@ -682,7 +682,7 @@
         // JQuery coerces numbers to pixels for certain property names, and other times lets numbers through.
         // we're going to be explicit; strings only.
         if (!isString(value)) {
-             
+            // eslint-disable-next-line no-console
             console.error('Invalid call to CSS.set. Property ', property, ':: Value ', value, ':: Element ', dom);
             throw new Error('CSS value must be a string: ' + value);
         }

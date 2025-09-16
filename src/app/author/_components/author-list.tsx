@@ -11,9 +11,10 @@ import {
   contributorStatuses,
   countryOptions,
   FieldTypes,
-  STATUS_ACTIVE
+  STATUS_ACTIVE,
+  STATUS_DELETED
 } from '@/constants';
-import useListBase from '@/hooks/use-list-base';
+import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import route from '@/routes';
 import { authorSchemaParamSchema } from '@/schemaValidations';
@@ -25,8 +26,8 @@ import { CircleUserRound, RotateCcw } from 'lucide-react';
 
 export default function AuthorList({ queryKey }: { queryKey: string }) {
   const recoverMutation = useMutation({
-    mutationKey: ['author-recover'],
-    mutationFn: (id: string | number) => authorApiRequest.recover(id)
+    mutationKey: [`${queryKey}-recover`],
+    mutationFn: (id: string) => authorApiRequest.recover(id)
   });
 
   const { data, pagination, loading, queryFilter, handlers, listQuery } =
@@ -117,7 +118,11 @@ export default function AuthorList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { edit: true, recover: true, delete: true }
+      actions: {
+        edit: (record: AuthorResType) => record.status === STATUS_ACTIVE,
+        recover: (record: AuthorResType) => record.status === STATUS_DELETED,
+        delete: (record: AuthorResType) => record.status === STATUS_ACTIVE
+      }
     })
   ];
 

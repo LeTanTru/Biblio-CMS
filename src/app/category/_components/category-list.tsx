@@ -1,80 +1,85 @@
 'use client';
 
-import {
-  AvatarField,
-  Button,
-  Col,
-  InputField,
-  Row,
-  ToolTip
-} from '@/components/form';
-import { BaseForm } from '@/components/form/base-form';
+import { categoryApiRequest } from '@/api-requests';
+import { AvatarField, Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
 import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { CircleLoading } from '@/components/loading';
 import { DragDropTable } from '@/components/table';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import {
   apiConfig,
-  DEFAULT_TABLE_PAGE_START,
-  MAX_PAGE_SIZE,
-  statusOptions
+  categoryStatuses,
+  FieldTypes,
+  STATUS_ACTIVE,
+  STATUS_DELETED
 } from '@/constants';
-import { useDragDrop, useNavigate, useQueryParams } from '@/hooks';
+import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import { useCategoryListQuery, useDeleteCategoryMutation } from '@/queries';
 import route from '@/routes';
 import { categorySearchParamSchema } from '@/schemaValidations';
-import { CategoryResType, CategorySearchParamType, Column } from '@/types';
-import { renderImageUrl } from '@/utils';
 import {
-  BrushCleaning,
-  Edit2,
-  Info,
-  PlusIcon,
-  Save,
-  Search,
-  Trash
-} from 'lucide-react';
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+  CategoryResType,
+  CategorySearchParamType,
+  Column,
+  SearchFormProps
+} from '@/types';
+import { notify, renderImageUrl } from '@/utils';
+import { useMutation } from '@tanstack/react-query';
+import { RotateCcw, Save } from 'lucide-react';
 
-export default function CategoryList() {
-  const navigate = useNavigate();
-  const [queryFilter, setQueryFilter] = useState<CategorySearchParamType>({
-    page: DEFAULT_TABLE_PAGE_START,
-    size: MAX_PAGE_SIZE
+export default function CategoryList({ queryKey }: { queryKey: string }) {
+  const recoverMutation = useMutation({
+    mutationKey: [`${queryKey}-recover`],
+    mutationFn: (id: string) => categoryApiRequest.recover(id)
   });
-  const { searchParams, setQueryParams } =
-    useQueryParams<CategorySearchParamType>();
-  const categoryListQuery = useCategoryListQuery(queryFilter);
-  const deleteCategoryMutation = useDeleteCategoryMutation();
-
-  const handleEdit = (id: string) => {
-    navigate(`${route.category.getList.path}/${id}`);
-  };
-
-  const handleDelete = async (record: CategoryResType) => {
-    deleteCategoryMutation.mutateAsync(record.id);
-  };
-
+  const { data, loading, queryFilter, handlers, listQuery } = useListBase<
+    CategoryResType,
+    CategorySearchParamType
+  >({
+    apiConfig: apiConfig.category,
+    options: {
+      queryKey,
+      objectName: 'danh mục',
+      defaultFilters: {
+        status: STATUS_ACTIVE
+      }
+    },
+    override: (handlers) => {
+      handlers.additionalColumns = () => ({
+        recover: (
+          record: CategoryResType,
+          buttonProps?: Record<string, any>
+        ) => {
+          return (
+            <HasPermission
+              requiredPermissions={[apiConfig.category.recover.permissionCode]}
+            >
+              <ToolTip title={`Khôi phục`}>
+                <span>
+                  <Button
+                    disabled={record.status === STATUS_ACTIVE}
+                    onClick={async () => {
+                      await recoverMutation.mutateAsync(record.id);
+                      notify.success('Khôi phục thành công');
+                      listQuery.refetch();
+                    }}
+                    className='border-none bg-transparent shadow-none hover:bg-transparent'
+                    {...buttonProps}
+                  >
+                    <RotateCcw className='stroke-dodger-blue size-3.5' />
+                  </Button>
+                </span>
+              </ToolTip>
+            </HasPermission>
+          );
+        }
+      });
+    }
+  });
   const {
     sortColumn,
-    loading,
+    loading: updateOrderingloading,
     sortedData,
     isChanged,
     onDragEnd,
@@ -82,7 +87,7 @@ export default function CategoryList() {
   } = useDragDrop<CategoryResType>({
     key: 'category-list',
     objectName: 'danh mục',
-    data: categoryListQuery.data?.data.content || [],
+    data,
     apiConfig: apiConfig.category.updateOrdering,
     sortField: 'ordering'
   });
@@ -112,114 +117,27 @@ export default function CategoryList() {
       title: 'Tên',
       dataIndex: 'name'
     },
-    {
-      title: 'Trạng thái',
-      width: 150,
-      dataIndex: 'status',
-      align: 'center',
-      render: (value) => {
-        const status = statusOptions.find((st) => st.value === value);
-        return (
-          <Badge
-            className='text-sm font-normal'
-            style={{ backgroundColor: status?.color }}
-          >
-            {status?.label}
-          </Badge>
-        );
+    handlers.renderStatusColumn(),
+    handlers.renderActionColumn({
+      actions: {
+        edit: (record: CategoryResType) => record.status === STATUS_ACTIVE,
+        recover: (record: CategoryResType) => record.status === STATUS_DELETED,
+        delete: (record: CategoryResType) => record.status === STATUS_ACTIVE
       }
-    },
-    {
-      title: 'Hành động',
-      align: 'center',
-      width: 120,
-      render: (_, record) => {
-        return (
-          <div className='flex items-center justify-center'>
-            <HasPermission
-              requiredPermissions={[apiConfig.category.update.permissionCode]}
-            >
-              <ToolTip title='Sửa danh mục'>
-                <Button
-                  onClick={() => handleEdit(record.id)}
-                  className='border-none bg-transparent shadow-none hover:bg-transparent'
-                >
-                  <Edit2 className='stroke-dodger-blue size-3.5' />
-                </Button>
-              </ToolTip>
-              <Separator orientation='vertical' className='h-4! bg-gray-200' />
-            </HasPermission>
-            <HasPermission
-              requiredPermissions={[apiConfig.category.delete.permissionCode]}
-            >
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <span>
-                    <ToolTip title='Xóa danh mục'>
-                      <Button className='border-none bg-transparent shadow-none hover:bg-transparent'>
-                        <Trash className='size-3.5 stroke-red-600' />
-                      </Button>
-                    </ToolTip>
-                  </span>
-                </AlertDialogTrigger>
-                <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%]'>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className='text-md flex items-center gap-2 font-normal'>
-                      <Info className='size-8 fill-orange-500 stroke-white' />
-                      Bạn có chắc chắn muốn xóa danh mục này không ?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription></AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
-                      <Button
-                        variant='outline'
-                        className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
-                      >
-                        Không
-                      </Button>
-                    </AlertDialogCancel>
-                    <AlertDialogAction asChild>
-                      <Button
-                        onClick={() => handleDelete(record)}
-                        variant={'primary'}
-                      >
-                        Có
-                      </Button>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </HasPermission>
-          </div>
-        );
-      }
-    }
+    })
   ];
 
-  const defaultValues: CategorySearchParamType = {
-    name: ''
-  };
-
-  const initialValues = useMemo(() => searchParams, []);
-
-  const onSubmit = async (values: CategorySearchParamType) => {
-    const filtered = Object.entries(values).filter(
-      ([, value]) =>
-        value !== null && value !== undefined && value.toString().trim() !== ''
-    );
-    setQueryFilter({ ...queryFilter, ...Object.fromEntries(filtered) });
-    setQueryParams({ ...searchParams, ...Object.fromEntries(filtered) });
-  };
-
-  const handleReset = (form: UseFormReturn<CategorySearchParamType>) => {
-    form.reset();
-    setQueryFilter({
-      page: DEFAULT_TABLE_PAGE_START,
-      size: MAX_PAGE_SIZE
-    });
-    setQueryParams({});
-  };
+  const searchFields: SearchFormProps<CategorySearchParamType>['searchFields'] =
+    [
+      { key: 'name', placeholder: 'Tên danh mục' },
+      {
+        key: 'status',
+        type: FieldTypes.SELECT,
+        options: categoryStatuses,
+        placeholder: 'Trạng thái',
+        submitOnChanged: true
+      }
+    ];
 
   return (
     <PageWrapper
@@ -229,90 +147,38 @@ export default function CategoryList() {
       ]}
     >
       <ListPageWrapper
-        actionBar={
-          <HasPermission
-            requiredPermissions={[apiConfig.category.create.permissionCode]}
-          >
-            <Link href={`${route.category.getList.path}/create`}>
-              <Button variant={'primary'}>
-                <PlusIcon />
-                Thêm mới
-              </Button>
-            </Link>
-          </HasPermission>
-        }
-        searchForm={
-          <BaseForm
-            defaultValues={defaultValues}
-            onSubmit={onSubmit}
-            schema={categorySearchParamSchema}
-            initialValues={initialValues}
-          >
-            {(form) => (
-              <>
-                <Row className='gap-2'>
-                  <Col span={4}>
-                    <InputField
-                      control={form.control}
-                      name='name'
-                      placeholder='Tên danh mục'
-                      className='focus-visible:ring-dodger-blue'
-                    />
-                  </Col>
-                  <Col className='w-9'>
-                    <Button type='submit' variant={'primary'}>
-                      <Search />
-                    </Button>
-                  </Col>
-                  <Col className='w-9'>
-                    <Button
-                      type='button'
-                      onClick={() => handleReset(form)}
-                      className='hover:[&>svg]:stroke-dodger-blue hover:border-dodger-blue border border-gray-300 bg-white hover:bg-transparent [&>svg]:stroke-black'
-                    >
-                      <BrushCleaning className='transition-all duration-200 ease-linear' />
-                    </Button>
-                  </Col>
-                </Row>
-              </>
-            )}
-          </BaseForm>
-        }
+        searchForm={handlers.renderSearchForm({
+          searchFields,
+          schema: categorySearchParamSchema,
+          initialValues: { ...queryFilter }
+        })}
+        actionBar={handlers.renderAddButton()}
       >
         <DragDropTable
           columns={columns}
           dataSource={sortedData}
-          loading={
-            categoryListQuery.isLoading ||
-            categoryListQuery.isFetching ||
-            deleteCategoryMutation.isPending
-          }
+          loading={loading || updateOrderingloading}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 &&
-          !(
-            categoryListQuery.isLoading ||
-            categoryListQuery.isFetching ||
-            deleteCategoryMutation.isPending
-          ) && (
-            <div className='mr-4 flex justify-end py-4'>
-              <Button
-                onClick={handleUpdate}
-                disabled={!isChanged || loading}
-                className='w-40'
-                variant={'primary'}
-              >
-                {loading ? (
-                  <CircleLoading />
-                ) : (
-                  <>
-                    <Save />
-                    Cập nhật
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
+        {sortedData.length > 1 && !(loading || updateOrderingloading) && (
+          <div className='mr-4 flex justify-end py-4'>
+            <Button
+              onClick={handleUpdate}
+              disabled={!isChanged || loading || updateOrderingloading}
+              className='w-40'
+              variant={'primary'}
+            >
+              {loading || updateOrderingloading ? (
+                <CircleLoading />
+              ) : (
+                <>
+                  <Save />
+                  Cập nhật
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </ListPageWrapper>
     </PageWrapper>
   );

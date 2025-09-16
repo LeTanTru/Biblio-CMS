@@ -1,6 +1,6 @@
 import z from 'zod';
 
 export const groupPermissionSchema = z.object({
-  id: z.union([z.string(), z.number()]).optional(),
+  id: z.string().optional(),
   name: z.string().nonempty('Bắt buộc')
 });

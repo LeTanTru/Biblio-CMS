@@ -7,3 +7,4 @@ export { default as useDisclosure } from './use-disclosure';
 export { default as useDragDrop } from './use-drag-drop';
 export { default as useFirstActiveRoute } from './use-first-active-route';
 export { default as useSaveBase } from './use-save-base';
+export { default as useListBase } from './use-list-base';

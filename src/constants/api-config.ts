@@ -159,7 +159,7 @@ const apiConfig = defineApiConfig({
   },
   category: {
     getList: {
-      baseUrl: `${AppConstants.apiUrl}v1/category/list`,
+      baseUrl: `${AppConstants.apiUrl}v1/category/private/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'CAT_L'
@@ -177,7 +177,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'CAT_U'
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}v1/category/get/:id`,
+      baseUrl: `${AppConstants.apiUrl}v1/category/private/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'CAT_V'
@@ -195,6 +195,12 @@ const apiConfig = defineApiConfig({
     },
     updateOrdering: {
       baseUrl: `${AppConstants.apiUrl}v1/category/update-ordering`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CAT_U'
+    },
+    recover: {
+      baseUrl: `${AppConstants.apiUrl}v1/category/recover/:id`,
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'CAT_U'
@@ -386,7 +392,7 @@ const apiConfig = defineApiConfig({
   },
   translator: {
     getList: {
-      baseUrl: `${AppConstants.apiUrl}v1/translator/list`,
+      baseUrl: `${AppConstants.apiUrl}v1/translator/private/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'TRANS_L'
@@ -404,7 +410,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'TRANS_U'
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}v1/translator/get/:id`,
+      baseUrl: `${AppConstants.apiUrl}v1/translator/private/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'TRANS_V'

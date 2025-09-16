@@ -7,7 +7,7 @@
 
     var global$5 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-     
+    /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     const hasProto = (v, constructor, predicate) => {
         var _a;
         if (predicate(v, constructor.prototype)) {
@@ -1154,7 +1154,7 @@
             href: data.url.value,
             attach: data.url.meta !== undefined && data.url.meta.attach ? data.url.meta.attach : noop
         };
-         
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         DialogConfirms.preprocess(editor, changedData).then((pData) => {
             link(editor, attachState, pData);
         });
@@ -1254,7 +1254,7 @@
     };
     const open = (editor) => {
         const data = collectData(editor);
-         
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         data.then((info) => {
             const onSubmit = handleSubmit(editor, info);
             return makeDialog(info, onSubmit, editor);
