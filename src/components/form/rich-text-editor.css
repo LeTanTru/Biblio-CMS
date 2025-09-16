@@ -16,3 +16,7 @@
 label[data-error='true'] ~ .tox-tinymce.tox-edit-focus {
   border-color: red;
 }
+
+.tox-tbtn {
+  cursor: pointer !important;
+}
