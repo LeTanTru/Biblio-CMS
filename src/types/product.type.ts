@@ -1,11 +1,31 @@
 import { productSchema, productSearchParamSchema } from '@/schemaValidations';
+import { CategoryResType } from '@/types/category.type';
+import { ProductImageResType } from '@/types/product-image.type';
+import { PublisherResType } from '@/types/publisher.type';
 import { BaseSearchParamType } from '@/types/search.type';
 import z from 'zod';
 
 export type ProductBodyType = z.infer<typeof productSchema>;
-export type ProductSearchParamTYpe = z.infer<typeof productSearchParamSchema> &
+export type ProductSearchParamType = z.infer<typeof productSearchParamSchema> &
   BaseSearchParamType;
 
 export type ProductResType = {
-  name: '';
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  releaseDate: string;
+  ageRating: number;
+  language: string;
+  isFeatured: boolean;
+  metaData: string;
+  discount: number;
+  category: CategoryResType;
+  images: ProductImageResType[];
+  publisher: PublisherResType;
+  contributors: string[];
+  createdDate: string;
+  modifiedDate: string;
+  status: number;
 };

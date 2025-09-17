@@ -11,5 +11,11 @@ export type ProductImageSearchParamTYpe = z.infer<
   BaseSearchParamType;
 
 export type ProductImageResType = {
-  name: '';
+  id: string;
+  url: string;
+  ordering: number;
+  isDefault: boolean;
+  productId: bigint;
+  createdDate: Date;
+  modifiedDate: Date;
 };

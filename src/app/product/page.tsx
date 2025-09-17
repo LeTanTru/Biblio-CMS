@@ -1,16 +1,5 @@
-import { PageWrapper } from '@/components/layout';
-import ListPageWrapper from '@/components/layout/list-page-wrapper';
-import route from '@/routes';
+import ProductList from '@/app/product/_components/product-list';
 
 export default function ProductPage() {
-  return (
-    <PageWrapper
-      breadcrumbs={[
-        { label: 'Trang chủ', href: route.home.path },
-        { label: 'Sách' }
-      ]}
-    >
-      <ListPageWrapper></ListPageWrapper>
-    </PageWrapper>
-  );
+  return <ProductList queryKey='product' />;
 }

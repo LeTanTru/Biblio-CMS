@@ -25,6 +25,7 @@ type RichTextFieldProps<T extends FieldValues> = {
 };
 
 import type { Editor as TinyMCEEditor } from 'tinymce';
+import envConfig from '@/config';
 
 export default function RichTextField<T extends FieldValues>({
   control,
@@ -54,7 +55,7 @@ export default function RichTextField<T extends FieldValues>({
 
           <FormControl>
             <Editor
-              tinymceScriptSrc='/tinymce/tinymce.min.js'
+              tinymceScriptSrc={envConfig.NEXT_PUBLIC_TINYMCE_URL}
               licenseKey='gpl'
               value={field.value || ''}
               disabled={disabled || readOnly}

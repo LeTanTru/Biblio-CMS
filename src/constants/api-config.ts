@@ -226,7 +226,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'PRD_U'
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}v1/product/get/private/:id`,
+      baseUrl: `${AppConstants.apiUrl}v1/product/private/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'PRD_V'

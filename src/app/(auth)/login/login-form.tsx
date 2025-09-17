@@ -57,11 +57,11 @@ export default function LoginForm() {
       defaultValues={defaultValues}
       schema={loginSchema}
       onSubmit={onSubmit}
-      className='w-100 rounded-lg border border-solid border-gray-200 px-6 py-4 shadow-[0px_0px_10px_1px] shadow-slate-200'
+      className='flex flex-col items-center justify-around gap-0 rounded-lg border border-solid border-gray-200 px-6 py-4 shadow-[0px_0px_10px_1px] shadow-slate-200 max-[1560px]:w-100 min-[1560px]:h-80 min-[1560px]:w-120'
     >
       {(form) => (
         <>
-          <Row>
+          <Row className='mb-0'>
             <Col className='items-center'>
               <Image
                 src={logoWithText.src}
@@ -71,7 +71,7 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className='my-2'>
             <Col>
               <InputField
                 name='email'
@@ -82,7 +82,7 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className='my-2'>
             <Col>
               <PasswordField
                 name='password'
@@ -93,7 +93,7 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className='my-2'>
             <Col>
               <Button
                 disabled={!form.formState.isDirty || loginMutation.isPending}

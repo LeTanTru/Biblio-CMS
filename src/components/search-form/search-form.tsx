@@ -63,6 +63,7 @@ export default function SearchForm<S extends FieldValues>({
       defaultValues={defaultValues}
       schema={schema}
       initialValues={initialValues}
+      className='w-full'
     >
       {(form) => (
         <>
