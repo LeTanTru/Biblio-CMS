@@ -23,7 +23,7 @@ import route from '@/routes';
 import { authorSchema } from '@/schemaValidations';
 import { AuthorBodyType, AuthorResType } from '@/types';
 import { renderImageUrl } from '@/utils';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AuthorForm({ queryKey }: { queryKey: string }) {
   const [avatarPath, setAvatarPath] = useState<string>('');
@@ -49,23 +49,23 @@ export default function AuthorForm({ queryKey }: { queryKey: string }) {
     name: ''
   };
 
-  const initialValues: AuthorBodyType = useMemo(() => {
-    return {
-      name: data?.name ?? '',
-      bio: data?.bio ?? '',
-      avatarPath: data?.avatarPath ?? '',
-      gender: Number(data?.gender) ?? 0,
-      dateOfBirth: data?.dateOfBirth ?? '01/01/1970',
-      country: data?.country ?? ''
-    };
-  }, [
-    data?.avatarPath,
-    data?.bio,
-    data?.country,
-    data?.dateOfBirth,
-    data?.gender,
-    data?.name
-  ]);
+  // const initialValues: AuthorBodyType = useMemo(() => {
+  //   return {
+  //     name: data?.name ?? '',
+  //     bio: data?.bio ?? '',
+  //     avatarPath: data?.avatarPath ?? '',
+  //     gender: Number(data?.gender) ?? 0,
+  //     dateOfBirth: data?.dateOfBirth ?? '01/01/1970',
+  //     country: data?.country ?? ''
+  //   };
+  // }, [
+  //   data?.avatarPath,
+  //   data?.bio,
+  //   data?.country,
+  //   data?.dateOfBirth,
+  //   data?.gender,
+  //   data?.name
+  // ]);
 
   useEffect(() => {
     if (data?.avatarPath) setAvatarPath(data?.avatarPath);
@@ -80,7 +80,7 @@ export default function AuthorForm({ queryKey }: { queryKey: string }) {
       onSubmit={onSubmit}
       defaultValues={defaultValues}
       schema={authorSchema}
-      initialValues={initialValues}
+      initialValues={data}
     >
       {(form) => (
         <>

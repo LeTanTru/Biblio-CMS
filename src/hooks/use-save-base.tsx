@@ -81,22 +81,22 @@ export default function useSaveBase<
     mutationFn: (body: T) =>
       http.get<ApiResponse<any>>(apiConfig.create, {
         body
-      }),
-    onSuccess: (res) => {
-      if (res.result) {
-        notify.success(`Thêm mới ${objectName} thành công`);
-        queryClient.invalidateQueries({
-          queryKey: [queryKey, detailId]
-        });
-      } else {
-        logger.error(`Error while creating ${objectName}:`, res);
-        // notify.error(`Thêm mới ${objectName} thất bại`);
-      }
-    },
-    onError: (error) => {
-      logger.error(`Error while creating ${queryKey}:`, error);
-      // notify.error(`Có lỗi xảy ra khi thêm mới ${objectName}`);
-    }
+      })
+    // onSuccess: (res) => {
+    //   if (res.result) {
+    //     notify.success(`Thêm mới ${objectName} thành công`);
+    //     queryClient.invalidateQueries({
+    //       queryKey: [queryKey, detailId]
+    //     });
+    //   } else {
+    //     logger.error(`Error while creating ${objectName}:`, res);
+    //     // notify.error(`Thêm mới ${objectName} thất bại`);
+    //   }
+    // },
+    // onError: (error) => {
+    //   logger.error(`Error while creating ${queryKey}:`, error);
+    //   // notify.error(`Có lỗi xảy ra khi thêm mới ${objectName}`);
+    // }
   });
 
   const updateMutation = useMutation({
@@ -104,22 +104,22 @@ export default function useSaveBase<
     mutationFn: (body: T) =>
       http.get<ApiResponse<any>>(apiConfig.update, {
         body
-      }),
-    onSuccess: (res) => {
-      if (res.result) {
-        queryClient.invalidateQueries({
-          queryKey: [queryKey, detailId]
-        });
-        notify.success(`Cập nhật ${objectName} thành công`);
-      } else {
-        logger.error(`Error while creating ${objectName}:`, res);
-        // notify.error(`Cập nhật ${objectName} thất bại`);
-      }
-    },
-    onError: (error) => {
-      logger.error(`Error while updating ${queryKey}:`, error);
-      // notify.error(`Có lỗi xảy ra khi cập nhật ${objectName}`);
-    }
+      })
+    // onSuccess: (res) => {
+    //   if (res.result) {
+    //     queryClient.invalidateQueries({
+    //       queryKey: [queryKey, detailId]
+    //     });
+    //     notify.success(`Cập nhật ${objectName} thành công`);
+    //   } else {
+    //     logger.error(`Error while creating ${objectName}:`, res);
+    //     // notify.error(`Cập nhật ${objectName} thất bại`);
+    //   }
+    // },
+    // onError: (error) => {
+    //   logger.error(`Error while updating ${queryKey}:`, error);
+    //   // notify.error(`Có lỗi xảy ra khi cập nhật ${objectName}`);
+    // }
   });
 
   const getBackPath = () => {
@@ -133,7 +133,22 @@ export default function useSaveBase<
   const handleSubmit = async (values: T) => {
     const mutation = isCreate ? createMutation : updateMutation;
     await mutation.mutateAsync(
-      isCreate ? { ...values } : { ...values, id: values.id ?? id }
+      isCreate ? { ...values } : { ...values, id: values.id ?? id },
+      {
+        onSuccess: (res) => {
+          if (res.result) {
+            queryClient.invalidateQueries({
+              queryKey: [queryKey, detailId]
+            });
+            notify.success(
+              `${isCreate ? 'Thêm mới' : ''} ${objectName} thành công`
+            );
+          }
+        },
+        onError: (error) => {
+          console.log('🚀 ~ handleSubmit ~ error:', error);
+        }
+      }
     );
     if (listPageUrl) {
       navigate(getBackPath());

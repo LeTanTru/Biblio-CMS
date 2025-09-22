@@ -11,7 +11,11 @@ export const productSchema = z.object({
   isFeatured: z.boolean({ error: 'Bắt buộc' }),
   discount: z
     .number({ error: 'Bắt buộc' })
-    .nonnegative('Giảm giá không được là số âm'),
+    .nonnegative('Giảm giá không được là số âm')
+    .min(0, {
+      error: 'Giảm giá phải lớn hơn 0'
+    })
+    .max(100, { error: 'Giảm giá phải nhỏ hơn 100' }),
   categoryId: z.string().nonempty('Bắt buộc'),
   contributorsIds: z.array(z.string()).nonempty('Bắt buộc'),
   publisherId: z.string().nonempty('Bắt buộc'),

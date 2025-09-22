@@ -454,6 +454,38 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader
     }
+  },
+  coupon: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'CP_L'
+    },
+    create: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/create`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'CP_C'
+    },
+    update: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/update`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CP_U'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'CP_V'
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader,
+      permissionCode: 'CP_D'
+    }
   }
 });
 

@@ -130,6 +130,21 @@ const route = defineRoute({
         apiConfig.translator.update.permissionCode
       ]
     }
+  },
+  coupon: {
+    getList: {
+      path: '/coupon',
+      auth: true,
+      permissionCode: [apiConfig.coupon.getList.permissionCode]
+    },
+    savePage: {
+      path: '/coupon/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.coupon.create.permissionCode,
+        apiConfig.coupon.update.permissionCode
+      ]
+    }
   }
 });
 

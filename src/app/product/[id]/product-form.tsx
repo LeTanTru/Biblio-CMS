@@ -241,7 +241,6 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
                   name='discount'
                   label='Giảm giá (%)'
                   placeholder='Giảm giá (%)'
-                  isFloat
                   required
                 />
               </Col>

@@ -446,7 +446,8 @@ export const queryKeys = {
   PRODUCT: 'product',
   PRODUCT_VARIANT: 'product-variant',
   PUBLISHER: 'publisher',
-  TRANSLATOR: 'translator'
+  TRANSLATOR: 'translator',
+  COUPON: 'COUPON'
 };
 
 export const productVariantConditions = [

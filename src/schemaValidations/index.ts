@@ -2,6 +2,7 @@ export * from './account.schema';
 export * from './auth.schema';
 export * from './author.schema';
 export * from './category.schema';
+export * from './coupon.schema';
 export * from './group-permission.schema';
 export * from './group.schema';
 export * from './permission.schema';

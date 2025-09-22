@@ -2,7 +2,7 @@ import apiConfig from '@/constants/api-config';
 import { STATUS_ACTIVE } from '@/constants/constant';
 import route from '@/routes';
 import { MenuItem } from '@/types';
-import { BookOpen, Settings, User, UsersRound } from 'lucide-react';
+import { BookOpen, Settings, Tag, User, UsersRound } from 'lucide-react';
 
 const menuConfig: MenuItem[] = [
   {
@@ -22,6 +22,20 @@ const menuConfig: MenuItem[] = [
       //   label: 'Nhân viên',
       //   path: route.employee.path
       // }
+    ]
+  },
+  {
+    key: 'coupon-management',
+    label: 'Quản lý khuyến mãi',
+    icon: Tag,
+    permissionCode: [apiConfig.coupon.getList.permissionCode],
+    children: [
+      {
+        key: 'coupon-list',
+        label: 'Khuyến mãi',
+        path: route.coupon.getList.path,
+        permissionCode: [apiConfig.coupon.getList.permissionCode]
+      }
     ]
   },
   {
