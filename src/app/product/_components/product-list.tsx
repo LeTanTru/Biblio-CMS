@@ -178,7 +178,7 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
     {
       title: 'Giá',
       dataIndex: 'price',
-      render: (value) => `${formatMoney(value)}đ`,
+      render: (value) => `${formatMoney(value)}`,
       width: 120
     },
     {
