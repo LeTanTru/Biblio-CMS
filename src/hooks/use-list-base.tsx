@@ -1,7 +1,9 @@
 'use client';
 
-import { Button, ToolTip } from '@/components/form';
+import { Button, Col, Row, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
+import { CircleLoading } from '@/components/loading';
+import { Modal } from '@/components/modal';
 import { SearchForm } from '@/components/search-form';
 import {
   AlertDialog,
@@ -20,6 +22,7 @@ import {
   FieldTypes,
   statusOptions as defaultStatusOptions
 } from '@/constants';
+import useDisclosure from '@/hooks/use-disclosure';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
 import { logger } from '@/logger';
@@ -41,7 +44,7 @@ import {
   useQuery,
   useQueryClient
 } from '@tanstack/react-query';
-import { Edit2, Info, PlusIcon, Trash } from 'lucide-react';
+import { Edit2, Info, PlusIcon, RefreshCcw, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -59,12 +62,10 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
   renderAddButton: () => React.ReactNode | any;
   renderSearchForm: ({
     searchFields,
-    schema,
-    initialValues
+    schema
   }: {
     searchFields: SearchFormProps<S>['searchFields'];
     schema: SearchFormProps<S>['schema'];
-    initialValues: SearchFormProps<S>['initialValues'];
   }) => React.ReactNode | any;
   renderStatusColumn: ({
     statusOptions,
@@ -76,6 +77,8 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
   setQueryParam: (key: keyof S, value: S[keyof S] | null) => void;
   handleEditClick: (id: string) => void;
   handleDeleteClick: (id: string) => void;
+  invalidateQueries: () => void;
+  renderReloadButton: () => React.ReactNode;
 };
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
@@ -96,6 +99,8 @@ type UseListBaseProps<
     objectName: string;
     pageSize?: number;
     defaultFilters?: Partial<S>;
+    enabled?: boolean;
+    excludeFromQueryFilter?: string[];
   };
   override?: (handlers: HandlerType<T, S>) => HandlerType<T, S> | void;
 };
@@ -103,38 +108,46 @@ type UseListBaseProps<
 export default function useListBase<
   T extends { id: string },
   S extends BaseSearchParamType
->({
-  apiConfig,
-  options: {
+>({ apiConfig, options, override }: UseListBaseProps<T, S>) {
+  const {
     queryKey = '',
     objectName = '',
     pageSize = DEFAULT_TABLE_PAGE_SIZE,
-    defaultFilters = {} as Partial<S>
-  },
-  override
-}: UseListBaseProps<T, S>) {
+    defaultFilters = {} as Partial<S>,
+    enabled = true,
+    excludeFromQueryFilter = []
+  } = options;
   const navigate = useNavigate();
   const pathname = usePathname();
   const queryClient = useQueryClient();
+  const [data, setData] = useState<T[]>([]);
+  const { opened, open, close } = useDisclosure();
 
   const [pagination, setPagination] = useState<PaginationType>({
     current: DEFAULT_TABLE_PAGE_START,
     pageSize: DEFAULT_TABLE_PAGE_SIZE,
     total: 0
   });
-  const { searchParams, setQueryParams, setQueryParam } = useQueryParams<S>();
+  const { searchParams, setQueryParams, setQueryParam, serializeParams } =
+    useQueryParams<S>();
   const mergedSearchParams = useMemo(() => {
     return { ...defaultFilters, ...searchParams };
   }, [searchParams, defaultFilters]);
   const queryFilter = useMemo(() => {
+    const filteredParams = Object.fromEntries(
+      Object.entries(mergedSearchParams).filter(
+        ([key]) => !excludeFromQueryFilter.includes(key)
+      )
+    );
+
     return {
-      ...mergedSearchParams,
+      ...filteredParams,
       page: mergedSearchParams.page
         ? Number(mergedSearchParams.page) - 1
         : DEFAULT_TABLE_PAGE_START,
       size: pageSize
     } as S;
-  }, [mergedSearchParams, pageSize]);
+  }, [mergedSearchParams, pageSize, excludeFromQueryFilter]);
 
   useEffect(() => {
     Object.entries(defaultFilters).forEach(([key, value]) => {
@@ -159,7 +172,8 @@ export default function useListBase<
         params: { ...queryFilter, ...handlers.additionalParams() },
         pathParams: { ...handlers.additionalPathParams() }
       }),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
+    enabled
   });
   const deleteMutation = useMutation({
     mutationKey: [`delete-${queryKey}`],
@@ -170,6 +184,10 @@ export default function useListBase<
         }
       })
   });
+
+  useEffect(() => {
+    setData(listQuery.data?.data.content || []);
+  }, [listQuery.data?.data.content]);
 
   const current = searchParams['page'];
   useEffect(() => {
@@ -193,7 +211,9 @@ export default function useListBase<
   };
 
   const handleEditClick = (id: string) => {
-    navigate(`${pathname}/${id}`);
+    const query = serializeParams(searchParams);
+    const path = query ? `${pathname}/${id}?${query}` : `${pathname}/${id}`;
+    navigate(path);
   };
 
   const handleDeleteClick = async (id: string) => {
@@ -201,6 +221,7 @@ export default function useListBase<
       onSuccess: (res) => {
         if (res.result) {
           notify.success(`Xoá ${objectName} thành công`);
+          close();
           queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
           listQuery.refetch();
         } else {
@@ -365,9 +386,12 @@ export default function useListBase<
   const renderAddButton = () => {
     if (!apiConfig.create) throw new Error('apiConfig.create is not defined !');
     if (!apiConfig.create.permissionCode) return null;
+    let path = `${pathname}/create`;
+    if (Object.keys(searchParams).length > 0)
+      path = `${path}?${serializeParams(searchParams)}`;
     return (
       <HasPermission requiredPermissions={[apiConfig.create.permissionCode]}>
-        <Link href={`${pathname}/create`}>
+        <Link href={path}>
           <Button variant={'primary'}>
             <PlusIcon />
             Thêm mới
@@ -379,15 +403,13 @@ export default function useListBase<
 
   const renderSearchForm = ({
     searchFields,
-    schema,
-    initialValues
+    schema
   }: {
     searchFields: SearchFormProps<S>['searchFields'];
     schema: SearchFormProps<S>['schema'];
-    initialValues: SearchFormProps<S>['initialValues'];
   }) => {
     const mergedValues = {
-      ...initialValues,
+      ...queryFilter,
       ...Object.fromEntries(
         Object.entries(searchParams).map(([key, value]) => {
           const field = searchFields.find((f) => f.key === key);
@@ -409,23 +431,31 @@ export default function useListBase<
     };
 
     const handleSearchSubmit = (values: any) => {
-      const filtered = Object.entries(values).filter(
-        ([, value]) =>
-          value !== null &&
-          value !== undefined &&
-          value.toString().trim() !== ''
+      const preservedParams = Object.fromEntries(
+        Object.entries(searchParams).filter(([key]) =>
+          excludeFromQueryFilter.includes(key)
+        )
       );
-      if (filtered.length === 0) return;
-      setQueryParams({ ...searchParams, ...Object.fromEntries(filtered) });
+
+      setQueryParams({ ...values, ...preservedParams } as Partial<S>);
     };
 
     const handleSearchReset = () => {
+      if (Object.keys(searchParams).length === 0) return;
+
       setPagination({
         current: DEFAULT_TABLE_PAGE_START + 1,
         pageSize: DEFAULT_TABLE_PAGE_SIZE,
         total: 0
       });
-      setQueryParams({ ...defaultFilters });
+
+      const preservedParams = Object.fromEntries(
+        Object.entries(searchParams).filter(([key]) =>
+          excludeFromQueryFilter.includes(key)
+        )
+      );
+
+      setQueryParams({ ...defaultFilters, ...preservedParams });
     };
 
     return (
@@ -439,6 +469,20 @@ export default function useListBase<
     );
   };
 
+  const invalidateQueries = () =>
+    queryClient.invalidateQueries({ queryKey: [`${queryKey}-list`] });
+
+  const renderReloadButton = () => (
+    <Button
+      disabled={listQuery.isFetching}
+      onClick={() => listQuery.refetch()}
+      variant={'primary'}
+    >
+      <RefreshCcw />
+      Tải lại
+    </Button>
+  );
+
   const extendableHandlers = (): HandlerType<T, S> => {
     const handlers: HandlerType<T, S> = {
       changePagination,
@@ -451,7 +495,9 @@ export default function useListBase<
       renderStatusColumn,
       setQueryParam,
       handleEditClick,
-      handleDeleteClick
+      handleDeleteClick,
+      invalidateQueries,
+      renderReloadButton
     };
 
     override?.(handlers);
@@ -461,12 +507,13 @@ export default function useListBase<
   const handlers = extendableHandlers();
 
   return {
-    data: listQuery.data?.data.content || [],
+    data,
     pagination,
     loading:
       listQuery.isLoading || listQuery.isFetching || deleteMutation.isPending,
     handlers,
     queryFilter,
-    listQuery
+    listQuery,
+    setData
   };
 }

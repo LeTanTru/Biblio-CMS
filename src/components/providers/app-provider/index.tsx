@@ -2,7 +2,7 @@
 
 import { storageKeys } from '@/constants';
 import { useProfileQuery } from '@/queries';
-import useProfileStore from '@/store/use-profile.store';
+import { useAuthStore } from '@/store';
 import { getData } from '@/utils';
 import { useEffect } from 'react';
 
@@ -13,7 +13,7 @@ export default function AppProvider({
 }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
   const profileQuery = useProfileQuery();
-  const { setProfile, isAuthenticated, setLoading } = useProfileStore();
+  const { setProfile, isAuthenticated, setLoading } = useAuthStore();
 
   useEffect(
     () => setLoading(profileQuery.isLoading || profileQuery.isFetching),

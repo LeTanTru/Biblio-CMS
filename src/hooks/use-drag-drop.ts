@@ -6,7 +6,7 @@ import { http, notify } from '@/utils';
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const sortColumn = {
   title: '',
@@ -29,7 +29,10 @@ const useDragDrop = <T extends Record<string, any>>({
 }) => {
   const queryClient = useQueryClient();
   const [isChanged, setIsChanged] = useState<boolean>(false);
-  const [draggedData, setDraggedData] = useState<T[]>([]);
+  const [sortedData, setSortedData] = useState<T[]>(
+    (data.length > 0 && data.sort((a, b) => a?.[sortField] - b?.[sortField])) ||
+      []
+  );
 
   const updateOrderingMutation = useMutation({
     mutationKey: ['updateOrdering', apiConfig.baseUrl],
@@ -38,20 +41,6 @@ const useDragDrop = <T extends Record<string, any>>({
         body
       })
   });
-
-  const sortedData = useMemo(() => {
-    if (draggedData.length > 0) {
-      return draggedData;
-    }
-
-    if (!data || data.length === 0) return [];
-
-    return [...data].sort((a, b) => {
-      const aValue = a[sortField] as number;
-      const bValue = b[sortField] as number;
-      return aValue - bValue;
-    });
-  }, [data, sortField, draggedData]);
 
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -69,20 +58,21 @@ const useDragDrop = <T extends Record<string, any>>({
       if (activeIndex === -1 || overIndex === -1) return;
 
       const newData = arrayMove(currentData, activeIndex, overIndex);
-      setDraggedData(newData);
+      setSortedData(newData);
       setIsChanged(true);
     },
     [sortedData]
   );
 
   const handleUpdate = useCallback(async () => {
-    if (!isChanged || draggedData.length === 0) return;
-
-    const dataUpdate = draggedData.map((item, index) => ({
-      id: item.id,
-      [sortField]: index
-    }));
-
+    let dataUpdate: Record<string, any> = [];
+    const sortList = data.length > 0 ? data : sortedData;
+    sortList.map((item, index) => {
+      dataUpdate.push({
+        id: item.id,
+        [sortField]: index
+      });
+    });
     await updateOrderingMutation.mutateAsync(dataUpdate, {
       onSuccess: () => {
         queryClient.invalidateQueries({
@@ -97,18 +87,22 @@ const useDragDrop = <T extends Record<string, any>>({
         notify.error(`Cập nhật thứ tự ${objectName} thất bại`);
 
         setIsChanged(false);
-        setDraggedData([]);
       }
     });
   }, [
-    draggedData,
-    isChanged,
+    data,
     key,
     objectName,
     queryClient,
     sortField,
+    sortedData,
     updateOrderingMutation
   ]);
+
+  useEffect(() => {
+    if (data) setSortedData(data);
+    else setSortedData([]);
+  }, [data]);
 
   return {
     isChanged,

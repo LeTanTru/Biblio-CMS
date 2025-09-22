@@ -2,11 +2,11 @@
 
 import { emptyData } from '@/assets';
 import {
-  AutoCompleteField,
   Button,
   Col,
   InputField,
   Row,
+  SelectField,
   TextAreaField,
   ToolTip
 } from '@/components/form';
@@ -354,7 +354,7 @@ export default function PermissionList() {
                     <>
                       <Row className='my-0'>
                         <Col span={12}>
-                          <AutoCompleteField
+                          <SelectField
                             name='permissionGroupId'
                             control={form.control}
                             options={
@@ -403,7 +403,6 @@ export default function PermissionList() {
                         name='description'
                         label='Mô tả'
                         placeholder='Nhập mô tả'
-                        className='focus-visible:ring-dodger-blue'
                         required
                       />
                     </Col>

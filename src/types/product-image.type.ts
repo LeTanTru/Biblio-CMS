@@ -1,11 +1,12 @@
-import { productImageSearchParamSchema } from '@/schemaValidations';
+import {
+  productImageSchema,
+  productImageSearchParamSchema
+} from '@/schemaValidations';
 import { BaseSearchParamType } from '@/types/search.type';
 import z from 'zod';
 
-export type ProductImageBodyType = z.infer<
-  typeof productImageSearchParamSchema
->;
-export type ProductImageSearchParamTYpe = z.infer<
+export type ProductImageBodyType = z.infer<typeof productImageSchema>;
+export type ProductImageSearchParamType = z.infer<
   typeof productImageSearchParamSchema
 > &
   BaseSearchParamType;

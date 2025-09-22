@@ -4,13 +4,24 @@ import { http } from '@/utils';
 import { AxiosRequestConfig } from 'axios';
 
 const fileApiRequest = {
-  image: async (file: Blob, options?: AxiosRequestConfig) =>
+  uploadAvatar: async (file: Blob, options?: AxiosRequestConfig) =>
     await http.post<ApiResponse<UploadImageResponseType>>(
       apiConfig.file.upload,
       {
         body: {
           file: file,
           kind: uploadOptions.AVATAR
+        },
+        options
+      }
+    ),
+  uploadProductImage: async (file: Blob, options?: AxiosRequestConfig) =>
+    await http.post<ApiResponse<UploadImageResponseType>>(
+      apiConfig.file.upload,
+      {
+        body: {
+          file: file,
+          kind: uploadOptions.SYSTEM
         },
         options
       }

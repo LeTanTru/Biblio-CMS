@@ -6,7 +6,7 @@ export * from './group-permission.schema';
 export * from './group.schema';
 export * from './permission.schema';
 export * from './product-image.schema';
-export * from './product-variant.image';
+export * from './product-variant.schema';
 export * from './product.schema';
 export * from './publisher.schema';
 export * from './search.schema';

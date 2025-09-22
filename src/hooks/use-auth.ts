@@ -1,10 +1,10 @@
 'use client';
 
-import { useProfileStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { decodeJwt, getAccessTokenFromLocalStorage } from '@/utils';
 
 const useAuth = () => {
-  const { profile, loading, isAuthenticated } = useProfileStore();
+  const { profile, loading, isAuthenticated } = useAuthStore();
   const accessToken = getAccessTokenFromLocalStorage();
   let permissionCode: string[] = [];
   if (accessToken) {

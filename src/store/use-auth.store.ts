@@ -1,6 +1,6 @@
 import { ProfileStoreType, ProfileResType } from '@/types';
 import { create } from 'zustand';
-const useProfileStore = create<ProfileStoreType>((set) => ({
+const useAuthStore = create<ProfileStoreType>((set) => ({
   profile: null,
   isAuthenticated: false,
   loading: true,
@@ -9,4 +9,4 @@ const useProfileStore = create<ProfileStoreType>((set) => ({
   setLoading: (loading: boolean) => set({ loading })
 }));
 
-export default useProfileStore;
+export default useAuthStore;

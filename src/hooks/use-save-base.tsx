@@ -1,5 +1,4 @@
 'use client';
-
 import { Button, Col, Row } from '@/components/form';
 import { CircleLoading } from '@/components/loading';
 import {
@@ -12,6 +11,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import useNavigate from '@/hooks/use-navigate';
+import useQueryParams from '@/hooks/use-query-params';
 import { logger } from '@/logger';
 import { ApiConfig, ApiResponse } from '@/types';
 import { http, notify } from '@/utils';
@@ -53,6 +53,7 @@ export default function useSaveBase<
   const [detailId, setDetailId] = useState('');
   const navigate = useNavigate();
   const isCreate = !detailId || detailId === 'create';
+  const { searchParams, serializeParams } = useQueryParams();
 
   useEffect(() => {
     if (id) setDetailId(id);
@@ -72,8 +73,8 @@ export default function useSaveBase<
   const data = itemQuery.data?.data;
 
   useEffect(() => {
-    if (detailId) itemQuery.refetch();
-  }, [detailId]);
+    if (!isCreate) itemQuery.refetch();
+  }, [isCreate]);
 
   const createMutation = useMutation({
     mutationKey: [`create-${queryKey}`],
@@ -89,12 +90,12 @@ export default function useSaveBase<
         });
       } else {
         logger.error(`Error while creating ${objectName}:`, res);
-        notify.error(`Thêm mới ${objectName} thất bại`);
+        // notify.error(`Thêm mới ${objectName} thất bại`);
       }
     },
     onError: (error) => {
-      logger.error(`Error while creating ${objectName}:`, error);
-      notify.error(`Có lỗi xảy ra khi thêm mới ${objectName}`);
+      logger.error(`Error while creating ${queryKey}:`, error);
+      // notify.error(`Có lỗi xảy ra khi thêm mới ${objectName}`);
     }
   });
 
@@ -112,14 +113,20 @@ export default function useSaveBase<
         notify.success(`Cập nhật ${objectName} thành công`);
       } else {
         logger.error(`Error while creating ${objectName}:`, res);
-        notify.error(`Cập nhật ${objectName} thất bại`);
+        // notify.error(`Cập nhật ${objectName} thất bại`);
       }
     },
     onError: (error) => {
-      logger.error(`Error while updating ${objectName}:`, error);
-      notify.error(`Có lỗi xảy ra khi cập nhật ${objectName}`);
+      logger.error(`Error while updating ${queryKey}:`, error);
+      // notify.error(`Có lỗi xảy ra khi cập nhật ${objectName}`);
     }
   });
+
+  const getBackPath = () => {
+    const query = serializeParams(searchParams);
+    const backPath = query ? `${listPageUrl}?${query}` : listPageUrl;
+    return backPath;
+  };
 
   const loading = createMutation.isPending || updateMutation.isPending;
 
@@ -128,22 +135,28 @@ export default function useSaveBase<
     await mutation.mutateAsync(
       isCreate ? { ...values } : { ...values, id: values.id ?? id }
     );
-    if (listPageUrl) navigate(listPageUrl);
+    if (listPageUrl) {
+      navigate(getBackPath());
+    }
   };
 
   const renderActions = (
     form: UseFormReturn<T>,
     options?: { onCancel?: () => void }
   ) => (
-    <Row className='my-0 justify-end'>
-      <Col span={4}>
+    <Row className='my-0 justify-end gap-2'>
+      <Col span={4} className='w-30'>
         {!form.formState.isDirty ? (
           <Button
             type='button'
             variant={'ghost'}
-            onClick={() =>
-              listPageUrl ? navigate(listPageUrl) : options?.onCancel?.()
-            }
+            onClick={() => {
+              if (listPageUrl) {
+                navigate(getBackPath());
+              } else {
+                options?.onCancel?.();
+              }
+            }}
             className='border border-red-500 text-red-500 hover:border-red-500/50 hover:bg-transparent! hover:text-red-500/50'
           >
             <ArrowLeftFromLine />
@@ -189,7 +202,7 @@ export default function useSaveBase<
           </AlertDialog>
         )}
       </Col>
-      <Col span={4}>
+      <Col span={4} className='w-30'>
         <Button
           disabled={!form.formState.isDirty || loading}
           type='submit'

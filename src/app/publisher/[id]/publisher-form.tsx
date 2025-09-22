@@ -11,7 +11,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { CircleLoading } from '@/components/loading';
 import { apiConfig } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadImageMutation } from '@/queries';
+import { useUploadAvatar } from '@/queries';
 import route from '@/routes';
 import { publisherSchema } from '@/schemaValidations';
 import { PublisherBodyType, PublisherResType } from '@/types';
@@ -31,7 +31,7 @@ export default function PublisherForm({ queryKey }: { queryKey: string }) {
       listPageUrl: route.publisher.getList.path
     }
   });
-  const uploadImageMutation = useUploadImageMutation();
+  const uploadImageMutation = useUploadAvatar();
   const defaultValues: PublisherBodyType = {
     logoPath: '',
     name: '',

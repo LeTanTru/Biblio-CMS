@@ -2,7 +2,7 @@ import { fileApiRequest } from '@/api-requests';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosRequestConfig } from 'axios';
 
-export const useUploadImageMutation = () => {
+export const useUploadAvatar = () => {
   return useMutation({
     mutationFn: async ({
       file,
@@ -10,6 +10,18 @@ export const useUploadImageMutation = () => {
     }: {
       file: Blob;
       options?: AxiosRequestConfig;
-    }) => await fileApiRequest.image(file, options)
+    }) => await fileApiRequest.uploadAvatar(file, options)
+  });
+};
+
+export const useUploadImageProduct = () => {
+  return useMutation({
+    mutationFn: async ({
+      file,
+      options
+    }: {
+      file: Blob;
+      options?: AxiosRequestConfig;
+    }) => await fileApiRequest.uploadProductImage(file, options)
   });
 };

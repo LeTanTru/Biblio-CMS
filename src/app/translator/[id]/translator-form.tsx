@@ -18,7 +18,7 @@ import {
   genderOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadImageMutation } from '@/queries';
+import { useUploadAvatar } from '@/queries';
 import route from '@/routes';
 import { translatorSchema } from '@/schemaValidations';
 import { TranslatorBodyType, TranslatorResType } from '@/types';
@@ -38,7 +38,7 @@ export default function TranslatorForm({ queryKey }: { queryKey: string }) {
       listPageUrl: route.translator.getList.path
     }
   });
-  const uploadImageMutation = useUploadImageMutation();
+  const uploadImageMutation = useUploadAvatar();
 
   const defaultValues: TranslatorBodyType = {
     avatarPath: '',
@@ -133,7 +133,6 @@ export default function TranslatorForm({ queryKey }: { queryKey: string }) {
                 label='Ngày sinh'
                 placeholder='Chọn ngày sinh'
                 required
-                className='focus-visible:ring-dodger-blue'
                 format='dd/MM/yyyy'
               />
             </Col>

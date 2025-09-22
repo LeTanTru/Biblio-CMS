@@ -19,3 +19,8 @@ export const DEFAULT_COL_SPAN = 5;
 export const GENDER_MALE = 1;
 export const GENDER_FEMALE = 2;
 export const GENDER_OTHER = 3;
+
+export const PRODUCT_VARIANT_CONDITION_NEW = 1;
+export const PRODUCT_VARIANT_CONDITION_OLD = 2;
+export const PRODUCT_VARIANT_FORMAT_HARD_COVER = 1;
+export const PRODUCT_VARIANT_FORMAT_PAPER_BACK = 2;

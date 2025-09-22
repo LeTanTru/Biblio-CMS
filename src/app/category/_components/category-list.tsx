@@ -1,6 +1,5 @@
 'use client';
 
-import { categoryApiRequest } from '@/api-requests';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
@@ -16,24 +15,29 @@ import {
 } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import route from '@/routes';
 import { categorySearchParamSchema } from '@/schemaValidations';
 import {
+  ApiResponse,
   CategoryResType,
   CategorySearchParamType,
   Column,
   SearchFormProps
 } from '@/types';
-import { notify, renderImageUrl } from '@/utils';
+import { http, notify, renderImageUrl } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import { RotateCcw, Save } from 'lucide-react';
 
 export default function CategoryList({ queryKey }: { queryKey: string }) {
   const recoverMutation = useMutation({
     mutationKey: [`${queryKey}-recover`],
-    mutationFn: (id: string) => categoryApiRequest.recover(id)
+    mutationFn: (id: string) =>
+      http.put<ApiResponse<any>>(apiConfig.category.recover, {
+        pathParams: {
+          id
+        }
+      })
   });
-  const { data, loading, queryFilter, handlers, listQuery } = useListBase<
+  const { data, loading, handlers, listQuery } = useListBase<
     CategoryResType,
     CategorySearchParamType
   >({
@@ -79,7 +83,7 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
   });
   const {
     sortColumn,
-    loading: updateOrderingloading,
+    loading: loadingUpdateOrdering,
     sortedData,
     isChanged,
     onDragEnd,
@@ -117,7 +121,6 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
       title: 'Tên',
       dataIndex: 'name'
     },
-    handlers.renderStatusColumn(),
     handlers.renderActionColumn({
       actions: {
         edit: (record: CategoryResType) => record.status === STATUS_ACTIVE,
@@ -140,35 +143,30 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
     ];
 
   return (
-    <PageWrapper
-      breadcrumbs={[
-        { label: 'Trang chủ', href: route.home.path },
-        { label: 'Danh mục' }
-      ]}
-    >
+    <PageWrapper breadcrumbs={[{ label: 'Danh mục' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: categorySearchParamSchema,
-          initialValues: { ...queryFilter }
+          schema: categorySearchParamSchema
         })}
-        actionBar={handlers.renderAddButton()}
+        addButton={handlers.renderAddButton()}
+        reloadButton={handlers.renderReloadButton()}
       >
         <DragDropTable
           columns={columns}
           dataSource={sortedData}
-          loading={loading || updateOrderingloading}
+          loading={loading || loadingUpdateOrdering}
           onDragEnd={onDragEnd}
         />
-        {sortedData.length > 1 && !(loading || updateOrderingloading) && (
+        {sortedData.length > 1 && !(loading || loadingUpdateOrdering) && (
           <div className='mr-4 flex justify-end py-4'>
             <Button
               onClick={handleUpdate}
-              disabled={!isChanged || loading || updateOrderingloading}
+              disabled={!isChanged || loading || loadingUpdateOrdering}
               className='w-40'
               variant={'primary'}
             >
-              {loading || updateOrderingloading ? (
+              {loading || loadingUpdateOrdering ? (
                 <CircleLoading />
               ) : (
                 <>

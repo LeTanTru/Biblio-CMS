@@ -111,10 +111,11 @@ export default function UploadImageField<T extends FieldValues>({
 }: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [shouldCrop, setShouldCrop] = useState(true);
   const [zoom, setZoom] = useState(1);
   const {
     field: { value: fieldValue, onChange: fieldOnChange },
-    fieldState: { isDirty }
+    fieldState: { error }
   } = useController({ name, control });
 
   const [
@@ -140,13 +141,31 @@ export default function UploadImageField<T extends FieldValues>({
   }, []);
 
   const handleApply = async () => {
-    if (!previewUrl || !fileId || !croppedAreaPixels || !uploadImageFn) return;
+    if (!previewUrl || !fileId || !uploadImageFn) return;
 
-    const croppedBlob = await getCroppedImg(previewUrl, croppedAreaPixels);
-    if (!croppedBlob) return;
+    let blob: Blob | null = null;
+
+    if (shouldCrop && croppedAreaPixels) {
+      blob = await getCroppedImg(previewUrl, croppedAreaPixels);
+    } else {
+      const image = await createImage(previewUrl);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      canvas.width = image.width;
+      canvas.height = image.height;
+      ctx.drawImage(image, 0, 0);
+
+      blob = await new Promise((resolve) =>
+        canvas.toBlob((b) => resolve(b), 'image/jpeg')
+      );
+    }
+
+    if (!blob) return;
 
     try {
-      const uploadedUrl = await uploadImageFn(croppedBlob);
+      const uploadedUrl = await uploadImageFn(blob);
       onChange?.(uploadedUrl);
       fieldOnChange(uploadedUrl);
       setDialogOpen(false);
@@ -174,7 +193,15 @@ export default function UploadImageField<T extends FieldValues>({
     <div className='space-y-2'>
       <div className='flex flex-col items-center justify-center gap-y-5'>
         {label && (
-          <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
+          <FormLabel
+            className={cn(
+              'ml-1 gap-1.5',
+              {
+                'text-destructive': error?.message
+              },
+              labelClassName
+            )}
+          >
             {label}
             {required && <span className='text-destructive'>*</span>}
           </FormLabel>
@@ -237,6 +264,9 @@ export default function UploadImageField<T extends FieldValues>({
             />
           </label>
         </div>
+        {error?.message && (
+          <p className='text-destructive text-sm'>{error.message}</p>
+        )}
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -270,7 +300,7 @@ export default function UploadImageField<T extends FieldValues>({
             </DialogTitle>
           </DialogHeader>
 
-          {previewUrl && (
+          {previewUrl && shouldCrop ? (
             <Cropper
               className='h-96 sm:h-120'
               image={previewUrl}
@@ -282,20 +312,37 @@ export default function UploadImageField<T extends FieldValues>({
               <CropperImage />
               <CropperCropArea />
             </Cropper>
+          ) : (
+            <img
+              src={previewUrl}
+              alt='Preview'
+              className='mx-auto max-h-96 sm:max-h-120'
+            />
           )}
 
-          <DialogFooter className='border-t px-4 py-6'>
-            <div className='mx-auto flex w-full max-w-80 items-center gap-4'>
-              <ZoomOutIcon className='shrink-0 opacity-60' size={16} />
-              <Slider
-                value={[zoom]}
-                min={1}
-                max={3}
-                step={0.1}
-                onValueChange={(val) => setZoom(val[0])}
+          <DialogFooter className='flex flex-col gap-4 border-t px-4 py-6'>
+            <label className='flex items-center gap-2'>
+              <input
+                type='checkbox'
+                checked={shouldCrop}
+                onChange={(e) => setShouldCrop(e.target.checked)}
               />
-              <ZoomInIcon className='shrink-0 opacity-60' size={16} />
-            </div>
+              <span className='text-sm'>Cắt ảnh trước khi lưu</span>
+            </label>
+
+            {shouldCrop && (
+              <div className='mx-auto flex w-full max-w-80 items-center gap-4'>
+                <ZoomOutIcon className='shrink-0 opacity-60' size={16} />
+                <Slider
+                  value={[zoom]}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  onValueChange={(val) => setZoom(val[0])}
+                />
+                <ZoomInIcon className='shrink-0 opacity-60' size={16} />
+              </div>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -12,14 +12,14 @@ import { LoginBodyType } from '@/types/auth.type';
 import { notify, setData } from '@/utils';
 import Image from 'next/image';
 import PasswordField from '@/components/form/password-field';
-import { useProfileStore } from '@/store';
 import { CircleLoading } from '@/components/loading';
 import { useNavigate } from '@/hooks';
+import { useAuthStore } from '@/store';
 
 export default function LoginForm() {
   const loginMutation = useLoginMutation();
   const navigate = useNavigate(false);
-  const { setAuthenticated, setLoading } = useProfileStore();
+  const { setAuthenticated, setLoading } = useAuthStore();
   const defaultValues: LoginBodyType = {
     email: 'admin@example.com',
     password: 'admin1236545'
@@ -78,7 +78,6 @@ export default function LoginForm() {
                 control={form.control}
                 label='Email'
                 placeholder='Nhập email...'
-                className='focus-visible:ring-dodger-blue'
               />
             </Col>
           </Row>

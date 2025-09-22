@@ -1,6 +1,5 @@
 'use client';
 
-import { publisherApiRequest } from '@/api-requests';
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
@@ -15,68 +14,73 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import route from '@/routes';
 import { publisherSearchParamSchema } from '@/schemaValidations';
 import {
+  ApiResponse,
   Column,
   PublisherResType,
   PublisherSearchParamTYpe,
   SearchFormProps
 } from '@/types';
-import { notify, renderImageUrl } from '@/utils';
+import { http, notify, renderImageUrl } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import { CircleUserRound, RotateCcw } from 'lucide-react';
 
 export default function PublisherList({ queryKey }: { queryKey: string }) {
   const recoverMutation = useMutation({
     mutationKey: [`${queryKey}-recover`],
-    mutationFn: (id: string) => publisherApiRequest.recover(id)
+    mutationFn: (id: string) =>
+      http.put<ApiResponse<any>>(apiConfig.publisher.recover, {
+        pathParams: {
+          id
+        }
+      })
   });
 
-  const { data, pagination, loading, handlers, queryFilter, listQuery } =
-    useListBase<PublisherResType, PublisherSearchParamTYpe>({
-      apiConfig: apiConfig.publisher,
-      options: {
-        queryKey,
-        objectName: 'nhà xuất bản',
-        defaultFilters: {
-          status: STATUS_ACTIVE
-        }
-      },
-      override: (handlers) => {
-        handlers.additionalColumns = () => ({
-          recover: (
-            record: PublisherResType,
-            buttonProps?: Record<string, any>
-          ) => {
-            return (
-              <HasPermission
-                requiredPermissions={[
-                  apiConfig.publisher.recover.permissionCode
-                ]}
-              >
-                <ToolTip title={`Khôi phục`}>
-                  <span>
-                    <Button
-                      disabled={record.status === STATUS_ACTIVE}
-                      onClick={async () => {
-                        await recoverMutation.mutateAsync(record.id);
-                        notify.success('Khôi phục thành công');
-                        listQuery.refetch();
-                      }}
-                      className='border-none bg-transparent shadow-none hover:bg-transparent'
-                      {...buttonProps}
-                    >
-                      <RotateCcw className='stroke-dodger-blue size-3.5' />
-                    </Button>
-                  </span>
-                </ToolTip>
-              </HasPermission>
-            );
-          }
-        });
+  const { data, pagination, loading, handlers, listQuery } = useListBase<
+    PublisherResType,
+    PublisherSearchParamTYpe
+  >({
+    apiConfig: apiConfig.publisher,
+    options: {
+      queryKey,
+      objectName: 'nhà xuất bản',
+      defaultFilters: {
+        status: STATUS_ACTIVE
       }
-    });
+    },
+    override: (handlers) => {
+      handlers.additionalColumns = () => ({
+        recover: (
+          record: PublisherResType,
+          buttonProps?: Record<string, any>
+        ) => {
+          return (
+            <HasPermission
+              requiredPermissions={[apiConfig.publisher.recover.permissionCode]}
+            >
+              <ToolTip title={`Khôi phục`}>
+                <span>
+                  <Button
+                    disabled={record.status === STATUS_ACTIVE}
+                    onClick={async () => {
+                      await recoverMutation.mutateAsync(record.id);
+                      notify.success('Khôi phục thành công');
+                      listQuery.refetch();
+                    }}
+                    className='border-none bg-transparent shadow-none hover:bg-transparent'
+                    {...buttonProps}
+                  >
+                    <RotateCcw className='stroke-dodger-blue size-3.5' />
+                  </Button>
+                </span>
+              </ToolTip>
+            </HasPermission>
+          );
+        }
+      });
+    }
+  });
 
   const columns: Column<PublisherResType>[] = [
     {
@@ -104,7 +108,6 @@ export default function PublisherList({ queryKey }: { queryKey: string }) {
       dataIndex: 'name',
       render: (value) => value ?? '---'
     },
-    handlers.renderStatusColumn(),
     handlers.renderActionColumn({
       actions: {
         edit: (record: PublisherResType) => record.status === STATUS_ACTIVE,
@@ -127,19 +130,14 @@ export default function PublisherList({ queryKey }: { queryKey: string }) {
     ];
 
   return (
-    <PageWrapper
-      breadcrumbs={[
-        { label: 'Trang chủ', href: route.home.path },
-        { label: 'Nhà xuất bản' }
-      ]}
-    >
+    <PageWrapper breadcrumbs={[{ label: 'Nhà xuất bản' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: publisherSearchParamSchema,
-          initialValues: { ...queryFilter }
+          schema: publisherSearchParamSchema
         })}
-        actionBar={handlers.renderAddButton()}
+        addButton={handlers.renderAddButton()}
+        reloadButton={handlers.renderReloadButton()}
       >
         <BaseTable
           columns={columns}

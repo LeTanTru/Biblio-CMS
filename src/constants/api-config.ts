@@ -236,11 +236,17 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'PRD_D'
+    },
+    recover: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/recover/:id`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'PRD_U'
     }
   },
   productVariant: {
     getList: {
-      baseUrl: `${AppConstants.apiUrl}v1/product-variant/list`,
+      baseUrl: `${AppConstants.apiUrl}v1/product-variant/private/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'PRD_V_L'
@@ -258,7 +264,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'PRD_V_U'
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}v1/product-variant/get/:id`,
+      baseUrl: `${AppConstants.apiUrl}v1/product-variant/private/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'PRD_V_V'
@@ -268,6 +274,12 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'PRD_V_D'
+    },
+    recover: {
+      baseUrl: `${AppConstants.apiUrl}v1/product-variant/recover/:id`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'PRD_V_U'
     }
   },
   productImage: {
@@ -311,7 +323,7 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/product-image/set-default`,
       method: 'PUT',
       headers: baseHeader,
-      permissionCode: 'PRD_IMG_D'
+      permissionCode: 'PRD_IMG_U'
     }
   },
   publisher: {
@@ -350,6 +362,11 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'PUB_U'
+    },
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}v1/publisher/auto-complete`,
+      method: 'GET',
+      headers: baseHeader
     }
   },
   author: {
@@ -388,6 +405,11 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'AUTH_U'
+    },
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}v1/author/auto-complete`,
+      method: 'GET',
+      headers: baseHeader
     }
   },
   translator: {
@@ -426,6 +448,11 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'AUTH_U'
+    },
+    autoComplete: {
+      baseUrl: `${AppConstants.apiUrl}v1/translator/auto-complete`,
+      method: 'GET',
+      headers: baseHeader
     }
   }
 });

@@ -1,5 +1,4 @@
 'use client';
-
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -24,7 +23,7 @@ import { Button } from '@/components/form';
 import './sidebar.css';
 import { MenuItem } from '@/types';
 import { useSidebarStore } from '@/store';
-import { useNavigate } from '@/hooks';
+import { useNavigate, useQueryParams } from '@/hooks';
 import useValidatePermission from '@/hooks/use-validate-permission';
 import { Skeleton } from '@/components/ui/skeleton';
 import menuConfig from '@/constants/menu-config';
@@ -34,13 +33,14 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   const navigate = useNavigate();
   const pathname = usePathname();
   const { state } = useSidebar();
+  const { serializeParams } = useQueryParams();
 
   const storeOpen = useSidebarStore((s) => s.openMenus[item.key]);
   const { toggleMenu, setMenu, setSidebarState } = useSidebarStore();
 
   const [hovered, setHovered] = useState(false);
   const [flyoutHovered, setFlyoutHovered] = useState(false);
-  const showFlyout = state === 'collapsed' && (hovered || flyoutHovered);
+  const showFlyout = hovered || flyoutHovered;
   const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // Initial open when reload
@@ -77,9 +77,13 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
   }, [item.children, pathname, item.key, setMenu]);
 
   // handle click on sub menu item
-  const handleSubItemClick = (path?: string) => {
+  const handleSubItemClick = (sub: MenuItem) => {
+    let path = sub.path;
+    let query = '';
     if (!path || pathname.includes(path)) return;
+    if (sub.query) query = serializeParams(sub.query);
     setSidebarState('expanded');
+    if (query) path = `${path}?${query}`;
     navigate(path);
   };
 
@@ -120,7 +124,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
             toggleMenu(item.key);
           }}
           className={cn(
-            'hover:bg-sidebar! active:bg-sidebar! mx-auto my-1 min-h-10 cursor-pointer rounded-none pl-8 font-normal whitespace-nowrap text-white transition-all! duration-200! ease-linear! hover:text-white active:text-white',
+            'hover:bg-sidebar! active:bg-sidebar! mx-auto my-1 min-h-10 cursor-pointer rounded-none pl-8 font-normal whitespace-nowrap text-white transition-all! duration-200! ease-linear! hover:text-white focus-visible:ring-0! active:text-white',
             {
               'opacity-80 hover:opacity-100': !item.children?.find(
                 (child) => child.path === pathname
@@ -137,7 +141,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
           />
         </SidebarMenuButton>
         <AnimatePresence initial={false}>
-          {open && !showFlyout && item.children && (
+          {open && state === 'expanded' && !showFlyout && item.children && (
             <motion.div
               key='content'
               initial={{ height: 0 }}
@@ -153,12 +157,12 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                   ) : (
                     <SidebarMenuItem key={sub.key}>
                       <SidebarMenuButton
-                        className='m-1 min-h-10 rounded-none'
+                        className='m-1 min-h-10 rounded-none focus-visible:ring-0!'
                         asChild
                       >
                         <Button
                           variant='ghost'
-                          onClick={() => handleSubItemClick(sub.path)}
+                          onClick={() => handleSubItemClick(sub)}
                           className={cn(
                             'mx-auto w-[calc(100%_-_8px)] justify-start rounded-lg pl-12 font-normal text-white transition-all duration-200 ease-linear hover:text-white active:text-white',
                             {
@@ -185,7 +189,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
       </SidebarMenuItem>
       {createPortal(
         <AnimatePresence>
-          {showFlyout && item.children && (
+          {showFlyout && state === 'collapsed' && item.children && (
             <>
               <motion.div
                 key='fly-layout'
@@ -212,13 +216,13 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                       ) : (
                         <SidebarMenuItem key={sub.key}>
                           <SidebarMenuButton
-                            className='m-1 min-h-10 rounded-none'
+                            className='m-1 min-h-10 rounded-none focus-visible:ring-0!'
                             asChild
                           >
                             <Button
                               variant='ghost'
                               onClick={() => {
-                                handleSubItemClick(sub.path);
+                                handleSubItemClick(sub);
                                 setHovered(false);
                                 setFlyoutHovered(false);
                                 setSidebarState('collapsed');
@@ -259,7 +263,10 @@ const renderMenu = (items: MenuItem[]) => (
         <CollapsibleMenuItem key={item.key} item={item} />
       ) : (
         <SidebarMenuItem key={item.key}>
-          <SidebarMenuButton className='rounded-none' asChild>
+          <SidebarMenuButton
+            className='rounded-none focus-visible:ring-0!'
+            asChild
+          >
             {item.path ? (
               <Link href={item.path}>
                 {item.icon && <item.icon />}
@@ -352,7 +359,7 @@ const AppSidebar = () => {
       >
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton className='h-full' asChild>
+            <SidebarMenuButton className='h-full focus-visible:ring-0!' asChild>
               <Link
                 href='/'
                 className='block! w-full! transition-all duration-200 ease-linear group-data-[collapsible=icon]:size-full! group-data-[collapsible=icon]:p-0! hover:bg-transparent!'

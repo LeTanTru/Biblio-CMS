@@ -7,7 +7,7 @@ import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { Modal } from '@/components/modal';
 import { BaseTable } from '@/components/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { apiConfig } from '@/constants';
+import { apiConfig, groupPermissionErrorMaps } from '@/constants';
 import { useDisclosure, useListBase, useSaveBase } from '@/hooks';
 import { groupPermissionSchema } from '@/schemaValidations';
 import { Column } from '@/types';
@@ -16,6 +16,8 @@ import {
   GroupPermissionResType,
   GroupPermissionSearchParamType
 } from '@/types/group-permission.type';
+import { applyFormErrors } from '@/utils';
+import { AxiosError } from 'axios';
 import { Edit2, PlusIcon, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -131,17 +133,24 @@ export default function GroupPermissionList({
     values: GroupPermissionBodyType,
     form: UseFormReturn<GroupPermissionBodyType>
   ) => {
-    await handleSubmit(
-      !isEditing ? values : { ...values, id: selectedRow?.id }
-    );
-    listQuery.refetch();
-    handleClose();
+    try {
+      await handleSubmit(
+        !isEditing ? values : { ...values, id: selectedRow?.id }
+      );
+      listQuery.refetch();
+      handleClose();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errCode = error.response?.data?.code;
+        applyFormErrors(form, errCode, groupPermissionErrorMaps);
+      }
+    }
   };
 
   return (
     <>
       <ListPageWrapper
-        actionBar={
+        addButton={
           <HasPermission
             requiredPermissions={[
               apiConfig.groupPermission.create.permissionCode
@@ -153,6 +162,7 @@ export default function GroupPermissionList({
             </Button>
           </HasPermission>
         }
+        reloadButton={handlers.renderReloadButton()}
       >
         <BaseTable
           columns={columns}

@@ -71,6 +71,21 @@ const route = defineRoute({
       ]
     }
   },
+  productVariant: {
+    getList: {
+      path: '/product/:id/product-variant',
+      auth: true,
+      permissionCode: [apiConfig.productVariant.getList.permissionCode]
+    },
+    savePage: {
+      path: '/product/:id/product-variant/:id',
+      auth: true,
+      permissionCode: [
+        apiConfig.productVariant.create.permissionCode,
+        apiConfig.productImage.update.permissionCode
+      ]
+    }
+  },
   publisher: {
     getList: {
       path: '/publisher',

@@ -1,4 +1,5 @@
 import AccountList from '@/app/account/_components/account-list';
+import { queryKeys } from '@/constants';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -6,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function AccountPage() {
-  return <AccountList queryKey='account' />;
+  return <AccountList queryKey={queryKeys.ACCOUNT} />;
 }

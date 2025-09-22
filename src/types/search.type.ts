@@ -24,5 +24,5 @@ export type SearchFormProps<S extends FieldValues> = {
   initialValues: Partial<S>;
   schema: ZodObject;
   handleSearchSubmit: (values: any) => void;
-  handleSearchReset: (initialValues: Partial<S>) => void;
+  handleSearchReset: () => void;
 };

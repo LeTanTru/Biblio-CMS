@@ -18,10 +18,10 @@ import {
   genderOptions
 } from '@/constants';
 import { useSaveBase } from '@/hooks';
-import { useUploadImageMutation } from '@/queries';
+import { useUploadAvatar } from '@/queries';
 import route from '@/routes';
 import { authorSchema } from '@/schemaValidations';
-import { AuthorBodyType, AuthorResType } from '@/types/author.type';
+import { AuthorBodyType, AuthorResType } from '@/types';
 import { renderImageUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -38,7 +38,7 @@ export default function AuthorForm({ queryKey }: { queryKey: string }) {
       listPageUrl: route.author.getList.path
     }
   });
-  const uploadImageMutation = useUploadImageMutation();
+  const uploadImageMutation = useUploadAvatar();
 
   const defaultValues: AuthorBodyType = {
     avatarPath: '',
@@ -133,7 +133,6 @@ export default function AuthorForm({ queryKey }: { queryKey: string }) {
                 label='Ngày sinh'
                 placeholder='Chọn ngày sinh'
                 required
-                className='focus-visible:ring-dodger-blue'
                 format='dd/MM/yyyy'
               />
             </Col>

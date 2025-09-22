@@ -24,24 +24,35 @@ const useQueryParams = <T extends Record<string, any>>() => {
   };
 
   const setQueryParams = (newParams: Partial<T>) => {
-    let params: URLSearchParams;
+    const params = new URLSearchParams();
 
-    if (Object.keys(newParams).length === 0) {
-      params = new URLSearchParams();
-    } else {
-      params = new URLSearchParams(searchParams.toString());
-
-      Object.entries(newParams).forEach(([key, value]) => {
-        if (value === null || value === undefined || value === '') {
-          params.delete(key);
-        } else {
-          params.set(key, String(value));
-        }
-      });
-    }
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        params.set(key, String(value));
+      }
+    });
 
     const queryString = params.toString();
     router.push(queryString ? `${pathname}?${queryString}` : pathname);
+  };
+
+  const serializeParams = (obj: Record<string, any>) => {
+    return Object.entries(obj)
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+      .join('&');
+  };
+
+  const deserializeParams = (str: string) => {
+    return str.split('&').reduce(
+      (acc, part) => {
+        const [key, value] = part.split('=');
+        if (key) {
+          acc[decodeURIComponent(key)] = decodeURIComponent(value || '');
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    );
   };
 
   const paramsObject = Object.fromEntries(searchParams.entries()) as Partial<T>;
@@ -50,11 +61,13 @@ const useQueryParams = <T extends Record<string, any>>() => {
   ).toString();
 
   return {
+    deserializeParams,
     getQueryParam,
-    setQueryParam,
-    setQueryParams,
+    queryString,
     searchParams: paramsObject,
-    queryString
+    serializeParams,
+    setQueryParam,
+    setQueryParams
   };
 };
 

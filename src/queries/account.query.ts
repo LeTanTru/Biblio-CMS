@@ -2,7 +2,7 @@
 
 import { accountApiRequest } from '@/api-requests';
 import { logger } from '@/logger';
-import { useProfileStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { AccountSearchParamType, ProfileBodyType } from '@/types';
 import { notify } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,7 +22,7 @@ export const useUpdateProfileMutation = () => {
       await accountApiRequest.updateProfile(body),
     onSuccess: async () => {
       const res = await accountApiRequest.getProfile();
-      useProfileStore.getState().setProfile(res.data!);
+      useAuthStore.getState().setProfile(res.data!);
     }
   });
 };

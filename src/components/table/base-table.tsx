@@ -17,6 +17,25 @@ import { emptyData } from '@/assets';
 import { cn } from '@/lib';
 import { CircleLoading } from '@/components/loading';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+
+function getValueByPath<T extends Record<string, any>>(
+  obj: T,
+  path?: string | string[]
+): any {
+  if (!obj || !path) return undefined;
+
+  if (typeof path === 'string') {
+    return obj[path];
+  }
+
+  return path.reduce((acc, key) => {
+    if (acc && typeof acc === 'object' && key in acc) {
+      return acc[key];
+    }
+    return undefined;
+  }, obj as any);
+}
 
 export default function BaseTable<T extends Record<any, any>>({
   columns,
@@ -26,16 +45,40 @@ export default function BaseTable<T extends Record<any, any>>({
   changePagination,
   loading
 }: BaseTableProps<T>) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollAtEnd, setScrollAtEnd] = useState(false);
   const { total } = pagination;
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const div = scrollRef.current?.querySelector('div');
+      const maxScrollLeft = (div?.scrollWidth ?? 0) - (div?.clientWidth ?? 0);
+      setScrollAtEnd((div?.scrollLeft ?? 0) >= maxScrollLeft);
+    };
+
+    el.querySelector('div')?.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => {
+      el.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <div className='flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg bg-white text-sm'>
       <div className='base-table relative flex-1'>
-        <div className='w-full overflow-x-auto'>
+        <div
+          className='w-full overflow-x-auto [&>div]:overflow-y-hidden'
+          ref={scrollRef}
+        >
           <Table className='w-full min-w-200'>
             <TableHeader className='bg-gray-50'>
               <TableRow className='border-b-[0.2px]'>
                 {columns.map((col, idx) => {
-                  const isLast = idx === columns.length - 1;
+                  const isLast = idx === columns.length - (col.fixed ? 2 : 1);
                   return (
                     <TableHead
                       key={idx}
@@ -45,8 +88,11 @@ export default function BaseTable<T extends Record<any, any>>({
                         }`,
                         {
                           'before:absolute before:top-1/2 before:right-0 before:h-1/2 before:w-0.5 before:-translate-y-1/2 before:bg-zinc-100':
-                            !isLast,
-                          'sticky right-0 z-30': col.fixed
+                            !isLast && !col.fixed,
+                          'sticky right-0 z-1 z-10 bg-white transition-all duration-300':
+                            col.fixed,
+                          'before:absolute before:top-0 before:bottom-[-1px] before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
+                            col.fixed && !scrollAtEnd
                         }
                       )}
                       style={{ width: col.width }}
@@ -74,20 +120,23 @@ export default function BaseTable<T extends Record<any, any>>({
                                 col.align ? `text-${col.align}` : 'text-left'
                               }`,
                               {
-                                'sticky right-0 z-30': col.fixed
+                                'sticky right-0 z-1 z-10 bg-white transition-all duration-300':
+                                  col.fixed,
+                                'before:absolute before:top-0 before:bottom-[-1px] before:left-0 before:w-7.5 before:-translate-x-full before:shadow-[inset_-10px_0_8px_-8px] before:shadow-[rgba(5,5,5,0.1)]':
+                                  col.fixed && !scrollAtEnd
                               }
                             )}
                           >
                             {col.render
                               ? col.render(
                                   col.dataIndex
-                                    ? row[col.dataIndex]
+                                    ? getValueByPath(row, col.dataIndex)
                                     : undefined,
                                   row,
                                   rowIndex
                                 )
                               : col.dataIndex
-                                ? row[col.dataIndex]
+                                ? getValueByPath(row, col.dataIndex)
                                 : null}
                           </TableCell>
                         );

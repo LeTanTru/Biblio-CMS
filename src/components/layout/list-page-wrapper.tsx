@@ -1,30 +1,36 @@
 import { cn } from '@/lib';
 
 export default function ListPageWrapper({
+  className,
   children,
   searchForm,
-  actionBar
+  addButton,
+  reloadButton
 }: {
+  className?: string;
   children?: React.ReactNode;
   searchForm?: React.ReactNode;
-  actionBar?: React.ReactNode;
+  addButton?: React.ReactNode;
+  reloadButton?: React.ReactNode;
 }) {
   return (
     <div
       tabIndex={-1}
-      className='min-h-[calc(100vh_-_190px)] rounded-lg bg-white'
+      className={cn(
+        'min-h-[calc(100vh_-_190px)] rounded-lg bg-white',
+        className
+      )}
     >
       <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg bg-white px-4'>
         {searchForm && <div className='flex-1'>{searchForm}</div>}
-        {actionBar && (
-          <div
-            className={cn({
-              'my-4 ml-auto block': !searchForm
-            })}
-          >
-            {actionBar}
-          </div>
-        )}
+        <div
+          className={cn('flex gap-2', {
+            'my-4 ml-auto': !searchForm
+          })}
+        >
+          {reloadButton}
+          {addButton}
+        </div>
       </div>
       {children}
     </div>

@@ -2,7 +2,8 @@ import {
   CategoryBodyType,
   ErrorMaps,
   GroupBodyType,
-  PermissionBodyType
+  PermissionBodyType,
+  ProductVariantBodyType
 } from '@/types';
 import { GroupPermissionBodyType } from '@/types/group-permission.type';
 
@@ -31,7 +32,10 @@ export const ErrorCode = {
 
   // Permission Group
   PERMISSION_GROUP_ERROR_NOT_FOUND: 'ERROR-PERMISSION-GROUP-0000',
-  PERMISSION_GROUP_ERROR_NAME_EXISTS: 'ERROR-PERMISSION-GROUP-0001'
+  PERMISSION_GROUP_ERROR_NAME_EXISTS: 'ERROR-PERMISSION-GROUP-0001',
+
+  // Product variant
+  PRODUCT_VARIANT_ERROR_EXISTED: 'ERROR-PRODUCT-VARIANT-0001'
 } as const;
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {

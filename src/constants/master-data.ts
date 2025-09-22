@@ -5,6 +5,10 @@ import {
   KIND_ADMIN,
   KIND_EMPLOYEE,
   KIND_USER,
+  PRODUCT_VARIANT_CONDITION_NEW,
+  PRODUCT_VARIANT_CONDITION_OLD,
+  PRODUCT_VARIANT_FORMAT_HARD_COVER,
+  PRODUCT_VARIANT_FORMAT_PAPER_BACK,
   STATUS_ACTIVE,
   STATUS_DELETED,
   STATUS_LOCK,
@@ -257,6 +261,98 @@ export const countryOptions: { label: string; value: string }[] = [
   { label: 'Zimbabwe', value: 'ZW' }
 ];
 
+export const languageOptions: { label: string; value: string }[] = [
+  { label: 'Tiếng Ả Rập', value: 'ar' },
+  { label: 'Tiếng Albania', value: 'sq' },
+  { label: 'Tiếng Amharic', value: 'am' },
+  { label: 'Tiếng Armenia', value: 'hy' },
+  { label: 'Tiếng Azerbaijan', value: 'az' },
+  { label: 'Tiếng Ba Lan', value: 'pl' },
+  { label: 'Tiếng Basque', value: 'eu' },
+  { label: 'Tiếng Belarus', value: 'be' },
+  { label: 'Tiếng Bengal', value: 'bn' },
+  { label: 'Tiếng Bồ Đào Nha', value: 'pt' },
+  { label: 'Tiếng Bosnia', value: 'bs' },
+  { label: 'Tiếng Bulgaria', value: 'bg' },
+  { label: 'Tiếng Catalan', value: 'ca' },
+  { label: 'Tiếng Cebuano', value: 'ceb' },
+  { label: 'Tiếng Croatia', value: 'hr' },
+  { label: 'Tiếng Czech', value: 'cs' },
+  { label: 'Tiếng Do Thái', value: 'he' },
+  { label: 'Tiếng Đức', value: 'de' },
+  { label: 'Tiếng Dzongkha', value: 'dz' },
+  { label: 'Tiếng Estonia', value: 'et' },
+  { label: 'Tiếng Filipino', value: 'fil' },
+  { label: 'Tiếng Phần Lan', value: 'fi' },
+  { label: 'Tiếng Pháp', value: 'fr' },
+  { label: 'Tiếng Georgia', value: 'ka' },
+  { label: 'Tiếng Gujarati', value: 'gu' },
+  { label: 'Tiếng Hà Lan', value: 'nl' },
+  { label: 'Tiếng Hán (Giản thể)', value: 'zh' },
+  { label: 'Tiếng Hán (Phồn thể)', value: 'zh-TW' },
+  { label: 'Tiếng Hàn', value: 'ko' },
+  { label: 'Tiếng Hausa', value: 'ha' },
+  { label: 'Tiếng Hindi', value: 'hi' },
+  { label: 'Tiếng Hungary', value: 'hu' },
+  { label: 'Tiếng Hy Lạp', value: 'el' },
+  { label: 'Tiếng Iceland', value: 'is' },
+  { label: 'Tiếng Indonesia', value: 'id' },
+  { label: 'Tiếng Ireland', value: 'ga' },
+  { label: 'Tiếng Italy', value: 'it' },
+  { label: 'Tiếng Nhật', value: 'ja' },
+  { label: 'Tiếng Java', value: 'jv' },
+  { label: 'Tiếng Kannada', value: 'kn' },
+  { label: 'Tiếng Kazakh', value: 'kk' },
+  { label: 'Tiếng Khmer', value: 'km' },
+  { label: 'Tiếng Kinyarwanda', value: 'rw' },
+  { label: 'Tiếng Kirghiz', value: 'ky' },
+  { label: 'Tiếng Kurd', value: 'ku' },
+  { label: 'Tiếng Lào', value: 'lo' },
+  { label: 'Tiếng Latvia', value: 'lv' },
+  { label: 'Tiếng Lithuania', value: 'lt' },
+  { label: 'Tiếng Luxembourg', value: 'lb' },
+  { label: 'Tiếng Macedonia', value: 'mk' },
+  { label: 'Tiếng Malagasy', value: 'mg' },
+  { label: 'Tiếng Malay', value: 'ms' },
+  { label: 'Tiếng Malayalam', value: 'ml' },
+  { label: 'Tiếng Maori', value: 'mi' },
+  { label: 'Tiếng Marathi', value: 'mr' },
+  { label: 'Tiếng Mông Cổ', value: 'mn' },
+  { label: 'Tiếng Myanmar (Miến Điện)', value: 'my' },
+  { label: 'Tiếng Na Uy', value: 'no' },
+  { label: 'Tiếng Nepal', value: 'ne' },
+  { label: 'Tiếng Pashto', value: 'ps' },
+  { label: 'Tiếng Persia (Farsi)', value: 'fa' },
+  { label: 'Tiếng Punjabi', value: 'pa' },
+  { label: 'Tiếng Quechua', value: 'qu' },
+  { label: 'Tiếng Romania', value: 'ro' },
+  { label: 'Tiếng Nga', value: 'ru' },
+  { label: 'Tiếng Serbia', value: 'sr' },
+  { label: 'Tiếng Shona', value: 'sn' },
+  { label: 'Tiếng Sindhi', value: 'sd' },
+  { label: 'Tiếng Sinhala', value: 'si' },
+  { label: 'Tiếng Slovakia', value: 'sk' },
+  { label: 'Tiếng Slovenia', value: 'sl' },
+  { label: 'Tiếng Somali', value: 'so' },
+  { label: 'Tiếng Swahili', value: 'sw' },
+  { label: 'Tiếng Sunda', value: 'su' },
+  { label: 'Tiếng Tajik', value: 'tg' },
+  { label: 'Tiếng Tamil', value: 'ta' },
+  { label: 'Tiếng Tatar', value: 'tt' },
+  { label: 'Tiếng Telugu', value: 'te' },
+  { label: 'Tiếng Thái', value: 'th' },
+  { label: 'Tiếng Thổ Nhĩ Kỳ', value: 'tr' },
+  { label: 'Tiếng Turkmen', value: 'tk' },
+  { label: 'Tiếng Ukraina', value: 'uk' },
+  { label: 'Tiếng Urdu', value: 'ur' },
+  { label: 'Tiếng Uzbek', value: 'uz' },
+  { label: 'Tiếng Việt', value: 'vi' },
+  { label: 'Tiếng Wales', value: 'cy' },
+  { label: 'Tiếng Xhosa', value: 'xh' },
+  { label: 'Tiếng Yoruba', value: 'yo' },
+  { label: 'Tiếng Zulu', value: 'zu' }
+];
+
 export const FieldTypes = {
   STRING: 'STRING_TYPE',
   NUMBER: 'NUMBER_TYPE',
@@ -303,5 +399,74 @@ export const categoryStatuses = [
     value: STATUS_DELETED,
     label: 'Đã xóa',
     color: '#dc3545'
+  }
+];
+
+export const productVariantStatuses = [
+  {
+    value: STATUS_ACTIVE,
+    label: 'Hoạt động',
+    color: '#28a745'
+  },
+  {
+    value: STATUS_DELETED,
+    label: 'Đã xóa',
+    color: '#dc3545'
+  }
+];
+
+export const productStatuses = [
+  {
+    value: STATUS_ACTIVE,
+    label: 'Hoạt động',
+    color: '#28a745'
+  },
+  {
+    value: STATUS_DELETED,
+    label: 'Đã xóa',
+    color: '#dc3545'
+  }
+];
+
+export const ageRatings = [
+  { label: '0 - 2 tuổi', value: 1 },
+  { label: '3 - 5 tuổi', value: 2 },
+  { label: '6 - 11 tuổ', value: 3 },
+  { label: '12 - 15 tuổi', value: 4 },
+  { label: '16 - 18 tuổi', value: 5 },
+  { label: '18+', value: 6 }
+];
+
+export const queryKeys = {
+  ACCOUNT: 'account',
+  AUTHOR: 'author',
+  CATEGORY: 'category',
+  GROUP: 'group',
+  GROUP_PERMISSION: 'group-permission',
+  PRODUCT: 'product',
+  PRODUCT_VARIANT: 'product-variant',
+  PUBLISHER: 'publisher',
+  TRANSLATOR: 'translator'
+};
+
+export const productVariantConditions = [
+  {
+    label: 'Cũ',
+    value: PRODUCT_VARIANT_CONDITION_OLD
+  },
+  {
+    label: 'Mới',
+    value: PRODUCT_VARIANT_CONDITION_NEW
+  }
+];
+
+export const productVariantFormats = [
+  {
+    label: 'Bìa mềm',
+    value: PRODUCT_VARIANT_FORMAT_PAPER_BACK
+  },
+  {
+    label: 'Bìa cứng',
+    value: PRODUCT_VARIANT_FORMAT_HARD_COVER
   }
 ];

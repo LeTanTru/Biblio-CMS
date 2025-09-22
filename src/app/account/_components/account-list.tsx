@@ -1,5 +1,4 @@
 'use client';
-
 import { AvatarField, Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
@@ -20,7 +19,6 @@ import { apiConfig, groupKinds } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
-import route from '@/routes';
 import { accountSearchParamSchema } from '@/schemaValidations';
 import {
   AccountResType,
@@ -45,69 +43,68 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
       })
   });
 
-  const { data, pagination, loading, queryFilter, handlers, listQuery } =
-    useListBase<AccountResType, AccountSearchParamType>({
-      apiConfig: apiConfig.account,
-      options: {
-        queryKey,
-        objectName: 'tài khoản'
-      },
-      override: (handlers) => {
-        handlers.additionalColumns = () => ({
-          delete: (
-            record: AccountResType,
-            buttonProps?: Record<string, any>
-          ) => {
-            return (
-              <HasPermission
-                requiredPermissions={[apiConfig.account.delete.permissionCode]}
-              >
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <span>
-                      <ToolTip title={`Xóa tài khoản`}>
-                        <Button
-                          className='border-none bg-transparent shadow-none hover:bg-transparent'
-                          disabled={record.isSuperAdmin}
-                          {...buttonProps}
-                        >
-                          <Trash className='size-3.5 stroke-red-600' />
-                        </Button>
-                      </ToolTip>
-                    </span>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%]'>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className='text-md flex items-center gap-2 font-normal'>
-                        <Info className='size-8 fill-orange-500 stroke-white' />
-                        Bạn có chắc chắn muốn xóa tài khoản này không ?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription></AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel asChild>
-                        <Button
-                          variant='outline'
-                          className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
-                        >
-                          Không
-                        </Button>
-                      </AlertDialogCancel>
+  const { data, pagination, loading, handlers, listQuery } = useListBase<
+    AccountResType,
+    AccountSearchParamType
+  >({
+    apiConfig: apiConfig.account,
+    options: {
+      queryKey,
+      objectName: 'tài khoản'
+    },
+    override: (handlers) => {
+      handlers.additionalColumns = () => ({
+        delete: (record: AccountResType, buttonProps?: Record<string, any>) => {
+          return (
+            <HasPermission
+              requiredPermissions={[apiConfig.account.delete.permissionCode]}
+            >
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <span>
+                    <ToolTip title={`Xóa tài khoản`}>
                       <Button
-                        variant={'primary'}
-                        onClick={() => handleDelete(record)}
+                        className='border-none bg-transparent shadow-none hover:bg-transparent'
+                        disabled={record.isSuperAdmin}
+                        {...buttonProps}
                       >
-                        Có
+                        <Trash className='size-3.5 stroke-red-600' />
                       </Button>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </HasPermission>
-            );
-          }
-        });
-      }
-    });
+                    </ToolTip>
+                  </span>
+                </AlertDialogTrigger>
+                <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%]'>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className='text-md flex items-center gap-2 font-normal'>
+                      <Info className='size-8 fill-orange-500 stroke-white' />
+                      Bạn có chắc chắn muốn xóa tài khoản này không ?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription></AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel asChild>
+                      <Button
+                        variant='outline'
+                        className='border-red-500 text-red-500 transition-all duration-200 ease-linear hover:bg-transparent hover:text-red-500/80'
+                      >
+                        Không
+                      </Button>
+                    </AlertDialogCancel>
+                    <Button
+                      variant={'primary'}
+                      onClick={() => handleDelete(record)}
+                    >
+                      Có
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </HasPermission>
+          );
+        }
+      });
+    }
+  });
 
   const handleDelete = async (record: AccountResType) => {
     await deleteMutation.mutateAsync(record.id, {
@@ -204,18 +201,13 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
     ];
 
   return (
-    <PageWrapper
-      breadcrumbs={[
-        { label: 'Trang chủ', href: route.home.path },
-        { label: 'Tài khoản' }
-      ]}
-    >
+    <PageWrapper breadcrumbs={[{ label: 'Tài khoản' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: accountSearchParamSchema,
-          initialValues: { ...queryFilter }
+          schema: accountSearchParamSchema
         })}
+        reloadButton={handlers.renderReloadButton()}
       >
         <BaseTable
           columns={columns}

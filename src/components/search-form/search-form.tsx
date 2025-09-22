@@ -53,8 +53,8 @@ export default function SearchForm<S extends FieldValues>({
   };
 
   const handleReset = (form: UseFormReturn<z.infer<typeof schema>>) => {
-    handleSearchReset(initialValues);
-    form.reset(initialValues);
+    handleSearchReset();
+    form.reset({});
   };
 
   return (
@@ -82,7 +82,6 @@ export default function SearchForm<S extends FieldValues>({
                       options={sf.options ?? []}
                       getLabel={(option) => option.label}
                       getValue={(option) => option.value}
-                      className='focus-visible:ring-dodger-blue'
                       onValueChange={(val) => {
                         if (sf.submitOnChanged) {
                           form.setValue(sf.key as string, val);
@@ -95,13 +94,11 @@ export default function SearchForm<S extends FieldValues>({
                       control={form.control}
                       name={sf.key as string}
                       placeholder={sf.placeholder}
-                      className='focus-visible:ring-dodger-blue'
                     />
                   )}
                 </Col>
               );
             })}
-
             <Col className='w-9'>
               <Button type='submit' variant={'primary'}>
                 <Search />

@@ -8,7 +8,7 @@ import { useNavigate, useQueryParams } from '@/hooks';
 import { logger } from '@/logger';
 import { useLogoutMutation } from '@/queries';
 import route from '@/routes';
-import { useProfileStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { getData, notify, removeData, renderImageUrl, setData } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, CircleUserRound, LogOut, User } from 'lucide-react';
@@ -17,8 +17,7 @@ import { useState } from 'react';
 
 export default function DropdownAvatar() {
   const navigate = useNavigate();
-  const { profile, setLoading, setAuthenticated, setProfile } =
-    useProfileStore();
+  const { profile, setLoading, setAuthenticated, setProfile } = useAuthStore();
   const [open, setOpen] = useState(false);
   const logoutMutation = useLogoutMutation();
   const pathname = usePathname();

@@ -98,15 +98,17 @@ export default function PasswordField<T extends FieldValues>({
                   style={{ paddingTop: 0 }}
                   className={cn(
                     className,
-                    'pt-0! pb-0.5! placeholder:text-gray-300 focus-visible:ring-[1px]',
+                    'pt-0! pb-0.5! placeholder:text-gray-300 focus-visible:ring-[2px]',
                     {
                       'cursor-not-allowed opacity-50': disabled
                     },
                     {
                       'cursor-not-allowed opacity-50': disabled,
-                      'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500':
+                      'border-red-500 focus-visible:border-red-500 focus-visible:ring-[1px] focus-visible:ring-red-500':
                         fieldState.error
-                    }
+                    },
+                    !fieldState.error &&
+                      'focus-visible:ring-dodger-blue focus-visible:border-transparent'
                   )}
                 />
                 <Button

@@ -1,5 +1,4 @@
 'use client';
-
 import route from '@/routes';
 import { useAuth, useFirstActiveRoute, useNavigate } from '@/hooks';
 import { usePathname } from 'next/navigation';
@@ -8,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Unauthorized } from '@/components/unauthorized';
 import { motion } from 'framer-motion';
 import { Loader } from 'lucide-react';
-import { useProfileStore } from '@/store';
+import { useAuthStore } from '@/store';
 
 export default function PermissionGuard({
   children
@@ -20,7 +19,7 @@ export default function PermissionGuard({
     permissionCode: userPermissions,
     isAuthenticated
   } = useAuth();
-  const { setLoading } = useProfileStore();
+  const { setLoading } = useAuthStore();
   const navigate = useNavigate(false);
   const accessToken = getAccessTokenFromLocalStorage();
   const [ready, setReady] = useState(false);

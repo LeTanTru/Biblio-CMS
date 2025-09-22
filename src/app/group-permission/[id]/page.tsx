@@ -12,7 +12,6 @@ export default async function GroupDetailPage({
   return (
     <PageWrapper
       breadcrumbs={[
-        { label: 'Trang chủ', href: route.home.path },
         { label: 'Nhóm quyền', href: route.group.getList.path },
         { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} quyền` }
       ]}
