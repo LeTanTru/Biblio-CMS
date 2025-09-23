@@ -13,10 +13,11 @@ import {
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
 import { logger } from '@/logger';
-import { ApiConfig, ApiResponse } from '@/types';
-import { http, notify } from '@/utils';
+import { ApiConfig, ApiResponse, ErrorMaps } from '@/types';
+import { applyFormErrors, http, notify } from '@/utils';
 import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError, isAxiosError } from 'axios';
 import { ArrowLeftFromLine, Info, Save } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -130,7 +131,11 @@ export default function useSaveBase<
 
   const loading = createMutation.isPending || updateMutation.isPending;
 
-  const handleSubmit = async (values: T) => {
+  const handleSubmit = async (
+    values: T,
+    form?: UseFormReturn<T>,
+    errorMaps?: ErrorMaps<T>
+  ) => {
     const mutation = isCreate ? createMutation : updateMutation;
     await mutation.mutateAsync(
       isCreate ? { ...values } : { ...values, id: values.id ?? id },
@@ -141,12 +146,16 @@ export default function useSaveBase<
               queryKey: [queryKey, detailId]
             });
             notify.success(
-              `${isCreate ? 'Thêm mới' : ''} ${objectName} thành công`
+              `${isCreate ? 'Thêm mới' : 'Cập nhật'} ${objectName} thành công`
             );
           }
         },
         onError: (error) => {
-          console.log('🚀 ~ handleSubmit ~ error:', error);
+          if (isAxiosError(error)) {
+            const errCode = error?.response?.data?.code;
+            if (errCode && errorMaps && form)
+              applyFormErrors(form, errCode, errorMaps);
+          }
         }
       }
     );

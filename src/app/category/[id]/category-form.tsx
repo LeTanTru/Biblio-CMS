@@ -11,14 +11,20 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { apiConfig, STATUS_ACTIVE, statusOptions } from '@/constants';
+import {
+  apiConfig,
+  categoryErrorMaps,
+  STATUS_ACTIVE,
+  statusOptions
+} from '@/constants';
 import { useQueryParams, useSaveBase } from '@/hooks';
 import { useUploadImageProduct } from '@/queries';
 import route from '@/routes';
 import { categorySchema } from '@/schemaValidations';
 import { CategoryBodyType, CategoryResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 export default function CategoryForm({ queryKey }: { queryKey: string }) {
   const [imageUrl, setImageUrl] = useState<string>('');
@@ -42,29 +48,36 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
     name: '',
     description: '',
     imageUrl: '',
-    status: 1
+    status: STATUS_ACTIVE
   };
 
-  const initialValues: CategoryBodyType = useMemo(() => {
-    return {
-      name: category?.name ?? '',
-      description: category?.description ?? '',
-      imageUrl: category?.imageUrl ?? '',
-      status: category?.status ?? STATUS_ACTIVE
-    };
-  }, [
-    category?.description,
-    category?.imageUrl,
-    category?.name,
-    category?.status
-  ]);
+  // const initialValues: CategoryBodyType = useMemo(() => {
+  //   return {
+  //     name: category?.name ?? '',
+  //     description: category?.description ?? '',
+  //     imageUrl: category?.imageUrl ?? '',
+  //     status: category?.status ?? STATUS_ACTIVE
+  //   };
+  // }, [
+  //   category?.description,
+  //   category?.imageUrl,
+  //   category?.name,
+  //   category?.status
+  // ]);
 
   useEffect(() => {
     if (category?.imageUrl) setImageUrl(category?.imageUrl);
   }, [category]);
 
-  const onSubmit = async (values: CategoryBodyType) => {
-    await handleSubmit({ ...values, imageUrl: imageUrl });
+  const onSubmit = async (
+    values: CategoryBodyType,
+    form: UseFormReturn<CategoryBodyType>
+  ) => {
+    await handleSubmit(
+      { ...values, imageUrl: imageUrl },
+      form,
+      categoryErrorMaps
+    );
   };
 
   return (
@@ -79,7 +92,7 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
     >
       <BaseForm
         defaultValues={defaultValues}
-        initialValues={initialValues}
+        initialValues={category}
         onSubmit={onSubmit}
         schema={categorySchema}
       >

@@ -2,8 +2,7 @@ import {
   CategoryBodyType,
   ErrorMaps,
   GroupBodyType,
-  PermissionBodyType,
-  ProductVariantBodyType
+  PermissionBodyType
 } from '@/types';
 import { GroupPermissionBodyType } from '@/types/group-permission.type';
 

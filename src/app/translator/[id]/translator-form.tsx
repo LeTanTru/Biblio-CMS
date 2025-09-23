@@ -99,6 +99,8 @@ export default function TranslatorForm({ queryKey }: { queryKey: string }) {
                   const res = await uploadImageMutation.mutateAsync({ file });
                   return res.data?.filePath ?? '';
                 }}
+                // required
+                label='Tải ảnh lên'
               />
             </Col>
           </Row>

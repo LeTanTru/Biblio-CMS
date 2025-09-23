@@ -16,6 +16,7 @@ export default function CouponForm({ queryKey }: { queryKey: string }) {
       listPageUrl: route.coupon.getList.path
     }
   });
+
   const defaultValues: CouponBodyType = {
     code: '',
     description: '',
