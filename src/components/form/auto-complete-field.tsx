@@ -182,9 +182,7 @@ export default function AutoCompleteField<
   const combinedOptions: AutoCompleteOption[] = useMemo(() => {
     const opts = options.filter((opt) => initialOption?.value !== opt.value);
     return initialOption ? [initialOption, ...opts] : opts;
-  }, [options, initialOption]).filter((opt) =>
-    opt.label.toString().includes(search)
-  );
+  }, [options, initialOption]);
 
   return (
     <FormField
@@ -208,7 +206,7 @@ export default function AutoCompleteField<
 
             field.onChange(next);
 
-            const picked = options.find((o) => o.value === val);
+            const picked = combinedOptions.find((o) => o.value === val);
             if (picked) {
               setSelectedOptions((prev) => {
                 const exist = prev.find((p) => p.value === val);
@@ -221,7 +219,7 @@ export default function AutoCompleteField<
             onValueChange?.(next);
           } else {
             field.onChange(val.toString());
-            const picked = options.find((o) => o.value === val);
+            const picked = combinedOptions.find((o) => o.value === val);
             if (picked) setSelectedOptions([picked]);
             onValueChange?.(val);
             setOpen(false);
@@ -266,34 +264,36 @@ export default function AutoCompleteField<
                   {multiple ? (
                     selectedOptions.length > 0 ? (
                       <div className='flex flex-wrap gap-2'>
-                        {selectedOptions.map((opt) => (
-                          <div
-                            key={opt.value}
-                            className='bg-accent text-accent-foreground flex items-center rounded-lg px-3 py-1 text-sm'
-                          >
-                            {opt.prefix && (
-                              <span className='mr-1 font-mono text-xs opacity-70'>
-                                {opt.prefix}
-                              </span>
-                            )}
-                            {opt.label}
-                            <span
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const next = selectedValues.filter(
-                                  (v) => v !== opt.value
-                                );
-                                field.onChange(next);
-                                setSelectedOptions((prev) =>
-                                  prev.filter((p) => p.value !== opt.value)
-                                );
-                              }}
-                              className='hover:text-destructive ml-2 cursor-pointer text-lg leading-none'
+                        {selectedOptions.map((opt) => {
+                          return (
+                            <div
+                              key={opt.value}
+                              className='bg-accent text-accent-foreground flex items-center rounded px-2 py-1 text-sm'
                             >
-                              <X />
-                            </span>
-                          </div>
-                        ))}
+                              {opt.prefix && (
+                                <span className='mr-1 font-mono text-xs opacity-70'>
+                                  {opt.prefix}
+                                </span>
+                              )}
+                              {opt.label}
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const next = selectedValues.filter(
+                                    (v) => v !== opt.value
+                                  );
+                                  field.onChange(next);
+                                  setSelectedOptions((prev) =>
+                                    prev.filter((p) => p.value !== opt.value)
+                                  );
+                                }}
+                                className='hover:text-destructive ml-2 cursor-pointer text-lg leading-none'
+                              >
+                                <X />
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
                     ) : (
                       <span className='opacity-30'>{placeholder}</span>
