@@ -20,7 +20,13 @@ const useQueryParams = <T extends Record<string, any>>() => {
       params.set(String(key), String(value));
     }
 
-    router.push(`${pathname}?${params.toString()}`);
+    const sortedParams = new URLSearchParams();
+    [...params.keys()].sort().forEach((k) => {
+      const v = params.get(k);
+      if (v !== null) sortedParams.set(k, v);
+    });
+
+    router.push(`${pathname}?${sortedParams.toString()}`);
   };
 
   const setQueryParams = (newParams: Partial<T>) => {
@@ -32,12 +38,20 @@ const useQueryParams = <T extends Record<string, any>>() => {
       }
     });
 
-    const queryString = params.toString();
+    const sortedParams = new URLSearchParams();
+    [...params.keys()].sort().forEach((k) => {
+      const v = params.get(k);
+      if (v !== null) sortedParams.set(k, v);
+    });
+
+    const queryString = sortedParams.toString();
     router.push(queryString ? `${pathname}?${queryString}` : pathname);
   };
 
   const serializeParams = (obj: Record<string, any>) => {
     return Object.entries(obj)
+      .filter(([_, v]) => v !== null && v !== undefined && v !== '')
+      .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
       .join('&');
   };
@@ -56,9 +70,7 @@ const useQueryParams = <T extends Record<string, any>>() => {
   };
 
   const paramsObject = Object.fromEntries(searchParams.entries()) as Partial<T>;
-  const queryString = new URLSearchParams(
-    paramsObject as Record<string, string>
-  ).toString();
+  const queryString = serializeParams(paramsObject);
 
   return {
     deserializeParams,

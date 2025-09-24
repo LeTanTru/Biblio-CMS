@@ -111,7 +111,7 @@ export default function UploadImageField<T extends FieldValues>({
 }: UploadImageFieldProps<T>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [shouldCrop, setShouldCrop] = useState(true);
+  const [shouldCrop, setShouldCrop] = useState(false);
   const [zoom, setZoom] = useState(1);
   const {
     field: { value: fieldValue, onChange: fieldOnChange },
@@ -320,8 +320,8 @@ export default function UploadImageField<T extends FieldValues>({
             />
           )}
 
-          <DialogFooter className='flex flex-col gap-4 border-t px-4 py-6'>
-            <label className='flex items-center gap-2'>
+          <DialogFooter className='flex flex-col gap-4 border-t px-4 py-6 sm:justify-between'>
+            <label className='flex cursor-pointer items-center gap-2'>
               <input
                 type='checkbox'
                 checked={shouldCrop}

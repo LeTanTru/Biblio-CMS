@@ -142,7 +142,7 @@ export default function DragDropTable<T extends Record<any, any>>({
   }, [dataSource, rows]);
 
   return (
-    <div className='flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg bg-white text-sm'>
+    <div className='mr-2 flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg bg-white text-sm'>
       <div
         className='base-table relative flex-1 overflow-hidden'
         ref={tableRef}

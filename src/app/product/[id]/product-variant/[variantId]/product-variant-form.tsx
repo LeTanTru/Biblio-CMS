@@ -27,10 +27,11 @@ import {
   renderImageUrl,
   renderListPageUrl
 } from '@/utils';
-import { AxiosError } from 'axios';
+import { AxiosError, isAxiosError } from 'axios';
 import { omit } from 'lodash';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 export default function ProductVariantForm({ queryKey }: { queryKey: string }) {
   const { queryString } = useQueryParams();
@@ -96,7 +97,7 @@ export default function ProductVariantForm({ queryKey }: { queryKey: string }) {
         !data ? { ...values } : { ...omit(values, ['productId']), id: data.id }
       );
     } catch (error) {
-      if (error instanceof AxiosError) {
+      if (isAxiosError(error)) {
         const errCode = error.response?.data?.code;
         if (errCode === ErrorCode.PRODUCT_VARIANT_ERROR_EXISTED) {
           notify.error('Tình trạng và định dạng phân loại sách đã tồn tại');
@@ -148,7 +149,7 @@ export default function ProductVariantForm({ queryKey }: { queryKey: string }) {
                     return res.data?.filePath ?? '';
                   }}
                   required
-                  label='Tải lên ảnh'
+                  label='Tải lên ảnh sách'
                 />
               </Col>
             </Row>

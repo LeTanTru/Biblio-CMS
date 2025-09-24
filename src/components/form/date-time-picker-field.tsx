@@ -21,6 +21,16 @@ import { Control, Controller } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/form';
 import { vi } from 'date-fns/locale';
+import { DropdownProps } from 'react-day-picker';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { DATE_TIME_FORMAT } from '@/constants';
 
 type Props = {
   control: Control<any>;
@@ -38,7 +48,7 @@ export default function DateTimePickerField({
   label,
   description,
   required,
-  format: dateFormat = 'dd/MM/yyyy HH:mm:ss',
+  format: dateFormat = DATE_TIME_FORMAT,
   labelClassName
 }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -101,7 +111,9 @@ export default function DateTimePickerField({
                   <Button
                     variant='outline'
                     className={cn(
-                      'w-full justify-start text-left font-normal',
+                      'w-full justify-start text-left font-normal text-black opacity-100',
+                      'focus:ring-0 focus-visible:border-gray-200 focus-visible:ring-0',
+                      'data-[state=open]:border-dodger-blue data-[state=open]:ring-dodger-blue data-[state=open]:ring-1',
                       !field.value && 'text-muted-foreground'
                     )}
                   >
@@ -114,16 +126,42 @@ export default function DateTimePickerField({
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className='w-auto p-0'>
+              <PopoverContent className='w-120 p-0'>
                 <div className='sm:flex'>
                   <Calendar
+                    className='flex-1'
+                    classNames={{
+                      day_button:
+                        'data-[selected-single=true]:bg-dodger-blue data-[selected-single=true]:text-white cursor-pointer !ring-0 !focus-visible:ring-0 !focus-visible:ring-offset-0',
+                      button_next:
+                        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -mr-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-dodger-blue',
+                      button_previous:
+                        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 transition-all ease-linear duration-200 outline-none focus-visible:border-transparent focus-visible:ring-transparent focus-visible:ring-0 hover:bg-transparent size-8 -ml-2 aria-disabled:opacity-50 p-0 select-none rdp-button_previous cursor-pointer hover:text-dodger-blue'
+                    }}
                     locale={calendarLocale}
                     mode='single'
                     selected={date}
                     onSelect={handleDateSelect}
                     initialFocus
+                    captionLayout='dropdown'
+                    defaultMonth={new Date(field.value)}
+                    startMonth={new Date(1900, 0)}
+                    endMonth={new Date(2050, 12)}
+                    components={{ Dropdown: CustomSelectDropdown }}
+                    formatters={{
+                      formatMonthDropdown: (date) =>
+                        date.toLocaleString('vi-VN', { month: 'long' })
+                    }}
+                    onMonthChange={(month: Date) => {
+                      const firstDay = new Date(
+                        month.getFullYear(),
+                        month.getMonth(),
+                        1
+                      );
+                      field.onChange(firstDay);
+                    }}
                   />
-                  <div className='flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0'>
+                  <div className='flex flex-col divide-y sm:h-85 sm:flex-row sm:divide-x sm:divide-y-0'>
                     {/* Hour */}
                     <ScrollArea className='w-64 sm:w-auto'>
                       <div className='flex p-2 sm:flex-col'>
@@ -131,7 +169,7 @@ export default function DateTimePickerField({
                           <Button
                             key={h}
                             size='icon'
-                            variant={hour === h ? 'default' : 'ghost'}
+                            variant={hour === h ? 'primary' : 'ghost'}
                             className='aspect-square shrink-0 sm:w-full'
                             onClick={() => handleTimeChange('hour', h)}
                           >
@@ -151,7 +189,7 @@ export default function DateTimePickerField({
                           <Button
                             key={m}
                             size='icon'
-                            variant={minute === m ? 'default' : 'ghost'}
+                            variant={minute === m ? 'primary' : 'ghost'}
                             className='aspect-square shrink-0 sm:w-full'
                             onClick={() => handleTimeChange('minute', m)}
                           >
@@ -171,7 +209,7 @@ export default function DateTimePickerField({
                           <Button
                             key={s}
                             size='icon'
-                            variant={second === s ? 'default' : 'ghost'}
+                            variant={second === s ? 'primary' : 'ghost'}
                             className='aspect-square shrink-0 sm:w-full'
                             onClick={() => handleTimeChange('second', s)}
                           >
@@ -186,6 +224,20 @@ export default function DateTimePickerField({
                     </ScrollArea>
                   </div>
                 </div>
+                <div className='flex justify-end border-t p-2'>
+                  <Button
+                    size='lg'
+                    variant='primary'
+                    className='mx-auto'
+                    onClick={() => {
+                      const now = new Date();
+                      field.onChange(now);
+                      setIsOpen(false);
+                    }}
+                  >
+                    Hôm nay
+                  </Button>
+                </div>
               </PopoverContent>
             </Popover>
             {description && <FormDescription>{description}</FormDescription>}
@@ -194,5 +246,43 @@ export default function DateTimePickerField({
         );
       }}
     />
+  );
+}
+
+function CustomSelectDropdown(props: DropdownProps) {
+  const { options, value, onChange } = props;
+
+  const handleValueChange = (newValue: string) => {
+    if (onChange) {
+      const syntheticEvent = {
+        target: {
+          value: newValue
+        }
+      } as React.ChangeEvent<HTMLSelectElement>;
+
+      onChange(syntheticEvent);
+    }
+  };
+
+  return (
+    <Select value={value?.toString()} onValueChange={handleValueChange}>
+      <SelectTrigger className='z-9999 cursor-pointer justify-center gap-1!'>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {options?.map((option) => (
+            <SelectItem
+              className='cursor-pointer text-center'
+              key={option.value}
+              value={option.value.toString()}
+              disabled={option.disabled}
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }

@@ -66,26 +66,23 @@ export default function NumberField<T extends FieldValues>({
   const { field, fieldState } = useController({ control, name });
 
   const [raw, setRaw] = useState<string>(
-    field.value !== undefined
-      ? isFloat
-        ? (field.value as string).toString()
-        : formatNumber(field.value)
-      : '0'
+    field.value !== undefined ? formatNumber(Number(field.value)) : '0'
   );
 
   useEffect(() => {
     if (field.value !== undefined) {
-      setRaw(
-        isFloat ? (field.value as string).toString() : formatNumber(field.value)
-      );
+      setRaw(formatNumber(Number(field.value)));
     } else {
       setRaw('0');
     }
   }, [field.value, isFloat]);
 
   function formatNumber(value: number) {
-    if (isFloat) return value.toString().replace('.', delimiter);
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
+    if (isFloat) {
+      return value.toString().replace('.', delimiter);
+    }
+    const intVal = Math.trunc(value);
+    return intVal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter);
   }
 
   function parseNumber(value: string) {

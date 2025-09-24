@@ -4,8 +4,16 @@ export const productSchema = z.object({
   id: z.string().optional(),
   name: z.string().nonempty('Bắt buộc'),
   description: z.string().nonempty('Bắt buộc'),
-  price: z.number({ error: 'Bắt buộc' }).nonnegative('Giá không được là số âm'),
-  releaseDate: z.string().nonempty('Bắt buộc'),
+  price: z.preprocess(
+    (val) => (typeof val === 'string' ? Number(val) : val),
+    z.number({ error: 'Bắt buộc' }).nonnegative('Giá không được là số âm')
+  ),
+  releaseDate: z.preprocess((val) => {
+    if (val instanceof Date) {
+      return val.toISOString();
+    }
+    return val;
+  }, z.string().nonempty('Bắt buộc')),
   ageRating: z.number({ error: 'Bắt buộc' }),
   language: z.string().nonempty('Bắt buộc'),
   isFeatured: z.boolean({ error: 'Bắt buộc' }),
@@ -17,7 +25,7 @@ export const productSchema = z.object({
     })
     .max(100, { error: 'Giảm giá phải nhỏ hơn 100' }),
   categoryId: z.string().nonempty('Bắt buộc'),
-  contributorsIds: z.array(z.string()).nonempty('Bắt buộc'),
+  contributorIds: z.array(z.string()).optional(),
   publisherId: z.string().nonempty('Bắt buộc'),
   metaData: z.object({
     height: z
@@ -36,7 +44,9 @@ export const productSchema = z.object({
       .number({ error: 'Bắt buộc' })
       .positive('Số trang phải lớn hơn 0')
       .int({ error: 'Số trang phải là số nguyên' })
-  })
+  }),
+  authorIds: z.array(z.string()).nonempty('Bắt buộc').optional(),
+  translatorIds: z.array(z.string()).optional()
 });
 
 export const productSearchParamSchema = z.object({

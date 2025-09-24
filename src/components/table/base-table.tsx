@@ -71,7 +71,7 @@ export default function BaseTable<T extends Record<any, any>>({
     <div className='flex flex-col gap-y-5 rounded-br-lg rounded-bl-lg bg-white text-sm'>
       <div className='base-table relative flex-1'>
         <div
-          className='w-full overflow-x-auto [&>div]:overflow-y-hidden'
+          className='scroll-wrapper w-full bg-white [&>div]:overflow-y-hidden'
           ref={scrollRef}
         >
           <Table className='w-full min-w-200'>
@@ -143,7 +143,7 @@ export default function BaseTable<T extends Record<any, any>>({
                       })}
                     </TableRow>
                   ))}
-                  {!(!total || total <= 1) && (
+                  {/* {!(!total || total <= 1) && (
                     <TableRow className='hover:bg-transparent'>
                       <TableCell
                         colSpan={columns.length}
@@ -156,7 +156,7 @@ export default function BaseTable<T extends Record<any, any>>({
                         />
                       </TableCell>
                     </TableRow>
-                  )}
+                  )} */}
                 </>
               ) : (
                 dataSource.length === 0 &&
@@ -183,6 +183,15 @@ export default function BaseTable<T extends Record<any, any>>({
             </TableBody>
           </Table>
         </div>
+        {!(!total || total <= 1) && (
+          <div className='flex justify-end py-4'>
+            <Pagination
+              changePagination={changePagination}
+              currentPage={pagination.current}
+              totalPages={total}
+            />
+          </div>
+        )}
         <AnimatePresence>
           {loading && (
             <motion.div

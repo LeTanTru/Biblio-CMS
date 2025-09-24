@@ -22,6 +22,7 @@ type RichTextFieldProps<T extends FieldValues> = {
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  height?: number;
 };
 
 import type { Editor as TinyMCEEditor } from 'tinymce';
@@ -35,7 +36,8 @@ export default function RichTextField<T extends FieldValues>({
   className,
   required = false,
   disabled = false,
-  readOnly = false
+  readOnly = false,
+  height
 }: RichTextFieldProps<T>) {
   const isMounted = useIsMounted();
   if (!isMounted) return null;
@@ -60,7 +62,7 @@ export default function RichTextField<T extends FieldValues>({
               value={field.value || ''}
               disabled={disabled || readOnly}
               init={{
-                height: 300,
+                height: height ?? 500,
                 menubar: 'file edit view insert format tools table help',
                 language: 'vi',
                 plugins: [
@@ -98,12 +100,17 @@ export default function RichTextField<T extends FieldValues>({
                   body { 
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
                     font-size: 14px; 
-                    line-height: 1.6; 
-                  }`,
+                    line-height: 1.5; 
+                  }
+                  * {
+                    margin: 0 0 0 0; 
+                  }
+                  `,
                 paste_data_images: true,
                 paste_as_text: false,
                 paste_auto_cleanup_on_paste: true,
                 branding: false,
+                font_size_input_default_unit: 'px',
                 promotion: false,
                 tabfocus_elements: ':prev,:next',
                 setup: (editor: TinyMCEEditor) => {

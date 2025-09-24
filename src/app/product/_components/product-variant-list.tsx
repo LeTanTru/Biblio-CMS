@@ -7,6 +7,7 @@ import ListPageWrapper from '@/components/layout/list-page-wrapper';
 import { BaseTable } from '@/components/table';
 import {
   apiConfig,
+  DEFAULT_TABLE_PAGE_START,
   FieldTypes,
   productVariantConditions,
   productVariantFormats,
@@ -34,6 +35,7 @@ import {
 } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import { RotateCcw } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
 export default function ProductVariantList({ queryKey }: { queryKey: string }) {
   const recoverMutation = useMutation({
@@ -45,7 +47,11 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
         }
       })
   });
-  const { searchParams, serializeParams } = useQueryParams<{ name: string }>();
+  const { id } = useParams<{ id: string }>();
+  const { searchParams, serializeParams } = useQueryParams<{
+    page: string;
+    name: string;
+  }>();
   const { data, loading, handlers, pagination, listQuery } = useListBase<
     ProductVariantResType,
     ProductVariantSearchParamType
@@ -54,9 +60,16 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
     options: {
       queryKey,
       objectName: 'phân loại sách',
+      defaultFilters: {
+        productId: id,
+        status: STATUS_ACTIVE
+      },
       excludeFromQueryFilter: ['name']
     },
     override: (handlers) => {
+      handlers.additionalParams = () => ({
+        page: DEFAULT_TABLE_PAGE_START
+      });
       handlers.additionalColumns = () => ({
         recover: (
           record: ProductVariantResType,
@@ -115,6 +128,13 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
       render: () => searchParams.name
     },
     {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      render: (value) => new Intl.NumberFormat('vi-VN').format(value),
+      align: 'center',
+      width: 120
+    },
+    {
       title: 'Tình trạng',
       dataIndex: 'condition',
       render: (value) =>
@@ -135,7 +155,7 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
       title: 'Giá',
       dataIndex: 'modifiedPrice',
       render: (value) => formatMoney(value),
-      width: 180,
+      width: 150,
       align: 'center'
     },
     handlers.renderActionColumn({
@@ -178,7 +198,10 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
           label: 'Sách',
           href: renderListPageUrl(
             route.product.getList.path,
-            serializeParams({ status: STATUS_ACTIVE })
+            serializeParams({
+              status: STATUS_ACTIVE,
+              page: searchParams.page
+            })
           )
         },
         { label: 'Phân loại sách' }

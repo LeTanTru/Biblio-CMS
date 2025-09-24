@@ -4,6 +4,7 @@ import {
   GroupBodyType,
   PermissionBodyType
 } from '@/types';
+import { CouponBodyType } from '@/types/coupon.type';
 import { GroupPermissionBodyType } from '@/types/group-permission.type';
 
 export const ErrorCode = {
@@ -34,7 +35,12 @@ export const ErrorCode = {
   PERMISSION_GROUP_ERROR_NAME_EXISTS: 'ERROR-PERMISSION-GROUP-0001',
 
   // Product variant
-  PRODUCT_VARIANT_ERROR_EXISTED: 'ERROR-PRODUCT-VARIANT-0001'
+  PRODUCT_VARIANT_ERROR_EXISTED: 'ERROR-PRODUCT-VARIANT-0001',
+
+  // Coupon
+  COUPON_ERROR_NOT_FOUND: 'ERROR-COUPON-0000',
+  COUPON_ERROR_CODE_EXISTED: 'ERROR-COUPON-0001',
+  COUPON_ERROR_INVALID: 'ERROR-COUPON-0002'
 } as const;
 
 export const groupErrorMaps: ErrorMaps<GroupBodyType> = {
@@ -61,5 +67,11 @@ export const permissionErrorMaps: ErrorMaps<PermissionBodyType> = {
   ],
   [ErrorCode.PERMISSION_ERROR_CODE_EXISTS]: [
     ['pCode', { type: 'manual', message: 'Mã quyền đã tồn tại' }]
+  ]
+};
+
+export const couponErrorMaps: ErrorMaps<CouponBodyType> = {
+  [ErrorCode.COUPON_ERROR_CODE_EXISTED]: [
+    ['code', { type: 'manual', message: 'Mã khuyến mãi đã tồn tại' }]
   ]
 };

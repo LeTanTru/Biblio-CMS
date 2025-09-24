@@ -23,6 +23,7 @@ import route from '@/routes';
 import { categorySchema } from '@/schemaValidations';
 import { CategoryBodyType, CategoryResType } from '@/types';
 import { renderImageUrl, renderListPageUrl } from '@/utils';
+import { omit } from 'lodash';
 import { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -74,7 +75,7 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
     form: UseFormReturn<CategoryBodyType>
   ) => {
     await handleSubmit(
-      { ...values, imageUrl: imageUrl },
+      { ...omit(values, ['ordering']), imageUrl: imageUrl },
       form,
       categoryErrorMaps
     );
@@ -113,6 +114,7 @@ export default function CategoryForm({ queryKey }: { queryKey: string }) {
                     const res = await uploadImageMutation.mutateAsync({ file });
                     return res.data?.filePath ?? '';
                   }}
+                  label='Tải lên ảnh danh mục'
                 />
               </Col>
             </Row>

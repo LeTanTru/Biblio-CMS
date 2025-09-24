@@ -27,7 +27,7 @@ import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
 
-type AutoCompleteFieldProps<
+type SelectFieldProps<
   TFieldValues extends FieldValues,
   TOption extends Record<string, any>
 > = {
@@ -81,7 +81,7 @@ export default function SelectField<
   labelClassName,
   disabled = false,
   onValueChange
-}: AutoCompleteFieldProps<TFieldValues, TOption>) {
+}: SelectFieldProps<TFieldValues, TOption>) {
   const [open, setOpen] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
 
@@ -160,7 +160,7 @@ export default function SelectField<
                       'border-dodger-blue ring-dodger-blue ring-1': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
                       'border-red-500 ring-1 ring-red-500': fieldState.invalid,
-                      'pl-[5px]!': multiple
+                      'pl-[5px]!': multiple && selectedValues.length
                     }
                   )}
                 >

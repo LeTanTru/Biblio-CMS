@@ -1,23 +1,6 @@
 import AuthorForm from '@/app/author/[id]/author-form';
-import { PageWrapper } from '@/components/layout';
 import { queryKeys } from '@/constants';
-import route from '@/routes';
 
-export default async function AuthorDetailPage({
-  params
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const isCreate = id === 'create';
-  return (
-    <PageWrapper
-      breadcrumbs={[
-        { label: 'Tác giả', href: route.author.getList.path },
-        { label: `${isCreate ? 'Thêm mới' : 'Cập nhật'} tác giả` }
-      ]}
-    >
-      <AuthorForm queryKey={queryKeys.AUTHOR} />
-    </PageWrapper>
-  );
+export default async function AuthorDetailPage() {
+  return <AuthorForm queryKey={queryKeys.AUTHOR} />;
 }

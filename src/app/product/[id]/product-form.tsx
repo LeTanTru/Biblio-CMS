@@ -1,5 +1,6 @@
 'use client';
 import {
+  AutoCompleteField,
   BooleanField,
   Col,
   DatePickerField,
@@ -12,71 +13,32 @@ import {
 import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
-import { ageRatings, apiConfig, languageOptions, queryKeys } from '@/constants';
+import {
+  ageRatings,
+  apiConfig,
+  CONTRIBUTOR_AUTHOR,
+  CONTRIBUTOR_TRANSLATOR,
+  languageOptions,
+  STATUS_ACTIVE
+} from '@/constants';
 import { useQueryParams, useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import route from '@/routes';
 import { productSchema } from '@/schemaValidations';
 import {
-  ApiResponseList,
   AuthorResType,
-  CategoryAutoResType,
+  CategoryResType,
   ProductBodyType,
   ProductResType,
   PublisherResType,
   TranslatorResType
 } from '@/types';
-import { http, renderListPageUrl } from '@/utils';
-import { useQuery } from '@tanstack/react-query';
+import { renderListPageUrl } from '@/utils';
+import { omit } from 'lodash';
 import { useMemo } from 'react';
 
 export default function ProductForm({ queryKey }: { queryKey: string }) {
   const { queryString } = useQueryParams();
-  const categoryRes = useQuery({
-    queryKey: [`${queryKeys.CATEGORY}-auto-complete`],
-    queryFn: () =>
-      http.get<ApiResponseList<CategoryAutoResType>>(
-        apiConfig.category.autoComplete
-      )
-  });
-  const authorRes = useQuery({
-    queryKey: [`${queryKeys.AUTHOR}-auto-complete`],
-    queryFn: () =>
-      http.get<ApiResponseList<AuthorResType>>(apiConfig.author.autoComplete)
-  });
-  const translatorRes = useQuery({
-    queryKey: [`${queryKeys.TRANSLATOR}-auto-complete`],
-    queryFn: () =>
-      http.get<ApiResponseList<TranslatorResType>>(
-        apiConfig.translator.autoComplete
-      )
-  });
-
-  const publisherRes = useQuery({
-    queryKey: [`${queryKeys.PUBLISHER}-auto-complete`],
-    queryFn: () =>
-      http.get<ApiResponseList<PublisherResType>>(
-        apiConfig.publisher.autoComplete
-      )
-  });
-
-  const authors =
-    authorRes.data?.data.content.map((auth) => ({
-      label: auth.name,
-      value: auth.id
-    })) ?? [];
-
-  const translators =
-    translatorRes.data?.data.content.map((trans) => ({
-      label: trans.name,
-      value: trans.id
-    })) ?? [];
-
-  const publishers =
-    publisherRes.data?.data.content.map((pub) => ({
-      label: pub.name,
-      value: pub.id
-    })) ?? [];
 
   const { data, loading, renderActions, handleSubmit } = useSaveBase<
     ProductResType,
@@ -105,7 +67,7 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
     name: '',
     ageRating: 0,
     categoryId: '',
-    contributorsIds: [],
+    contributorIds: [],
     description: '',
     discount: 0,
     isFeatured: false,
@@ -121,7 +83,13 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
       name: data?.name ?? '',
       ageRating: data?.ageRating ?? 0,
       categoryId: data?.category?.id ?? '',
-      contributorsIds: data?.contributors?.map((contr) => contr.id) ?? [],
+      contributorIds: data?.contributors?.map((contr) => contr.id) ?? [],
+      authorIds: data?.contributors
+        ?.filter((contr) => contr.kind === CONTRIBUTOR_AUTHOR)
+        .map((auth) => auth.id),
+      translatorIds: data?.contributors
+        ?.filter((contr) => contr.kind === CONTRIBUTOR_TRANSLATOR)
+        .map((trans) => trans.id),
       description: data?.description ?? '',
       discount: data?.discount ?? 0,
       isFeatured: data?.isFeatured ?? false,
@@ -133,7 +101,7 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
         width: 0,
         numPage: 0
       },
-      price: Number(data?.price) ?? 0,
+      price: data?.price ?? 0,
       releaseDate: data?.releaseDate ?? new Date().toLocaleDateString(),
       publisherId: data?.publisher.id ?? ''
     }),
@@ -154,8 +122,22 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
   );
 
   const onSubmit = async (values: ProductBodyType) => {
+    const authorIds = values.authorIds;
+    const translatorIds = values.translatorIds;
+    const contributorIds: string[] = [];
+    if (authorIds) {
+      authorIds.forEach((auth) => {
+        contributorIds.push(auth);
+      });
+    }
+    if (translatorIds) {
+      translatorIds.forEach((auth) => {
+        contributorIds.push(auth);
+      });
+    }
     const payload = {
-      ...values,
+      ...omit(values, ['authorIds', 'translatorIds']),
+      contributorIds,
       metaData: JSON.stringify(values.metaData)
     };
 
@@ -247,7 +229,7 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
             </Row>
             <Row>
               <Col span={12}>
-                <SelectField
+                {/* <SelectField
                   control={form.control}
                   name='categoryId'
                   label='Danh mục'
@@ -258,6 +240,19 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
                   options={(categoryRes.data?.data.content || []).map(
                     (category) => ({ label: category.name, value: category.id })
                   )}
+                /> */}
+                <AutoCompleteField<any, CategoryResType>
+                  control={form.control}
+                  name='categoryId'
+                  label='Danh mục'
+                  placeholder='Danh mục'
+                  apiConfig={apiConfig.category.autoComplete}
+                  searchParams={['name']}
+                  mappingData={(item) => ({
+                    label: item.name,
+                    value: item.id
+                  })}
+                  initialParams={{ status: STATUS_ACTIVE }}
                 />
               </Col>
               <Col span={12}>
@@ -315,35 +310,58 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
             </Row>
             <Row>
               <Col span={12}>
-                <SelectField
+                <AutoCompleteField<any, AuthorResType>
                   control={form.control}
-                  name='publisherId'
-                  label='Nhà xuất bản'
-                  placeholder='Nhà xuất bản'
+                  name='authorIds'
+                  label='Tác giả'
+                  placeholder='Tác giả'
+                  apiConfig={apiConfig.author.autoComplete}
+                  searchParams={['name']}
+                  mappingData={(item) => ({
+                    label: item.name,
+                    value: item.id
+                  })}
+                  initialParams={{ status: STATUS_ACTIVE }}
                   required
-                  getLabel={(opt) => opt.label}
-                  getValue={(opt) => opt.value}
-                  options={publishers}
+                  multiple
                 />
               </Col>
               <Col span={12}>
-                <SelectField
+                <AutoCompleteField<any, TranslatorResType>
                   control={form.control}
-                  name='contributorsIds'
-                  label='Nhà đóng góp'
-                  placeholder='Nhà đóng góp'
-                  required
-                  getLabel={(opt) => opt.label}
-                  getValue={(opt) => opt.value}
-                  options={[...authors, ...translators]}
+                  name='translatorIds'
+                  label='Dịch giả'
+                  placeholder='Dịch giả'
+                  apiConfig={apiConfig.translator.autoComplete}
+                  searchParams={['name']}
+                  mappingData={(item) => ({
+                    label: item.name,
+                    value: item.id
+                  })}
+                  initialParams={{ status: STATUS_ACTIVE }}
                   multiple
                 />
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col span={12}>
+                <AutoCompleteField<any, PublisherResType>
+                  control={form.control}
+                  name='publisherId'
+                  label='Nhà xuất bản'
+                  placeholder='Nhà xuất bản'
+                  apiConfig={apiConfig.publisher.autoComplete}
+                  searchParams={['name']}
+                  mappingData={(item) => ({
+                    label: item.name,
+                    value: item.id
+                  })}
+                  initialParams={{ status: STATUS_ACTIVE }}
+                  required
+                />
+              </Col>
+              <Col span={12}>
                 <BooleanField
-                  className='my-auto'
                   control={form.control}
                   name='isFeatured'
                   label='Nổi bật'

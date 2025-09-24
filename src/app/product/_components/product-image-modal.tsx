@@ -12,7 +12,11 @@ import { CircleLoading } from '@/components/loading';
 import { Modal } from '@/components/modal';
 import { DragDropTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig } from '@/constants';
+import {
+  apiConfig,
+  DEFAULT_TABLE_PAGE_START,
+  MAX_PAGE_SIZE
+} from '@/constants';
 import { useDisclosure, useDragDrop, useListBase, useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useUploadImageProduct } from '@/queries';
@@ -62,12 +66,14 @@ export default function ProductImageModal({
     options: {
       queryKey: 'product-image',
       objectName: 'ảnh sách',
-      enabled: !!data,
+      enabled: open,
       excludeFromQueryFilter: ['status']
     },
     override: (handlers) => {
       handlers.additionalParams = () => ({
-        productId: data?.id
+        productId: data?.id,
+        page: DEFAULT_TABLE_PAGE_START,
+        size: MAX_PAGE_SIZE
       });
       handlers.renderAddButton = () => {
         return (
@@ -275,7 +281,7 @@ export default function ProductImageModal({
     <>
       <Modal open={open} onClose={onClose}>
         <ListPageWrapper
-          className='m-4 min-h-auto w-200 overflow-hidden max-2xl:w-200'
+          className='mx-2 my-2 h-[90vh] w-200 overflow-y-auto max-2xl:w-200'
           addButton={handlers.renderAddButton()}
           reloadButton={handlers.renderReloadButton()}
         >
@@ -321,10 +327,11 @@ export default function ProductImageModal({
             <>
               <UploadImageField
                 size={180}
-                label='Tải lên ảnh'
+                label='Tải lên ảnh sách'
                 control={form.control}
                 name='url'
                 required
+                loading={uploadImageMutation.isPending}
                 value={renderImageUrl(url)}
                 onChange={(url) => setUrl(url)}
                 uploadImageFn={async (file: Blob) => {

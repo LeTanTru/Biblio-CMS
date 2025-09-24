@@ -34,7 +34,8 @@ const menuConfig: MenuItem[] = [
         key: 'coupon-list',
         label: 'Khuyến mãi',
         path: route.coupon.getList.path,
-        permissionCode: [apiConfig.coupon.getList.permissionCode]
+        permissionCode: [apiConfig.coupon.getList.permissionCode],
+        query: { status: STATUS_ACTIVE }
       }
     ]
   },

@@ -91,7 +91,7 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
       dataIndex: 'avatarPath',
       width: 80,
       align: 'center',
-      render: (value) => (
+      render: (value, record) => (
         <AvatarField
           size={50}
           className={cn('mx-auto rounded-full', {

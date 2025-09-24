@@ -9,11 +9,12 @@ export type CouponResType = {
   name: string;
   description: string;
   type: number;
-  value: string;
-  minOrderAmount: string;
+  value: number;
+  minOrderAmount: number;
   quantity: number;
-  validFrom: string;
-  validTo: string;
+  validFrom: Date;
+  validTo: Date;
+  status: number;
 };
 
 export type CouponBodyType = z.infer<typeof couponSchema>;

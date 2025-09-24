@@ -21,6 +21,7 @@ import {
   useNavigate,
   useQueryParams
 } from '@/hooks';
+import { cn } from '@/lib';
 import route from '@/routes';
 import { productSearchParamSchema } from '@/schemaValidations';
 import {
@@ -158,18 +159,27 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       width: 400,
       render: (value, record) => (
         <span
-          onClick={() =>
-            navigate(
-              renderListPageUrl(
-                generatePath(route.productVariant.getList.path, {
-                  id: record.id
-                }),
-                serializeParams({ ...searchParams, name: record.name })
-              )
-            )
-          }
+          onClick={() => {
+            if (+searchParams.status === STATUS_ACTIVE) {
+              navigate(
+                renderListPageUrl(
+                  generatePath(route.productVariant.getList.path, {
+                    id: record.id
+                  }),
+                  serializeParams({
+                    ...searchParams,
+                    name: record.name,
+                    productId: record.id
+                  })
+                )
+              );
+            }
+          }}
           title={value}
-          className='text-dodger-blue block w-full cursor-pointer truncate'
+          className={cn('block w-full truncate', {
+            'text-dodger-blue cursor-pointer':
+              +searchParams.status === STATUS_ACTIVE
+          })}
         >
           {value}
         </span>
@@ -182,10 +192,10 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       width: 120
     },
     {
-      title: 'Ngày bán',
+      title: 'Ngày phát hành',
       dataIndex: 'releaseDate',
       render: (value) => formatDate(value),
-      width: 120
+      width: 150
     },
     {
       title: 'Độ tuổi',
@@ -204,7 +214,7 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
     {
       title: 'Thông số',
       dataIndex: 'metaData',
-      width: 220,
+      width: 250,
       render: (value) => {
         const jsonObj = JSON.parse(value) as ProductBodyType['metaData'];
         if (typeof jsonObj === 'object') {
@@ -231,9 +241,11 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
     {
       title: 'Danh mục',
       dataIndex: ['category', 'name'],
-      width: 120,
+      width: 200,
       render: (value) => (
-        <span className='block w-full cursor-pointer truncate'>{value}</span>
+        <span title={value} className='block w-full truncate'>
+          {value}
+        </span>
       )
     },
     { title: 'Nhà xuất bản', dataIndex: ['publisher', 'name'], width: 200 },

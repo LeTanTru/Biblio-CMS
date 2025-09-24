@@ -54,7 +54,7 @@ const apiConfig = defineApiConfig({
   },
   file: {
     upload: {
-      baseUrl: `${AppConstants.apiUrl}v1/file/upload`,
+      baseUrl: `${AppConstants.mediaUrl}v1/file/upload`,
       method: 'POST',
       headers: multipartHeader,
       isUpload: true,
@@ -457,7 +457,7 @@ const apiConfig = defineApiConfig({
   },
   coupon: {
     getList: {
-      baseUrl: `${AppConstants.apiUrl}v1/coupon/list`,
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/private/list`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'CP_L'
@@ -475,7 +475,7 @@ const apiConfig = defineApiConfig({
       permissionCode: 'CP_U'
     },
     getById: {
-      baseUrl: `${AppConstants.apiUrl}v1/coupon/get/:id`,
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/private/get/:id`,
       method: 'GET',
       headers: baseHeader,
       permissionCode: 'CP_V'
@@ -485,6 +485,12 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'CP_D'
+    },
+    recover: {
+      baseUrl: `${AppConstants.apiUrl}v1/coupon/recover/:id`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'CP_U'
     }
   }
 });

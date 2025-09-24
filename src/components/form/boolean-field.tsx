@@ -31,7 +31,7 @@ export default function BooleanField({
   } = useController({ name, control });
 
   return (
-    <div className='flex items-center gap-2'>
+    <div className='mt-auto flex items-center gap-2'>
       <div
         className={cn(
           'relative inline-grid h-8 grid-cols-[1fr_1fr] items-center text-sm font-medium',

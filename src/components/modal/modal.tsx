@@ -50,7 +50,7 @@ export default function Modal({
           )}
 
           <motion.div
-            className='relative -top-15 rounded-lg bg-white shadow-lg'
+            className='relative rounded-lg bg-white shadow-lg'
             initial={{ y: -100, opacity: 0, scale: 0.95 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -100, opacity: 0, scale: 0.95 }}

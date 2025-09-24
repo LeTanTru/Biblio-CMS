@@ -1,12 +1,10 @@
 'use client';
-
-import { Button, Col, Row, ToolTip } from '@/components/form';
+import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
-import { CircleLoading } from '@/components/loading';
-import { Modal } from '@/components/modal';
 import { SearchForm } from '@/components/search-form';
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -22,7 +20,6 @@ import {
   FieldTypes,
   statusOptions as defaultStatusOptions
 } from '@/constants';
-import useDisclosure from '@/hooks/use-disclosure';
 import useNavigate from '@/hooks/use-navigate';
 import useQueryParams from '@/hooks/use-query-params';
 import { logger } from '@/logger';
@@ -121,7 +118,6 @@ export default function useListBase<
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const [data, setData] = useState<T[]>([]);
-  const { opened, open, close } = useDisclosure();
 
   const [pagination, setPagination] = useState<PaginationType>({
     current: DEFAULT_TABLE_PAGE_START,
@@ -279,9 +275,9 @@ export default function useListBase<
                 </ToolTip>
               </span>
             </AlertDialogTrigger>
-            <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%]'>
+            <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-xl'>
               <AlertDialogHeader>
-                <AlertDialogTitle className='text-md flex items-center gap-2 font-normal'>
+                <AlertDialogTitle className='text-md content flex flex-nowrap items-center gap-2 font-normal'>
                   <Info className='size-8 fill-orange-500 stroke-white' />
                   Bạn có chắc chắn muốn xóa {objectName} này không ?
                 </AlertDialogTitle>
@@ -296,12 +292,12 @@ export default function useListBase<
                     Không
                   </Button>
                 </AlertDialogCancel>
-                <Button
-                  variant={'primary'}
+                <AlertDialogAction
                   onClick={() => handleDeleteClick(record.id)}
+                  className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
-                </Button>
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

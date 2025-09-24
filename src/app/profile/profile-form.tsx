@@ -105,6 +105,7 @@ export default function ProfileForm() {
                   });
                   return res.data?.filePath ?? '';
                 }}
+                label='Tải lên ảnh đại diện'
               />
             </Col>
           </Row>
