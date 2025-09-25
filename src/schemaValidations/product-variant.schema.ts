@@ -1,7 +1,7 @@
 import z from 'zod';
 
 export const productVariantSchema = z.object({
-  id: z.string().optional(),
+  id: z.union([z.string(), z.number()]).optional(),
   imageUrl: z.string().nonempty('Bắt buộc'),
   condition: z.number(),
   format: z.number(),
@@ -19,5 +19,5 @@ export const productVariantSearchParamSchema = z.object({
   condition: z.number().optional().nullable(),
   format: z.number().optional().nullable(),
   status: z.number().optional().nullable(),
-  productId: z.string()
+  productId: z.union([z.string(), z.number()]).optional()
 });

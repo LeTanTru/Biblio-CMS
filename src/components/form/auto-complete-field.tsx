@@ -31,6 +31,7 @@ import debounce from 'lodash/debounce';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { CircleLoading } from '@/components/loading';
 
 type AutoCompleteOption = {
   label: string | number;
@@ -94,6 +95,8 @@ export default function AutoCompleteField<
   const [initialOption, setInitialOption] = useState<AutoCompleteOption | null>(
     null
   );
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
+  const commandInputRef = useRef<HTMLInputElement>(null);
   const initialFetched = useRef(false);
 
   const fieldValue = useWatch({ control, name });
@@ -184,6 +187,20 @@ export default function AutoCompleteField<
     return initialOption ? [initialOption, ...opts] : opts;
   }, [options, initialOption]);
 
+  useEffect(() => {
+    if (!fieldValue || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
+      setSelectedOptions([]);
+      setInitialOption(null);
+      setSearch('');
+    }
+  }, [fieldValue]);
+
+  useEffect(() => {
+    if (!search) {
+      setHighlightedIndex(0);
+    }
+  }, [search]);
+
   return (
     <FormField
       control={control}
@@ -256,7 +273,7 @@ export default function AutoCompleteField<
                         disabled,
                       'border-dodger-blue ring-dodger-blue ring-1': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
-                      'border-red-500 ring-1 ring-red-500': fieldState.invalid,
+                      'border-red-500 ring-red-500': fieldState.invalid,
                       'pl-1!': multiple && selectedValues.length
                     }
                   )}
@@ -339,37 +356,68 @@ export default function AutoCompleteField<
                     placeholder={searchText}
                     value={search}
                     onValueChange={setSearch}
+                    ref={commandInputRef}
+                    onKeyDown={(e) => {
+                      if (combinedOptions.length === 0) return;
+                      switch (e.key) {
+                        case 'ArrowDown':
+                          e.preventDefault();
+                          setHighlightedIndex((prev) =>
+                            prev < combinedOptions.length - 1 ? prev + 1 : 0
+                          );
+                          break;
+                        case 'ArrowUp':
+                          e.preventDefault();
+                          setHighlightedIndex((prev) =>
+                            prev > 0 ? prev - 1 : combinedOptions.length - 1
+                          );
+                          break;
+                        case 'Enter':
+                          e.preventDefault();
+                          const selected = combinedOptions[highlightedIndex];
+                          if (selected) toggleValue(selected.value);
+                          break;
+                        case 'Escape':
+                          setOpen(false);
+                          break;
+                      }
+                    }}
                   />
                   {options.length === 0 ? (
-                    <CommandEmpty className='mx-auto pt-4 pb-2 text-center text-sm'>
+                    <CommandEmpty className='mx-auto pt-2 pb-4 text-center text-sm'>
                       <Image
                         src={emptyData.src}
                         width={120}
                         height={50}
-                        className='mx-auto mt-2'
+                        className='mx-auto'
                         alt={notFoundContent as string}
                       />
                       {notFoundContent}
                     </CommandEmpty>
                   ) : (
                     <CommandGroup>
-                      {combinedOptions.map((opt) => (
-                        <CommandItem
-                          key={opt.value}
-                          onSelect={() => toggleValue(opt.value)}
-                          className={cn('cursor-pointer rounded', {
-                            'bg-accent text-accent-foreground':
-                              selectedValues.includes(opt.value)
-                          })}
-                        >
-                          {opt.prefix && (
-                            <span className='mr-1 font-mono text-xs opacity-70'>
-                              {opt.prefix}
-                            </span>
-                          )}
-                          {opt.label}
-                        </CommandItem>
-                      ))}
+                      {query.isLoading || query.isFetching ? (
+                        <CircleLoading className='stroke-dodger-blue my-2 size-7' />
+                      ) : (
+                        combinedOptions.map((opt, idx) => (
+                          <CommandItem
+                            key={opt.value}
+                            onSelect={() => toggleValue(opt.value)}
+                            className={cn('cursor-pointer rounded', {
+                              'bg-accent text-accent-foreground':
+                                selectedValues.includes(opt.value) ||
+                                highlightedIndex === idx
+                            })}
+                          >
+                            {opt.prefix && (
+                              <span className='mr-1 font-mono text-xs opacity-70'>
+                                {opt.prefix}
+                              </span>
+                            )}
+                            {opt.label}
+                          </CommandItem>
+                        ))
+                      )}
                     </CommandGroup>
                   )}
                 </Command>

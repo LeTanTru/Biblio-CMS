@@ -1,12 +1,12 @@
 import z from 'zod';
 
 export const productImageSchema = z.object({
-  id: z.string().optional(),
+  id: z.union([z.string(), z.number()]).optional(),
   url: z.string().nonempty('Bắt buộc'),
   isDefault: z.boolean(),
-  productId: z.string()
+  productId: z.union([z.string(), z.number()]).optional()
 });
 
 export const productImageSearchParamSchema = z.object({
-  productId: z.string()
+  productId: z.union([z.string(), z.number()]).optional()
 });

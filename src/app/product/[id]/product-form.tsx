@@ -14,6 +14,7 @@ import { BaseForm } from '@/components/form/base-form';
 import { PageWrapper } from '@/components/layout';
 import { CircleLoading } from '@/components/loading';
 import {
+  AGE_RATING_ALL,
   ageRatings,
   apiConfig,
   CONTRIBUTOR_AUTHOR,
@@ -65,7 +66,7 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
 
   const defaultValues: ProductBodyType = {
     name: '',
-    ageRating: 0,
+    ageRating: AGE_RATING_ALL,
     categoryId: '',
     contributorIds: [],
     description: '',
@@ -81,7 +82,7 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
   const initialValues: ProductBodyType = useMemo(
     () => ({
       name: data?.name ?? '',
-      ageRating: data?.ageRating ?? 0,
+      ageRating: data?.ageRating ?? AGE_RATING_ALL,
       categoryId: data?.category?.id ?? '',
       contributorIds: data?.contributors?.map((contr) => contr.id) ?? [],
       authorIds: data?.contributors
@@ -229,18 +230,6 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
             </Row>
             <Row>
               <Col span={12}>
-                {/* <SelectField
-                  control={form.control}
-                  name='categoryId'
-                  label='Danh mục'
-                  placeholder='Danh mục'
-                  required
-                  getLabel={(opt) => opt.label}
-                  getValue={(opt) => opt.value}
-                  options={(categoryRes.data?.data.content || []).map(
-                    (category) => ({ label: category.name, value: category.id })
-                  )}
-                /> */}
                 <AutoCompleteField<any, CategoryResType>
                   control={form.control}
                   name='categoryId'

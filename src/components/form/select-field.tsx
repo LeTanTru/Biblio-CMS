@@ -159,7 +159,7 @@ export default function SelectField<
                         disabled,
                       'border-dodger-blue ring-dodger-blue ring-1': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
-                      'border-red-500 ring-1 ring-red-500': fieldState.invalid,
+                      'border-red-500 ring-red-500': fieldState.invalid,
                       'pl-[5px]!': multiple && selectedValues.length
                     }
                   )}
@@ -246,12 +246,12 @@ export default function SelectField<
                     value={searchValue}
                     onValueChange={setSearchValue}
                   />
-                  <CommandEmpty className='mx-auto pt-4 pb-2 text-center text-sm'>
+                  <CommandEmpty className='mx-auto pt-2 pb-2 text-center text-sm'>
                     <Image
                       src={emptyData.src}
                       width={120}
                       height={50}
-                      className='mx-auto mt-2'
+                      className='mx-auto mb-2'
                       alt={notFoundContent as string}
                     />
                     {notFoundContent}

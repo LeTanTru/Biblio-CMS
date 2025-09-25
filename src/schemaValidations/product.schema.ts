@@ -1,7 +1,10 @@
+import { ageRatings } from '@/constants';
 import z from 'zod';
 
+const validAgeRatings = ageRatings.map((age) => age.value);
+
 export const productSchema = z.object({
-  id: z.string().optional(),
+  id: z.union([z.string(), z.number()]).optional(),
   name: z.string().nonempty('Bắt buộc'),
   description: z.string().nonempty('Bắt buộc'),
   price: z.preprocess(
@@ -14,7 +17,11 @@ export const productSchema = z.object({
     }
     return val;
   }, z.string().nonempty('Bắt buộc')),
-  ageRating: z.number({ error: 'Bắt buộc' }),
+  ageRating: z
+    .number({ error: 'Bắt buộc' })
+    .refine((val) => validAgeRatings.includes(val), {
+      message: 'Độ tuổi không hợp lệ'
+    }),
   language: z.string().nonempty('Bắt buộc'),
   isFeatured: z.boolean({ error: 'Bắt buộc' }),
   discount: z
@@ -30,16 +37,14 @@ export const productSchema = z.object({
   metaData: z.object({
     height: z
       .number({ error: 'Bắt buộc' })
-      .nonnegative('Chiều cao không được âm'),
+      .positive('Chiều cao phải lớn hơn 0'),
     width: z
       .number({ error: 'Bắt buộc' })
-      .nonnegative('Chiều rộng không được âm'),
+      .positive('Chiều rộng phải lớn hơn 0'),
     length: z
       .number({ error: 'Bắt buộc' })
-      .nonnegative('Chiều dài không được âm'),
-    weight: z
-      .number({ error: 'Bắt buộc' })
-      .nonnegative('Cân nặng không được âm'),
+      .positive('Chiều dài phải lớn hơn 0'),
+    weight: z.number({ error: 'Bắt buộc' }).positive('Cân nặng phải lớn hơn 0'),
     numPage: z
       .number({ error: 'Bắt buộc' })
       .positive('Số trang phải lớn hơn 0')

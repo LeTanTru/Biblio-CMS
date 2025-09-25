@@ -1,9 +1,16 @@
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { ApiConfig } from '@/types/api.type';
+import { FieldValues } from 'react-hook-form';
 import { ZodObject } from 'zod';
 
 export type BaseSearchParamType = {
   page?: number;
   size?: number;
+};
+
+export type AutoCompleteOption = {
+  label: string | number;
+  value: string | number;
+  prefix?: React.ReactNode;
 };
 
 export type OptionType<V = string | number> = {
@@ -20,6 +27,10 @@ export type SearchFormProps<S extends FieldValues> = {
     placeholder: string;
     options?: OptionType[];
     submitOnChanged?: boolean;
+    apiConfig?: ApiConfig;
+    mappingData?: (option: any) => AutoCompleteOption;
+    searchParams?: string[];
+    initialParams?: Record<string, any>;
   }[];
   initialValues: Partial<S>;
   schema: ZodObject;

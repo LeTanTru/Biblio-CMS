@@ -28,6 +28,7 @@ import {
   ApiResponse,
   ApiResponseList,
   CategoryAutoResType,
+  CategoryResType,
   Column,
   ProductBodyType,
   ProductResType,
@@ -276,11 +277,14 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       {
         key: 'categoryId',
         placeholder: 'Danh mục',
-        type: FieldTypes.SELECT,
-        options: categoryRes.data?.data.content.map((category) => ({
-          label: category.name,
-          value: category.id
-        }))
+        type: FieldTypes.AUTOCOMPLETE,
+        mappingData: (item: CategoryResType) => ({
+          label: item.name,
+          value: item.id
+        }),
+        apiConfig: apiConfig.category.autoComplete,
+        searchParams: ['name'],
+        initialParams: { status: STATUS_ACTIVE }
       },
       {
         key: 'language',
@@ -291,11 +295,14 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       {
         key: 'publisherId',
         placeholder: 'Nhà xuất bản',
-        type: FieldTypes.SELECT,
-        options: publisherRes.data?.data.content.map((publisher) => ({
-          label: publisher.name,
-          value: publisher.id
-        }))
+        type: FieldTypes.AUTOCOMPLETE,
+        mappingData: (item: PublisherResType) => ({
+          label: item.name,
+          value: item.id
+        }),
+        apiConfig: apiConfig.publisher.autoComplete,
+        searchParams: ['name'],
+        initialParams: { status: STATUS_ACTIVE }
       },
       {
         key: 'status',

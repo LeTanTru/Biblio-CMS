@@ -64,7 +64,7 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
         productId: id,
         status: STATUS_ACTIVE
       },
-      excludeFromQueryFilter: ['name']
+      excludeFromQueryFilter: ['name', 'page']
     },
     override: (handlers) => {
       handlers.additionalParams = () => ({

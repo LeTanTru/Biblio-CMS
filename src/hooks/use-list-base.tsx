@@ -450,7 +450,6 @@ export default function useListBase<
           excludeFromQueryFilter.includes(key)
         )
       );
-
       setQueryParams({ ...defaultFilters, ...preservedParams });
     };
 

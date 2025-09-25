@@ -1,9 +1,16 @@
 'use client';
 
-import { Button, Col, InputField, Row, SelectField } from '@/components/form';
+import {
+  AutoCompleteField,
+  Button,
+  Col,
+  InputField,
+  Row,
+  SelectField
+} from '@/components/form';
 import { BaseForm } from '@/components/form/base-form';
 import { DEFAULT_COL_SPAN, FieldTypes } from '@/constants';
-import { SearchFormProps } from '@/types';
+import { ApiConfig, AutoCompleteOption, SearchFormProps } from '@/types';
 import { BrushCleaning, Search } from 'lucide-react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import z from 'zod';
@@ -69,35 +76,67 @@ export default function SearchForm<S extends FieldValues>({
         <>
           <Row className='my-0 -ml-4 gap-2'>
             {searchFields.map((sf) => {
-              return (
-                <Col
-                  key={sf.key as string}
-                  span={sf.colSpan || DEFAULT_COL_SPAN}
-                >
-                  {sf.type === FieldTypes.SELECT ? (
-                    <SelectField
-                      control={form.control}
-                      name={sf.key as string}
-                      placeholder={sf.placeholder}
-                      options={sf.options ?? []}
-                      getLabel={(option) => option.label}
-                      getValue={(option) => option.value}
-                      onValueChange={(val) => {
-                        if (sf.submitOnChanged) {
-                          form.setValue(sf.key as string, val);
-                          form.handleSubmit(onSubmit)();
+              switch (sf.type) {
+                case FieldTypes.SELECT: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                    >
+                      <SelectField
+                        control={form.control}
+                        name={sf.key as string}
+                        placeholder={sf.placeholder}
+                        options={sf.options ?? []}
+                        getLabel={(option) => option.label}
+                        getValue={(option) => option.value}
+                        onValueChange={(val) => {
+                          if (sf.submitOnChanged) {
+                            form.setValue(sf.key as string, val);
+                            form.handleSubmit(onSubmit)();
+                          }
+                        }}
+                      />
+                    </Col>
+                  );
+                }
+                case FieldTypes.AUTOCOMPLETE: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                    >
+                      <AutoCompleteField
+                        apiConfig={sf.apiConfig as ApiConfig}
+                        control={form.control}
+                        mappingData={
+                          sf.mappingData as (
+                            option: Record<string, any>
+                          ) => AutoCompleteOption
                         }
-                      }}
-                    />
-                  ) : (
-                    <InputField
-                      control={form.control}
-                      name={sf.key as string}
-                      placeholder={sf.placeholder}
-                    />
-                  )}
-                </Col>
-              );
+                        name={sf.key as string}
+                        searchParams={sf.searchParams as string[]}
+                        initialParams={sf.initialParams}
+                        placeholder={sf.placeholder}
+                      />
+                    </Col>
+                  );
+                }
+                default: {
+                  return (
+                    <Col
+                      key={sf.key as string}
+                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                    >
+                      <InputField
+                        control={form.control}
+                        name={sf.key as string}
+                        placeholder={sf.placeholder}
+                      />
+                    </Col>
+                  );
+                }
+              }
             })}
             <Col className='w-9'>
               <Button type='submit' variant={'primary'}>

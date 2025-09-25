@@ -1,4 +1,11 @@
 import {
+  AGE_RATING_0_2,
+  AGE_RATING_12_15,
+  AGE_RATING_16_18,
+  AGE_RATING_18_OVER,
+  AGE_RATING_3_5,
+  AGE_RATING_6_11,
+  AGE_RATING_ALL,
   COUPON_KIND_DISCOUNT,
   COUPON_KIND_FREESHIP,
   COUPON_TYPE_FIXED,
@@ -47,7 +54,7 @@ export const groupKinds = [
 export const statusOptions = [
   {
     value: STATUS_ACTIVE,
-    label: 'Hoạt động',
+    label: 'Đang bán',
     color: '#28a745'
   },
   {
@@ -383,7 +390,7 @@ export const genderOptions: OptionType[] = [
 export const contributorStatuses = [
   {
     value: STATUS_ACTIVE,
-    label: 'Hoạt động',
+    label: 'Đang bán',
     color: '#28a745'
   },
   {
@@ -396,7 +403,7 @@ export const contributorStatuses = [
 export const categoryStatuses = [
   {
     value: STATUS_ACTIVE,
-    label: 'Hoạt động',
+    label: 'Đang bán',
     color: '#28a745'
   },
   {
@@ -409,7 +416,7 @@ export const categoryStatuses = [
 export const productVariantStatuses = [
   {
     value: STATUS_ACTIVE,
-    label: 'Hoạt động',
+    label: 'Đang bán',
     color: '#28a745'
   },
   {
@@ -422,7 +429,7 @@ export const productVariantStatuses = [
 export const productStatuses = [
   {
     value: STATUS_ACTIVE,
-    label: 'Hoạt động',
+    label: 'Đang bán',
     color: '#28a745'
   },
   {
@@ -433,12 +440,13 @@ export const productStatuses = [
 ];
 
 export const ageRatings = [
-  { label: '0 - 2 tuổi', value: 1 },
-  { label: '3 - 5 tuổi', value: 2 },
-  { label: '6 - 11 tuổ', value: 3 },
-  { label: '12 - 15 tuổi', value: 4 },
-  { label: '16 - 18 tuổi', value: 5 },
-  { label: '18+', value: 6 }
+  { label: 'Mọi lứa tuổi', value: AGE_RATING_ALL },
+  { label: '0 - 2 tuổi', value: AGE_RATING_0_2 },
+  { label: '3 - 5 tuổi', value: AGE_RATING_3_5 },
+  { label: '6 - 11 tuổi', value: AGE_RATING_6_11 },
+  { label: '12 - 15 tuổi', value: AGE_RATING_12_15 },
+  { label: '16 - 18 tuổi', value: AGE_RATING_16_18 },
+  { label: '18+', value: AGE_RATING_18_OVER }
 ];
 
 export const queryKeys = {
@@ -456,23 +464,23 @@ export const queryKeys = {
 
 export const productVariantConditions = [
   {
-    label: 'Cũ',
-    value: PRODUCT_VARIANT_CONDITION_OLD
-  },
-  {
     label: 'Mới',
     value: PRODUCT_VARIANT_CONDITION_NEW
+  },
+  {
+    label: 'Cũ',
+    value: PRODUCT_VARIANT_CONDITION_OLD
   }
 ];
 
 export const productVariantFormats = [
   {
-    label: 'Bìa mềm',
-    value: PRODUCT_VARIANT_FORMAT_PAPER_BACK
-  },
-  {
     label: 'Bìa cứng',
     value: PRODUCT_VARIANT_FORMAT_HARD_COVER
+  },
+  {
+    label: 'Bìa mềm',
+    value: PRODUCT_VARIANT_FORMAT_PAPER_BACK
   }
 ];
 
@@ -497,7 +505,7 @@ export const couponTypes = [
 
 export const couponStatuses = [
   {
-    label: 'Hoạt động',
+    label: 'Đang bán',
     value: STATUS_ACTIVE
   },
   {
