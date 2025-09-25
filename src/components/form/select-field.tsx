@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import {
   FormDescription,
   FormField,
@@ -26,6 +25,7 @@ import { ChevronDown, X } from 'lucide-react';
 import { Button } from '@/components/form';
 import Image from 'next/image';
 import { emptyData } from '@/assets';
+import { useEffect, useState } from 'react';
 
 type SelectFieldProps<
   TFieldValues extends FieldValues,
@@ -82,8 +82,9 @@ export default function SelectField<
   disabled = false,
   onValueChange
 }: SelectFieldProps<TFieldValues, TOption>) {
-  const [open, setOpen] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   function isFuzzyMatch(input: string, target: string): boolean {
     let i = 0,
@@ -102,6 +103,12 @@ export default function SelectField<
     const normalizedLabel = normalizeText(label);
     return isFuzzyMatch(normalizedSearch, normalizedLabel);
   });
+
+  useEffect(() => {
+    if (!searchValue) {
+      setHighlightedIndex(-1);
+    }
+  }, [searchValue]);
 
   return (
     <FormField
@@ -152,15 +159,14 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'w-full flex-wrap justify-between border-1 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
+                    'w-full flex-wrap justify-between truncate border-1 py-0 text-black focus:ring-0 focus-visible:shadow-none',
                     {
                       'pl-1!': selectedValues.length > 1,
-                      'disabled:cursor-not-allowed disabled:opacity-100 disabled:hover:bg-transparent disabled:[&>div>span]:opacity-80':
+                      'disabled:cursor-not-allowed disabled:opacity-100':
                         disabled,
                       'border-dodger-blue ring-dodger-blue ring-1': open,
                       '[&>div>span]:text-gray-300': fieldState.invalid,
-                      'border-red-500 ring-red-500': fieldState.invalid,
-                      'pl-[5px]!': multiple && selectedValues.length
+                      'border-red-500 ring-red-500': fieldState.invalid
                     }
                   )}
                 >
@@ -204,9 +210,11 @@ export default function SelectField<
                       const val = selectedValues[0];
                       const opt = options.find((o) => getValue(o) === val);
                       return opt ? (
-                        <div className='flex items-center gap-2 truncate'>
+                        <div className='flex min-w-0 flex-1 items-center gap-2'>
                           {getPrefix?.(opt)}
-                          <span>{getLabel(opt)}</span>
+                          <span className='block truncate'>
+                            {getLabel(opt)}
+                          </span>
                         </div>
                       ) : (
                         <span className='opacity-30'>{placeholder}</span>
@@ -245,6 +253,26 @@ export default function SelectField<
                     placeholder={searchText}
                     value={searchValue}
                     onValueChange={setSearchValue}
+                    onKeyDown={(e) => {
+                      if (filteredOptions.length === 0) return;
+                      if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        setHighlightedIndex((prev) =>
+                          prev < filteredOptions.length - 1 ? prev + 1 : 0
+                        );
+                      } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        setHighlightedIndex((prev) =>
+                          prev > 0 ? prev - 1 : filteredOptions.length - 1
+                        );
+                      } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const selected = filteredOptions[highlightedIndex];
+                        if (selected) {
+                          toggleValue(getValue(selected));
+                        }
+                      }
+                    }}
                   />
                   <CommandEmpty className='mx-auto pt-2 pb-2 text-center text-sm'>
                     <Image
@@ -257,16 +285,18 @@ export default function SelectField<
                     {notFoundContent}
                   </CommandEmpty>
                   <CommandGroup className='max-h-100 overflow-y-auto max-[1560px]:max-h-50'>
-                    {filteredOptions.map((opt) => {
+                    {filteredOptions.map((opt, idx) => {
                       const val = getValue(opt);
                       return (
                         <CommandItem
+                          onMouseEnter={() => setHighlightedIndex(idx)}
                           key={val}
                           onSelect={() => toggleValue(val)}
                           className={cn(
-                            'cursor-pointer rounded transition-all duration-150 ease-linear select-none',
+                            'block cursor-pointer truncate rounded transition-all',
                             {
                               'bg-accent text-accent-foreground':
+                                highlightedIndex === idx ||
                                 selectedValues.includes(val)
                             }
                           )}

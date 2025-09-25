@@ -8,7 +8,7 @@ export type BaseSearchParamType = {
 };
 
 export type AutoCompleteOption = {
-  label: string | number;
+  label: string;
   value: string | number;
   prefix?: React.ReactNode;
 };

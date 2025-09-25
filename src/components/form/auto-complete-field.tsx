@@ -34,7 +34,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CircleLoading } from '@/components/loading';
 
 type AutoCompleteOption = {
-  label: string | number;
+  label: string;
   value: string | number;
   prefix?: React.ReactNode;
 };
@@ -95,7 +95,7 @@ export default function AutoCompleteField<
   const [initialOption, setInitialOption] = useState<AutoCompleteOption | null>(
     null
   );
-  const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const commandInputRef = useRef<HTMLInputElement>(null);
   const initialFetched = useRef(false);
 
@@ -197,7 +197,7 @@ export default function AutoCompleteField<
 
   useEffect(() => {
     if (!search) {
-      setHighlightedIndex(0);
+      setHighlightedIndex(-1);
     }
   }, [search]);
 
@@ -213,7 +213,7 @@ export default function AutoCompleteField<
               ? Array.isArray(field.value)
                 ? field.value
                 : []
-              : [field.value];
+              : [field.value].filter(Boolean);
 
         const toggleValue = (val: string | number) => {
           if (multiple) {
@@ -266,8 +266,9 @@ export default function AutoCompleteField<
                   role='combobox'
                   aria-label='Select'
                   disabled={disabled}
+                  title={selectedOptions[0]?.label ?? ''}
                   className={cn(
-                    'w-full flex-wrap justify-between border-1 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
+                    'w-full flex-nowrap justify-between truncate border-1 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
                     {
                       'disabled:cursor-not-allowed disabled:opacity-100 disabled:hover:bg-transparent disabled:[&>div>span]:opacity-80':
                         disabled,
@@ -316,9 +317,9 @@ export default function AutoCompleteField<
                       <span className='opacity-30'>{placeholder}</span>
                     )
                   ) : selectedOptions.length === 1 ? (
-                    <div className='flex items-center gap-2 truncate'>
+                    <div className='flex min-w-0 flex-1 items-center gap-2'>
                       {selectedOptions[0].prefix}
-                      <span className='text-black'>
+                      <span className='truncate text-black'>
                         {selectedOptions[0].label}
                       </span>
                     </div>
@@ -339,7 +340,7 @@ export default function AutoCompleteField<
                       <X className='size-3' />
                     </span>
                   ) : (
-                    <ChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    <ChevronDown className='ml-0 h-4 w-4 shrink-0 opacity-50' />
                   )}
                 </Button>
               </PopoverTrigger>
@@ -403,11 +404,16 @@ export default function AutoCompleteField<
                           <CommandItem
                             key={opt.value}
                             onSelect={() => toggleValue(opt.value)}
-                            className={cn('cursor-pointer rounded', {
-                              'bg-accent text-accent-foreground':
-                                selectedValues.includes(opt.value) ||
-                                highlightedIndex === idx
-                            })}
+                            onMouseEnter={() => setHighlightedIndex(idx)}
+                            title={opt.label}
+                            className={cn(
+                              'block cursor-pointer truncate rounded',
+                              {
+                                'bg-accent text-accent-foreground':
+                                  selectedValues.includes(opt.value) ||
+                                  highlightedIndex === idx
+                              }
+                            )}
                           >
                             {opt.prefix && (
                               <span className='mr-1 font-mono text-xs opacity-70'>

@@ -1,5 +1,4 @@
 'use client';
-
 import { ReactNode } from 'react';
 import { AnimatePresence, motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib';

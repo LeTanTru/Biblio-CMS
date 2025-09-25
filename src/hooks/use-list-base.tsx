@@ -126,9 +126,13 @@ export default function useListBase<
   });
   const { searchParams, setQueryParams, setQueryParam, serializeParams } =
     useQueryParams<S>();
+
+  // Combined current params with default params
   const mergedSearchParams = useMemo(() => {
     return { ...defaultFilters, ...searchParams };
   }, [searchParams, defaultFilters]);
+
+  // Filter params which will not be filtered by
   const queryFilter = useMemo(() => {
     const filteredParams = Object.fromEntries(
       Object.entries(mergedSearchParams).filter(
@@ -145,6 +149,7 @@ export default function useListBase<
     } as S;
   }, [mergedSearchParams, pageSize, excludeFromQueryFilter]);
 
+  // Clear undefined | null params
   useEffect(() => {
     Object.entries(defaultFilters).forEach(([key, value]) => {
       if (
@@ -185,6 +190,7 @@ export default function useListBase<
     setData(listQuery.data?.data.content || []);
   }, [listQuery.data?.data.content]);
 
+  // Pagination
   const current = searchParams['page'];
   useEffect(() => {
     setPagination((p) => ({
@@ -404,6 +410,7 @@ export default function useListBase<
     searchFields: SearchFormProps<S>['searchFields'];
     schema: SearchFormProps<S>['schema'];
   }) => {
+    // Set value for search fields
     const mergedValues = {
       ...queryFilter,
       ...Object.fromEntries(
@@ -414,7 +421,7 @@ export default function useListBase<
           switch (field.type) {
             case FieldTypes.NUMBER:
               return [key, value ? Number(value) : undefined];
-            case FieldTypes.SELECT:
+            case FieldTypes.SELECT || FieldTypes.AUTOCOMPLETE:
               const option = field.options?.find(
                 (opt: any) => String(opt.value) === String(value)
               );
@@ -426,6 +433,7 @@ export default function useListBase<
       )
     };
 
+    // Handle search
     const handleSearchSubmit = (values: any) => {
       const preservedParams = Object.fromEntries(
         Object.entries(searchParams).filter(([key]) =>
@@ -436,6 +444,7 @@ export default function useListBase<
       setQueryParams({ ...values, ...preservedParams } as Partial<S>);
     };
 
+    // Handle reset
     const handleSearchReset = () => {
       if (Object.keys(searchParams).length === 0) return;
 
@@ -474,7 +483,6 @@ export default function useListBase<
       variant={'primary'}
     >
       <RefreshCcw />
-      Tải lại
     </Button>
   );
 
