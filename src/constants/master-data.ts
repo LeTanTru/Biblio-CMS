@@ -54,7 +54,7 @@ export const groupKinds = [
 export const statusOptions = [
   {
     value: STATUS_ACTIVE,
-    label: 'Đang bán',
+    label: 'Hoạt động',
     color: '#28a745'
   },
   {
@@ -390,7 +390,7 @@ export const genderOptions: OptionType[] = [
 export const contributorStatuses = [
   {
     value: STATUS_ACTIVE,
-    label: 'Đang bán',
+    label: 'Hoạt động',
     color: '#28a745'
   },
   {
@@ -403,7 +403,7 @@ export const contributorStatuses = [
 export const categoryStatuses = [
   {
     value: STATUS_ACTIVE,
-    label: 'Đang bán',
+    label: 'Hoạt động',
     color: '#28a745'
   },
   {
@@ -416,7 +416,7 @@ export const categoryStatuses = [
 export const productVariantStatuses = [
   {
     value: STATUS_ACTIVE,
-    label: 'Đang bán',
+    label: 'Hoạt động',
     color: '#28a745'
   },
   {
@@ -505,7 +505,7 @@ export const couponTypes = [
 
 export const couponStatuses = [
   {
-    label: 'Đang bán',
+    label: 'Còn hạn',
     value: STATUS_ACTIVE
   },
   {
