@@ -12,6 +12,11 @@ export interface ModalProps extends HTMLMotionProps<'div'> {
   onClose?: () => void;
   backdrop?: boolean;
   closeOnBackdropClick?: boolean;
+  variants?: {
+    initial: Record<string, any>;
+    animate: Record<string, any>;
+    exit: Record<string, any>;
+  };
 }
 
 export default function Modal({
@@ -21,6 +26,15 @@ export default function Modal({
   backdrop = true,
   closeOnBackdropClick = true,
   className,
+  variants = {
+    initial: {
+      y: -100,
+      opacity: 0,
+      scale: 0.95
+    },
+    animate: { y: 0, opacity: 1, scale: 1 },
+    exit: { y: -100, opacity: 0, scale: 0.95 }
+  },
   ...rest
 }: ModalProps) {
   const isMounted = useIsMounted();
@@ -41,7 +55,7 @@ export default function Modal({
         >
           {backdrop && (
             <motion.div
-              className='absolute inset-0 bg-black/50'
+              className='backdrop absolute inset-0 bg-black/50'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -50,10 +64,10 @@ export default function Modal({
           )}
 
           <motion.div
-            className='relative rounded-lg bg-white shadow-lg'
-            initial={{ y: -100, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: -100, opacity: 0, scale: 0.95 }}
+            className='content relative rounded-lg bg-white shadow-lg'
+            initial={variants.initial}
+            animate={variants.animate}
+            exit={variants.exit}
             transition={{ duration: 0.15, ease: 'linear' }}
           >
             {children}

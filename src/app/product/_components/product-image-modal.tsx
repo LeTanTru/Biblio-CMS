@@ -442,8 +442,25 @@ function ImagePreview({
       open={open}
       onClose={onClose}
       className='fixed inset-0 z-50 [&>div]:rounded-none [&>div]:bg-black/80'
+      variants={{
+        initial: {
+          scale: 0.8,
+          opacity: 0
+        },
+        animate: {
+          scale: 1,
+          opacity: 1
+        },
+        exit: {
+          scale: 0.8,
+          opacity: 0
+        }
+      }}
     >
-      <div className='group relative flex h-dvh w-dvw flex-col items-center justify-center rounded-lg px-4'>
+      <div
+        className='group flex h-dvh w-dvw flex-col items-center justify-center rounded-lg px-4'
+        onClick={onClose}
+      >
         <Button
           variant={'destructive'}
           onClick={onClose}
@@ -455,7 +472,10 @@ function ImagePreview({
         <div className='relative flex h-4/5 w-full items-center'>
           <Button
             variant={'ghost'}
-            onClick={prev}
+            onClick={(e) => {
+              e.stopPropagation();
+              prev();
+            }}
             className='absolute left-0 px-1! text-white opacity-0 transition-all duration-300 ease-linear group-hover:opacity-100 hover:bg-transparent! [&>svg]:size-7! [&>svg]:stroke-white/50 [&>svg]:transition-all [&>svg]:duration-200 [&>svg]:ease-in hover:[&>svg]:stroke-white'
           >
             <ChevronLeft size={36} />
@@ -474,7 +494,10 @@ function ImagePreview({
           </AnimatePresence>
           <Button
             variant={'ghost'}
-            onClick={next}
+            onClick={(e) => {
+              e.stopPropagation();
+              next();
+            }}
             className='absolute right-0 px-1! text-white opacity-0 transition-all duration-300 ease-linear group-hover:opacity-100 hover:bg-transparent! [&>svg]:size-7! [&>svg]:stroke-white/50 [&>svg]:transition-all [&>svg]:duration-200 [&>svg]:ease-in hover:[&>svg]:stroke-white'
           >
             <ChevronRight size={36} />
