@@ -162,7 +162,7 @@ export default function SearchForm<S extends FieldValues>({
       defaultValues={defaultValues}
       schema={schema}
       initialValues={initialValues}
-      className='w-full pl-0'
+      className='w-full p-0 pr-4'
     >
       {(form) => (
         <>
@@ -192,10 +192,4 @@ export default function SearchForm<S extends FieldValues>({
       )}
     </BaseForm>
   );
-}
-
-function getColWidth({ span, gutter }: { span: number; gutter: number }) {
-  return gutter
-    ? `w-[calc(${((span || DEFAULT_COL_SPAN) * 100) / 24}%_-_${gutter}px)]`
-    : `w-[${((span || DEFAULT_COL_SPAN) * 100) / 24}%]`;
 }
