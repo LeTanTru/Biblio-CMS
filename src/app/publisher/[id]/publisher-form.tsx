@@ -97,7 +97,7 @@ export default function PublisherForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col>
                 <RichTextField
                   label='Mô tả'
                   placeholder='Nhập mô tả'

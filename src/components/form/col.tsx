@@ -1,6 +1,5 @@
 import { PropsWithChildren, HTMLAttributes } from 'react';
 import { cn } from '@/lib';
-import { DEFAULT_COL_SPAN } from '@/constants';
 
 type ColProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
   span?: number;
@@ -10,7 +9,7 @@ type ColProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
 export default function Col({
   children,
   className,
-  span = DEFAULT_COL_SPAN,
+  span = 24,
   gutter = 8,
   ...rest
 }: ColProps) {

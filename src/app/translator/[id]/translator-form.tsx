@@ -158,7 +158,7 @@ export default function TranslatorForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col>
                 <RichTextField
                   label='Tiểu sử'
                   placeholder='Nhập tiểu sử'

@@ -40,7 +40,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --spacing-1\/24: 4.166667%;
+  /* --spacing-1\/24: 4.166667%;
   --spacing-2\/24: 8.333333%;
   --spacing-3\/24: 12.5%;
   --spacing-4\/24: 16.666667%;
@@ -63,7 +63,7 @@
   --spacing-21\/24: 87.5%;
   --spacing-22\/24: 91.666667%;
   --spacing-23\/24: 95.833333%;
-  --spacing-24\/24: 100%;
+  --spacing-24\/24: 100%; */
   --text-md: 16px;
   --color-sidebar-item-active: #1677ff;
   --color-sidebar: #001529;
