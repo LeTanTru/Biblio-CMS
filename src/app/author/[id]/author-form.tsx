@@ -158,7 +158,7 @@ export default function AuthorForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col span={24}>
                 <RichTextField
                   label='Tiểu sử'
                   placeholder='Nhập tiểu sử'

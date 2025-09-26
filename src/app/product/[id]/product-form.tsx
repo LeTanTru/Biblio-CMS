@@ -359,7 +359,7 @@ export default function ProductForm({ queryKey }: { queryKey: string }) {
               </Col>
             </Row>
             <Row>
-              <Col>
+              <Col span={24}>
                 <RichTextField
                   control={form.control}
                   name='description'

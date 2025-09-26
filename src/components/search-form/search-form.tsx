@@ -138,12 +138,12 @@ export default function SearchForm<S extends FieldValues>({
                 }
               }
             })}
-            <Col className='w-9'>
+            <Col className='w-9!'>
               <Button type='submit' variant={'primary'}>
                 <Search />
               </Button>
             </Col>
-            <Col className='w-9'>
+            <Col className='w-9!'>
               <Button
                 type='button'
                 onClick={() => handleReset(form)}
