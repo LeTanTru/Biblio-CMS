@@ -81,7 +81,7 @@ export default function SearchForm<S extends FieldValues>({
                   return (
                     <Col
                       key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={getColWidth({ span: 6, gutter: 8 })}
                     >
                       <SelectField
                         control={form.control}
@@ -104,7 +104,7 @@ export default function SearchForm<S extends FieldValues>({
                   return (
                     <Col
                       key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={getColWidth({ span: 6, gutter: 8 })}
                     >
                       <AutoCompleteField
                         apiConfig={sf.apiConfig as ApiConfig}
@@ -126,7 +126,7 @@ export default function SearchForm<S extends FieldValues>({
                   return (
                     <Col
                       key={sf.key as string}
-                      span={sf.colSpan || DEFAULT_COL_SPAN}
+                      className={getColWidth({ span: 6, gutter: 8 })}
                     >
                       <InputField
                         control={form.control}
@@ -157,4 +157,10 @@ export default function SearchForm<S extends FieldValues>({
       )}
     </BaseForm>
   );
+}
+
+function getColWidth({ span, gutter }: { span: number; gutter: number }) {
+  return gutter
+    ? `w-[calc(${((span || DEFAULT_COL_SPAN) * 100) / 24}%_-_${gutter}px)]`
+    : `w-[${((span || DEFAULT_COL_SPAN) * 100) / 24}%]`;
 }
