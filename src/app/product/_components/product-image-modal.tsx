@@ -20,16 +20,13 @@ import {
 import { useDisclosure, useDragDrop, useListBase, useSaveBase } from '@/hooks';
 import { logger } from '@/logger';
 import { useUploadImageProduct } from '@/queries';
-import {
-  productImageSchema,
-  productSearchParamSchema
-} from '@/schemaValidations';
+import { productImageSchema, productSearchSchema } from '@/schemaValidations';
 import {
   ApiResponse,
   Column,
   ProductImageBodyType,
   ProductImageResType,
-  ProductImageSearchParamType,
+  ProductImageSearchType,
   ProductResType
 } from '@/types';
 import { http, notify, renderImageUrl } from '@/utils';
@@ -83,13 +80,13 @@ export default function ProductImageModal({
     handlers,
     listQuery,
     setData
-  } = useListBase<ProductImageResType, ProductImageSearchParamType>({
+  } = useListBase<ProductImageResType, ProductImageSearchType>({
     apiConfig: apiConfig.productImage,
     options: {
       queryKey: 'product-image',
       objectName: 'ảnh sách',
       enabled: open,
-      excludeFromQueryFilter: [...Object.keys(productSearchParamSchema.shape)]
+      excludeFromQueryFilter: [...Object.keys(productSearchSchema.shape)]
     },
     override: (handlers) => {
       handlers.additionalParams = () => ({

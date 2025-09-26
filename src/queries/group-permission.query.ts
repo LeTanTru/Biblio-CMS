@@ -4,13 +4,13 @@ import { groupPermissionApiRequest } from '@/api-requests';
 import { logger } from '@/logger';
 import {
   GroupPermissionBodyType,
-  GroupPermissionSearchParamType
+  GroupPermissionSearchType
 } from '@/types/group-permission.type';
 import { notify } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const useGroupPermissionListQuery = (
-  params?: GroupPermissionSearchParamType
+  params?: GroupPermissionSearchType
 ) => {
   return useQuery({
     queryKey: ['group-permission-list', params],

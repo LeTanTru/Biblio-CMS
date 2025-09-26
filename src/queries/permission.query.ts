@@ -2,11 +2,11 @@
 
 import { permissionApiRequest } from '@/api-requests';
 import { logger } from '@/logger';
-import { PermissionBodyType, PermissionSearchParamType } from '@/types';
+import { PermissionBodyType, PermissionSearchType } from '@/types';
 import { notify } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-export const usePermissionListQuery = (params?: PermissionSearchParamType) => {
+export const usePermissionListQuery = (params?: PermissionSearchType) => {
   return useQuery({
     queryKey: ['permission-list', params],
     queryFn: () => permissionApiRequest.getList(params)

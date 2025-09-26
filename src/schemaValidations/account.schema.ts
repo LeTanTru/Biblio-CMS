@@ -10,7 +10,7 @@ export const updateProfileSchema = z.object({
     .optional()
 });
 
-export const accountSearchParamSchema = z.object({
+export const accountSearchSchema = z.object({
   email: z.string().optional(),
   fullName: z.string().optional(),
   phone: z.string().optional(),

@@ -15,13 +15,13 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import { translatorSchemaParamSchema } from '@/schemaValidations';
+import { translatorSearchSchema } from '@/schemaValidations';
 import {
   ApiResponse,
   Column,
   SearchFormProps,
   TranslatorResType,
-  TranslatorSearchParamType
+  TranslatorSearchType
 } from '@/types';
 import { formatDate, http, notify, renderImageUrl } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
@@ -40,7 +40,7 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
 
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     TranslatorResType,
-    TranslatorSearchParamType
+    TranslatorSearchType
   >({
     apiConfig: apiConfig.translator,
     options: {
@@ -138,24 +138,23 @@ export default function TranslatorList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<TranslatorSearchParamType>['searchFields'] =
-    [
-      { key: 'name', placeholder: 'Họ tên' },
-      {
-        key: 'status',
-        type: FieldTypes.SELECT,
-        options: contributorStatuses,
-        placeholder: 'Trạng thái',
-        submitOnChanged: true
-      }
-    ];
+  const searchFields: SearchFormProps<TranslatorSearchType>['searchFields'] = [
+    { key: 'name', placeholder: 'Họ tên' },
+    {
+      key: 'status',
+      type: FieldTypes.SELECT,
+      options: contributorStatuses,
+      placeholder: 'Trạng thái',
+      submitOnChanged: true
+    }
+  ];
 
   return (
     <PageWrapper breadcrumbs={[{ label: 'Dịch giả' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: translatorSchemaParamSchema
+          schema: translatorSearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

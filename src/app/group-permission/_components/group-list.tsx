@@ -5,18 +5,18 @@ import { BaseTable } from '@/components/table';
 import { Badge } from '@/components/ui/badge';
 import { apiConfig, FieldTypes, groupKinds } from '@/constants';
 import { useListBase } from '@/hooks';
-import { groupSearchParamSchema } from '@/schemaValidations';
+import { groupSearchSchema } from '@/schemaValidations';
 import {
   Column,
   GroupResType,
-  GroupSearchParamType,
+  GroupSearchType,
   SearchFormProps
 } from '@/types';
 
 export default function GroupList({ queryKey }: { queryKey: string }) {
   const { data, loading, handlers, pagination } = useListBase<
     GroupResType,
-    GroupSearchParamType
+    GroupSearchType
   >({
     apiConfig: apiConfig.group,
     options: {
@@ -52,7 +52,7 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<GroupSearchParamType>['searchFields'] = [
+  const searchFields: SearchFormProps<GroupSearchType>['searchFields'] = [
     { key: 'name', placeholder: 'Tên quyền' },
     {
       key: 'kind',
@@ -67,7 +67,7 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     <ListPageWrapper
       searchForm={handlers.renderSearchForm({
         searchFields,
-        schema: groupSearchParamSchema
+        schema: groupSearchSchema
       })}
       addButton={handlers.renderAddButton()}
       reloadButton={handlers.renderReloadButton()}

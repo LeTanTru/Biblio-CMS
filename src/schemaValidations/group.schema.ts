@@ -8,7 +8,7 @@ export const groupSchema = z.object({
   permissionIds: z.string().array()
 });
 
-export const groupSearchParamSchema = z.object({
+export const groupSearchSchema = z.object({
   name: z.string().optional(),
   kind: z.number().optional().nullable(),
   isSystemRole: z.boolean().optional()

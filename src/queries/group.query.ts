@@ -3,7 +3,7 @@
 import { groupApiRequest } from '@/api-requests';
 import { ErrorCode } from '@/constants';
 import { logger } from '@/logger';
-import { GroupBodyType, GroupSearchParamType } from '@/types';
+import { GroupBodyType, GroupSearchType } from '@/types';
 import { notify } from '@/utils';
 import {
   keepPreviousData,
@@ -12,7 +12,7 @@ import {
   useQueryClient
 } from '@tanstack/react-query';
 
-export const useGroupListQuery = (params?: GroupSearchParamType) => {
+export const useGroupListQuery = (params?: GroupSearchType) => {
   return useQuery({
     queryKey: ['group-list', params],
     queryFn: async () => await groupApiRequest.getList(params),

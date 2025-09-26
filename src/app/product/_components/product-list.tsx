@@ -23,14 +23,14 @@ import {
 } from '@/hooks';
 import { cn } from '@/lib';
 import route from '@/routes';
-import { productSearchParamSchema } from '@/schemaValidations';
+import { productSearchSchema } from '@/schemaValidations';
 import {
   ApiResponse,
   CategoryResType,
   Column,
   ProductBodyType,
   ProductResType,
-  ProductSearchParamType,
+  ProductSearchType,
   PublisherResType,
   SearchFormProps
 } from '@/types';
@@ -62,7 +62,7 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
   const [selectedRow, setSelectedRow] = useState<ProductResType | null>(null);
   const { data, loading, handlers, pagination, listQuery } = useListBase<
     ProductResType,
-    ProductSearchParamType
+    ProductSearchType
   >({
     apiConfig: apiConfig.product,
     options: {
@@ -249,53 +249,52 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<ProductSearchParamType>['searchFields'] =
-    [
-      { key: 'name', placeholder: 'Tên sách' },
-      {
-        key: 'ageRating',
-        placeholder: 'Độ tuổi',
-        type: FieldTypes.SELECT,
-        options: ageRatings
-      },
-      {
-        key: 'categoryId',
-        placeholder: 'Danh mục',
-        type: FieldTypes.AUTOCOMPLETE,
-        mappingData: (item: CategoryResType) => ({
-          label: item.name,
-          value: item.id
-        }),
-        apiConfig: apiConfig.category.autoComplete,
-        searchParams: ['name'],
-        initialParams: { status: STATUS_ACTIVE }
-      },
-      {
-        key: 'language',
-        placeholder: 'Ngôn ngữ',
-        type: FieldTypes.SELECT,
-        options: languageOptions
-      },
-      {
-        key: 'publisherId',
-        placeholder: 'Nhà xuất bản',
-        type: FieldTypes.AUTOCOMPLETE,
-        mappingData: (item: PublisherResType) => ({
-          label: item.name,
-          value: item.id
-        }),
-        apiConfig: apiConfig.publisher.autoComplete,
-        searchParams: ['name'],
-        initialParams: { status: STATUS_ACTIVE }
-      },
-      {
-        key: 'status',
-        placeholder: 'Trạng thái',
-        type: FieldTypes.SELECT,
-        options: productStatuses,
-        submitOnChanged: true
-      }
-    ];
+  const searchFields: SearchFormProps<ProductSearchType>['searchFields'] = [
+    { key: 'name', placeholder: 'Tên sách' },
+    {
+      key: 'ageRating',
+      placeholder: 'Độ tuổi',
+      type: FieldTypes.SELECT,
+      options: ageRatings
+    },
+    {
+      key: 'categoryId',
+      placeholder: 'Danh mục',
+      type: FieldTypes.AUTOCOMPLETE,
+      mappingData: (item: CategoryResType) => ({
+        label: item.name,
+        value: item.id
+      }),
+      apiConfig: apiConfig.category.autoComplete,
+      searchParams: ['name'],
+      initialParams: { status: STATUS_ACTIVE }
+    },
+    {
+      key: 'language',
+      placeholder: 'Ngôn ngữ',
+      type: FieldTypes.SELECT,
+      options: languageOptions
+    },
+    {
+      key: 'publisherId',
+      placeholder: 'Nhà xuất bản',
+      type: FieldTypes.AUTOCOMPLETE,
+      mappingData: (item: PublisherResType) => ({
+        label: item.name,
+        value: item.id
+      }),
+      apiConfig: apiConfig.publisher.autoComplete,
+      searchParams: ['name'],
+      initialParams: { status: STATUS_ACTIVE }
+    },
+    {
+      key: 'status',
+      placeholder: 'Trạng thái',
+      type: FieldTypes.SELECT,
+      options: productStatuses,
+      submitOnChanged: true
+    }
+  ];
 
   const handleOpen = (record: ProductResType) => {
     open();
@@ -311,7 +310,7 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: productSearchParamSchema
+          schema: productSearchSchema
         })}
         reloadButton={handlers.renderReloadButton()}
         addButton={handlers.renderAddButton()}

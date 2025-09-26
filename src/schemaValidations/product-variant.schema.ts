@@ -15,7 +15,7 @@ export const productVariantSchema = z.object({
   productId: z.string().nonempty('Bắt buộc').optional()
 });
 
-export const productVariantSearchParamSchema = z.object({
+export const productVariantSearchSchema = z.object({
   condition: z.number().optional().nullable(),
   format: z.number().optional().nullable(),
   status: z.number().optional().nullable(),

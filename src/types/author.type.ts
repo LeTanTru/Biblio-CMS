@@ -1,5 +1,5 @@
-import { authorSchema, authorSchemaParamSchema } from '@/schemaValidations';
-import { BaseSearchParamType } from '@/types/search.type';
+import { authorSchema, authorSearchSchema } from '@/schemaValidations';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type AuthorResType = {
@@ -18,5 +18,5 @@ export type AuthorResType = {
 
 export type AuthorBodyType = z.infer<typeof authorSchema>;
 
-export type AuthorSearchParamType = z.infer<typeof authorSchemaParamSchema> &
-  BaseSearchParamType;
+export type AuthorSearchType = z.infer<typeof authorSearchSchema> &
+  BaseSearchType;

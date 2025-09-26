@@ -1,7 +1,7 @@
 import { apiConfig } from '@/constants';
 import {
   AccountResType,
-  AccountSearchParamType,
+  AccountSearchType,
   ApiResponse,
   ApiResponseList,
   ProfileBodyType,
@@ -16,7 +16,7 @@ const accountApiRequest = {
     await http.put<ApiResponse<any>>(apiConfig.account.updateProfile, {
       body
     }),
-  getList: async (params?: AccountSearchParamType) =>
+  getList: async (params?: AccountSearchType) =>
     await http.get<ApiResponseList<AccountResType>>(apiConfig.account.getList, {
       params
     }),

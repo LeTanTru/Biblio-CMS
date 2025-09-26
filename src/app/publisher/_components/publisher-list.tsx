@@ -14,12 +14,12 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import { publisherSearchParamSchema } from '@/schemaValidations';
+import { publisherSearchSchema } from '@/schemaValidations';
 import {
   ApiResponse,
   Column,
   PublisherResType,
-  PublisherSearchParamTYpe,
+  PublisherSearchType,
   SearchFormProps
 } from '@/types';
 import { http, notify, renderImageUrl } from '@/utils';
@@ -39,7 +39,7 @@ export default function PublisherList({ queryKey }: { queryKey: string }) {
 
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     PublisherResType,
-    PublisherSearchParamTYpe
+    PublisherSearchType
   >({
     apiConfig: apiConfig.publisher,
     options: {
@@ -117,24 +117,23 @@ export default function PublisherList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<PublisherSearchParamTYpe>['searchFields'] =
-    [
-      { key: 'name', placeholder: 'Tên nhà xuất bản' },
-      {
-        key: 'status',
-        type: FieldTypes.SELECT,
-        options: contributorStatuses,
-        placeholder: 'Trạng thái',
-        submitOnChanged: true
-      }
-    ];
+  const searchFields: SearchFormProps<PublisherSearchType>['searchFields'] = [
+    { key: 'name', placeholder: 'Tên nhà xuất bản' },
+    {
+      key: 'status',
+      type: FieldTypes.SELECT,
+      options: contributorStatuses,
+      placeholder: 'Trạng thái',
+      submitOnChanged: true
+    }
+  ];
 
   return (
     <PageWrapper breadcrumbs={[{ label: 'Nhà xuất bản' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: publisherSearchParamSchema
+          schema: publisherSearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

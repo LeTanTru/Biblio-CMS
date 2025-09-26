@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const categorySearchParamSchema = z.object({
+export const categorySearchSchema = z.object({
   name: z.string().optional(),
   status: z.number()
 });

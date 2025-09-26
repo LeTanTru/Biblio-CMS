@@ -27,7 +27,7 @@ import {
   ApiConfig,
   ApiResponse,
   ApiResponseList,
-  BaseSearchParamType,
+  BaseSearchType,
   Column,
   OptionType,
   PaginationType,
@@ -46,7 +46,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
+type HandlerType<T extends { id: string }, S extends BaseSearchType> = {
   changePagination: (page: number) => void;
   renderActionColumn: (options?: {
     actions?: Record<'edit' | 'delete' | string, ActionCondition<T>>;
@@ -80,10 +80,7 @@ type HandlerType<T extends { id: string }, S extends BaseSearchParamType> = {
 
 type ActionCondition<T> = boolean | ((record: T) => boolean);
 
-type UseListBaseProps<
-  T extends { id: string },
-  S extends BaseSearchParamType
-> = {
+type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
   apiConfig: {
     getList: ApiConfig;
     getById?: ApiConfig;
@@ -104,7 +101,7 @@ type UseListBaseProps<
 
 export default function useListBase<
   T extends { id: string },
-  S extends BaseSearchParamType
+  S extends BaseSearchType
 >({ apiConfig, options, override }: UseListBaseProps<T, S>) {
   const {
     queryKey = '',

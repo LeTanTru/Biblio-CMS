@@ -6,7 +6,7 @@ export const publisherSchema = z.object({
   logoPath: z.string().nonempty('Bắt buộc')
 });
 
-export const publisherSearchParamSchema = z.object({
+export const publisherSearchSchema = z.object({
   name: z.string().optional(),
   status: z.number().optional()
 });

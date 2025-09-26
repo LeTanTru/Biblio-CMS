@@ -16,9 +16,9 @@ import {
   STATUS_DELETED
 } from '@/constants';
 import { useListBase } from '@/hooks';
-import { couponSearchParamSchema } from '@/schemaValidations';
+import { couponSearchSchema } from '@/schemaValidations';
 import { ApiResponse, Column, SearchFormProps } from '@/types';
-import { CouponResType, CouponSearchParamType } from '@/types/coupon.type';
+import { CouponResType, CouponSearchType } from '@/types/coupon.type';
 import { formatDate, formatMoney, formatNumber, http, notify } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import { RotateCcw } from 'lucide-react';
@@ -35,7 +35,7 @@ export default function CouponList({ queryKey }: { queryKey: string }) {
   });
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     CouponResType,
-    CouponSearchParamType
+    CouponSearchType
   >({
     apiConfig: apiConfig.coupon,
     options: {
@@ -138,7 +138,7 @@ export default function CouponList({ queryKey }: { queryKey: string }) {
       }
     })
   ];
-  const searchFields: SearchFormProps<CouponSearchParamType>['searchFields'] = [
+  const searchFields: SearchFormProps<CouponSearchType>['searchFields'] = [
     { key: 'name', placeholder: 'Tên khuyến mãi' },
     { key: 'code', placeholder: 'Mã khuyến mãi' },
     {
@@ -166,7 +166,7 @@ export default function CouponList({ queryKey }: { queryKey: string }) {
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: couponSearchParamSchema
+          schema: couponSearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

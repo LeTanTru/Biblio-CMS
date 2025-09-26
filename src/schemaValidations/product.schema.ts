@@ -54,7 +54,7 @@ export const productSchema = z.object({
   translatorIds: z.array(z.string()).optional()
 });
 
-export const productSearchParamSchema = z.object({
+export const productSearchSchema = z.object({
   name: z.string().optional().nullable(),
   ageRating: z.number().optional().nullable(),
   language: z.string().optional().nullable(),

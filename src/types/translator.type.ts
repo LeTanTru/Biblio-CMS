@@ -1,8 +1,5 @@
-import {
-  translatorSchema,
-  translatorSchemaParamSchema
-} from '@/schemaValidations';
-import { BaseSearchParamType } from '@/types/search.type';
+import { translatorSchema, translatorSearchSchema } from '@/schemaValidations';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type TranslatorResType = {
@@ -21,7 +18,5 @@ export type TranslatorResType = {
 
 export type TranslatorBodyType = z.infer<typeof translatorSchema>;
 
-export type TranslatorSearchParamType = z.infer<
-  typeof translatorSchemaParamSchema
-> &
-  BaseSearchParamType;
+export type TranslatorSearchType = z.infer<typeof translatorSearchSchema> &
+  BaseSearchType;

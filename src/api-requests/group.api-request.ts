@@ -4,12 +4,12 @@ import {
   ApiResponseList,
   GroupBodyType,
   GroupResType,
-  GroupSearchParamType
+  GroupSearchType
 } from '@/types';
 import { http } from '@/utils';
 
 const groupApiRequest = {
-  getList: async (params?: GroupSearchParamType) =>
+  getList: async (params?: GroupSearchType) =>
     await http.get<ApiResponseList<GroupResType>>(apiConfig.group.getList, {
       params
     }),

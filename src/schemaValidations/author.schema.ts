@@ -15,7 +15,7 @@ export const authorSchema = z.object({
   country: z.string()
 });
 
-export const authorSchemaParamSchema = z.object({
+export const authorSearchSchema = z.object({
   name: z.string().optional(),
   kind: z.number().optional().nullable(),
   status: z.number().optional()

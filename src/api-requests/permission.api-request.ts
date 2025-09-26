@@ -4,12 +4,12 @@ import {
   ApiResponseList,
   PermissionBodyType,
   PermissionResType,
-  PermissionSearchParamType
+  PermissionSearchType
 } from '@/types';
 import { http } from '@/utils';
 
 const permissionApiRequest = {
-  getList: async (params?: PermissionSearchParamType) =>
+  getList: async (params?: PermissionSearchType) =>
     await http.get<ApiResponseList<PermissionResType>>(
       apiConfig.permission.getList,
       {

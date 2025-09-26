@@ -2,7 +2,7 @@ import { ApiConfig } from '@/types/api.type';
 import { FieldValues } from 'react-hook-form';
 import { ZodObject } from 'zod';
 
-export type BaseSearchParamType = {
+export type BaseSearchType = {
   page?: number;
   size?: number;
 };

@@ -3,7 +3,7 @@
 import { accountApiRequest } from '@/api-requests';
 import { logger } from '@/logger';
 import { useAuthStore } from '@/store';
-import { AccountSearchParamType, ProfileBodyType } from '@/types';
+import { AccountSearchType, ProfileBodyType } from '@/types';
 import { notify } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -27,7 +27,7 @@ export const useUpdateProfileMutation = () => {
   });
 };
 
-export const useAccountListQuery = (params?: AccountSearchParamType) => {
+export const useAccountListQuery = (params?: AccountSearchType) => {
   return useQuery({
     queryKey: ['account-list', params],
     queryFn: () => accountApiRequest.getList(params)

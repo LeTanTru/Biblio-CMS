@@ -1,6 +1,6 @@
-import { groupSchema, groupSearchParamSchema } from '@/schemaValidations';
+import { groupSchema, groupSearchSchema } from '@/schemaValidations';
 import { PermissionAutoResType } from '@/types/permission.type';
-import { BaseSearchParamType } from '@/types/search.type';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type GroupResType = {
@@ -17,5 +17,5 @@ export type GroupResType = {
 
 export type GroupBodyType = z.infer<typeof groupSchema>;
 
-export type GroupSearchParamType = z.infer<typeof groupSearchParamSchema> &
-  BaseSearchParamType;
+export type GroupSearchType = z.infer<typeof groupSearchSchema> &
+  BaseSearchType;

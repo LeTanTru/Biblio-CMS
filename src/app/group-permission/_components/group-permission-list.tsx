@@ -14,7 +14,7 @@ import { Column } from '@/types';
 import {
   GroupPermissionBodyType,
   GroupPermissionResType,
-  GroupPermissionSearchParamType
+  GroupPermissionSearchType
 } from '@/types/group-permission.type';
 import { applyFormErrors } from '@/utils';
 import { AxiosError } from 'axios';
@@ -39,7 +39,7 @@ export default function GroupPermissionList({
     handlers,
     pagination,
     listQuery
-  } = useListBase<GroupPermissionResType, GroupPermissionSearchParamType>({
+  } = useListBase<GroupPermissionResType, GroupPermissionSearchType>({
     apiConfig: apiConfig.groupPermission,
     options: {
       queryKey,

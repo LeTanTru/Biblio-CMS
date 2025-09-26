@@ -7,6 +7,6 @@ export const productImageSchema = z.object({
   productId: z.union([z.string(), z.number()]).optional()
 });
 
-export const productImageSearchParamSchema = z.object({
+export const productImageSearchSchema = z.object({
   productId: z.union([z.string(), z.number()]).optional()
 });

@@ -17,7 +17,7 @@ export const couponSchema = z.object({
   validTo: z.preprocess((v) => new Date(v as string), z.date())
 });
 
-export const couponSearchParamSchema = z.object({
+export const couponSearchSchema = z.object({
   code: z.string().optional(),
   name: z.string().optional(),
   kind: z.number().optional().nullable(),

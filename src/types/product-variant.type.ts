@@ -1,15 +1,15 @@
 import {
   productVariantSchema,
-  productVariantSearchParamSchema
+  productVariantSearchSchema
 } from '@/schemaValidations';
-import { BaseSearchParamType } from '@/types/search.type';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type ProductVariantBodyType = z.infer<typeof productVariantSchema>;
-export type ProductVariantSearchParamType = z.infer<
-  typeof productVariantSearchParamSchema
+export type ProductVariantSearchType = z.infer<
+  typeof productVariantSearchSchema
 > &
-  BaseSearchParamType;
+  BaseSearchType;
 
 export type ProductVariantResType = {
   id: string;

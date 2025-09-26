@@ -1,5 +1,5 @@
-import { categorySchema, categorySearchParamSchema } from '@/schemaValidations';
-import { BaseSearchParamType } from '@/types/search.type';
+import { categorySchema, categorySearchSchema } from '@/schemaValidations';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type CategoryResType = {
@@ -16,10 +16,8 @@ export type CategoryResType = {
 
 export type CategoryBodyType = z.infer<typeof categorySchema>;
 
-export type CategorySearchParamType = z.infer<
-  typeof categorySearchParamSchema
-> &
-  BaseSearchParamType;
+export type CategorySearchType = z.infer<typeof categorySearchSchema> &
+  BaseSearchType;
 
 export type CategoryAutoResType = {
   id: string;

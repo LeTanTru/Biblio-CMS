@@ -1,5 +1,5 @@
 import { groupPermissionSchema } from '@/schemaValidations';
-import { BaseSearchParamType } from '@/types/search.type';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type GroupPermissionResType = {
@@ -15,6 +15,6 @@ export type GroupPermissionAutoResType = {
   name: string;
 };
 
-export type GroupPermissionSearchParamType = BaseSearchParamType;
+export type GroupPermissionSearchType = BaseSearchType;
 
 export type GroupPermissionBodyType = z.infer<typeof groupPermissionSchema>;

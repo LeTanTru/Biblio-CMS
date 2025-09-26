@@ -3,12 +3,12 @@ import { ApiResponse, ApiResponseList } from '@/types';
 import {
   GroupPermissionBodyType,
   GroupPermissionResType,
-  GroupPermissionSearchParamType
+  GroupPermissionSearchType
 } from '@/types/group-permission.type';
 import { http } from '@/utils';
 
 const groupPermissionApiRequest = {
-  getList: async (params?: GroupPermissionSearchParamType) =>
+  getList: async (params?: GroupPermissionSearchType) =>
     await http.get<ApiResponseList<GroupPermissionResType>>(
       apiConfig.groupPermission.getList,
       {

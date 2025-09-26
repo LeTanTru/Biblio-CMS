@@ -15,11 +15,11 @@ import {
 } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import { authorSchemaParamSchema } from '@/schemaValidations';
+import { authorSearchSchema } from '@/schemaValidations';
 import {
   ApiResponse,
   AuthorResType,
-  AuthorSearchParamType,
+  AuthorSearchType,
   Column,
   SearchFormProps
 } from '@/types';
@@ -40,7 +40,7 @@ export default function AuthorList({ queryKey }: { queryKey: string }) {
 
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     AuthorResType,
-    AuthorSearchParamType
+    AuthorSearchType
   >({
     apiConfig: apiConfig.author,
     options: {
@@ -132,7 +132,7 @@ export default function AuthorList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<AuthorSearchParamType>['searchFields'] = [
+  const searchFields: SearchFormProps<AuthorSearchType>['searchFields'] = [
     { key: 'name', placeholder: 'Họ tên' },
     {
       key: 'status',
@@ -148,7 +148,7 @@ export default function AuthorList({ queryKey }: { queryKey: string }) {
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: authorSchemaParamSchema
+          schema: authorSearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

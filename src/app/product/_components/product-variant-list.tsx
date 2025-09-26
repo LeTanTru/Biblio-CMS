@@ -18,12 +18,12 @@ import {
 import { useListBase, useQueryParams } from '@/hooks';
 import { cn } from '@/lib';
 import route from '@/routes';
-import { productVariantSearchParamSchema } from '@/schemaValidations';
+import { productVariantSearchSchema } from '@/schemaValidations';
 import {
   ApiResponse,
   Column,
   ProductVariantResType,
-  ProductVariantSearchParamType,
+  ProductVariantSearchType,
   SearchFormProps
 } from '@/types';
 import {
@@ -54,7 +54,7 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
   }>();
   const { data, loading, handlers, pagination, listQuery } = useListBase<
     ProductVariantResType,
-    ProductVariantSearchParamType
+    ProductVariantSearchType
   >({
     apiConfig: apiConfig.productVariant,
     options: {
@@ -169,7 +169,7 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
       }
     })
   ];
-  const searchFields: SearchFormProps<ProductVariantSearchParamType>['searchFields'] =
+  const searchFields: SearchFormProps<ProductVariantSearchType>['searchFields'] =
     [
       {
         key: 'condition',
@@ -210,7 +210,7 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: productVariantSearchParamSchema
+          schema: productVariantSearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

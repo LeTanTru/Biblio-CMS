@@ -19,10 +19,10 @@ import { apiConfig, groupKinds } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
-import { accountSearchParamSchema } from '@/schemaValidations';
+import { accountSearchSchema } from '@/schemaValidations';
 import {
   AccountResType,
-  AccountSearchParamType,
+  AccountSearchType,
   ApiResponse,
   Column,
   SearchFormProps
@@ -45,7 +45,7 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
 
   const { data, pagination, loading, handlers, listQuery } = useListBase<
     AccountResType,
-    AccountSearchParamType
+    AccountSearchType
   >({
     apiConfig: apiConfig.account,
     options: {
@@ -187,25 +187,24 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<AccountSearchParamType>['searchFields'] =
-    [
-      { key: 'fullName', placeholder: 'Họ tên' },
-      {
-        key: 'email',
-        placeholder: 'Email'
-      },
-      {
-        key: 'phone',
-        placeholder: 'Số điện thoại'
-      }
-    ];
+  const searchFields: SearchFormProps<AccountSearchType>['searchFields'] = [
+    { key: 'fullName', placeholder: 'Họ tên' },
+    {
+      key: 'email',
+      placeholder: 'Email'
+    },
+    {
+      key: 'phone',
+      placeholder: 'Số điện thoại'
+    }
+  ];
 
   return (
     <PageWrapper breadcrumbs={[{ label: 'Tài khoản' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: accountSearchParamSchema
+          schema: accountSearchSchema
         })}
         reloadButton={handlers.renderReloadButton()}
       >

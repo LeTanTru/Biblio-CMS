@@ -10,16 +10,17 @@ import {
   apiConfig,
   categoryStatuses,
   FieldTypes,
+  MAX_PAGE_SIZE,
   STATUS_ACTIVE,
   STATUS_DELETED
 } from '@/constants';
 import { useDragDrop, useListBase } from '@/hooks';
 import { cn } from '@/lib';
-import { categorySearchParamSchema } from '@/schemaValidations';
+import { categorySearchSchema } from '@/schemaValidations';
 import {
   ApiResponse,
   CategoryResType,
-  CategorySearchParamType,
+  CategorySearchType,
   Column,
   SearchFormProps
 } from '@/types';
@@ -39,7 +40,7 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
   });
   const { data, loading, handlers, listQuery } = useListBase<
     CategoryResType,
-    CategorySearchParamType
+    CategorySearchType
   >({
     apiConfig: apiConfig.category,
     options: {
@@ -50,6 +51,9 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
       }
     },
     override: (handlers) => {
+      handlers.additionalParams = () => ({
+        size: MAX_PAGE_SIZE
+      });
       handlers.additionalColumns = () => ({
         recover: (
           record: CategoryResType,
@@ -130,24 +134,23 @@ export default function CategoryList({ queryKey }: { queryKey: string }) {
     })
   ];
 
-  const searchFields: SearchFormProps<CategorySearchParamType>['searchFields'] =
-    [
-      { key: 'name', placeholder: 'Tên danh mục' },
-      {
-        key: 'status',
-        type: FieldTypes.SELECT,
-        options: categoryStatuses,
-        placeholder: 'Trạng thái',
-        submitOnChanged: true
-      }
-    ];
+  const searchFields: SearchFormProps<CategorySearchType>['searchFields'] = [
+    { key: 'name', placeholder: 'Tên danh mục' },
+    {
+      key: 'status',
+      type: FieldTypes.SELECT,
+      options: categoryStatuses,
+      placeholder: 'Trạng thái',
+      submitOnChanged: true
+    }
+  ];
 
   return (
     <PageWrapper breadcrumbs={[{ label: 'Danh mục' }]}>
       <ListPageWrapper
         searchForm={handlers.renderSearchForm({
           searchFields,
-          schema: categorySearchParamSchema
+          schema: categorySearchSchema
         })}
         addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}

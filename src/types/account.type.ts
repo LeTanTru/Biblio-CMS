@@ -1,8 +1,8 @@
 import {
-  accountSearchParamSchema,
+  accountSearchSchema,
   updateProfileSchema
 } from '@/schemaValidations/account.schema';
-import { BaseSearchParamType } from '@/types/search.type';
+import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type Group = {
@@ -57,8 +57,8 @@ export type ProfileResType = {
 
 export type ProfileBodyType = z.infer<typeof updateProfileSchema>;
 
-export type AccountSearchParamType = z.infer<typeof accountSearchParamSchema> &
-  BaseSearchParamType;
+export type AccountSearchType = z.infer<typeof accountSearchSchema> &
+  BaseSearchType;
 
 export type AccountResType = {
   id: string;

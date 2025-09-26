@@ -15,7 +15,7 @@ export const translatorSchema = z.object({
   country: z.string()
 });
 
-export const translatorSchemaParamSchema = z.object({
+export const translatorSearchSchema = z.object({
   name: z.string().optional(),
   kind: z.number().optional().nullable(),
   status: z.number().nullable()
