@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import createBundleAnalyzer from '@next/bundle-analyzer';
+import path from 'path';
 
 const nextConfig: NextConfig = {
   images: {
@@ -25,7 +26,8 @@ const nextConfig: NextConfig = {
         pathname: '/**'
       }
     ]
-  }
+  },
+  outputFileTracingRoot: path.join(__dirname, '../..')
 };
 
 const withBundleAnalyzer = createBundleAnalyzer({
