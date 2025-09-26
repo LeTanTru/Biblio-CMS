@@ -9,6 +9,7 @@ import { BaseTable } from '@/components/table';
 import {
   ageRatings,
   apiConfig,
+  featureTypes,
   FieldTypes,
   languageOptions,
   productStatuses,
@@ -258,6 +259,19 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       options: ageRatings
     },
     {
+      key: 'language',
+      placeholder: 'Ngôn ngữ',
+      type: FieldTypes.SELECT,
+      options: languageOptions
+    },
+
+    {
+      key: 'isFeatured',
+      placeholder: 'Nổi bật',
+      type: FieldTypes.SELECT,
+      options: featureTypes
+    },
+    {
       key: 'categoryId',
       placeholder: 'Danh mục',
       type: FieldTypes.AUTOCOMPLETE,
@@ -268,12 +282,6 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       apiConfig: apiConfig.category.autoComplete,
       searchParams: ['name'],
       initialParams: { status: STATUS_ACTIVE }
-    },
-    {
-      key: 'language',
-      placeholder: 'Ngôn ngữ',
-      type: FieldTypes.SELECT,
-      options: languageOptions
     },
     {
       key: 'publisherId',

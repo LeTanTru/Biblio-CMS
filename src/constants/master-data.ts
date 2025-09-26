@@ -10,6 +10,7 @@ import {
   COUPON_KIND_FREESHIP,
   COUPON_TYPE_FIXED,
   COUPON_TYPE_PERCENTAGE,
+  FEATURED_PRODUCT,
   GENDER_FEMALE,
   GENDER_MALE,
   GENDER_OTHER,
@@ -511,5 +512,12 @@ export const couponStatuses = [
   {
     label: 'Đã xóa',
     value: STATUS_DELETED
+  }
+];
+
+export const featureTypes = [
+  {
+    label: 'Nổi bật',
+    value: FEATURED_PRODUCT
   }
 ];

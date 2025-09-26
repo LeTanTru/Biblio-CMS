@@ -44,3 +44,5 @@ export const AGE_RATING_12_15 = 4;
 export const AGE_RATING_16_18 = 5;
 export const AGE_RATING_18_OVER = 6;
 export const AGE_RATING_ALL = 7;
+
+export const FEATURED_PRODUCT = 1;

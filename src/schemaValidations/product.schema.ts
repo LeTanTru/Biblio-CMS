@@ -58,7 +58,7 @@ export const productSearchSchema = z.object({
   name: z.string().optional().nullable(),
   ageRating: z.number().optional().nullable(),
   language: z.string().optional().nullable(),
-  isFeatured: z.boolean().optional().nullable(),
+  isFeatured: z.number().optional().nullable(),
   categoryId: z.string().optional().nullable(),
   publisherId: z.string().optional().nullable(),
   status: z.number().optional().nullable()
