@@ -26,8 +26,6 @@ import route from '@/routes';
 import { productSearchParamSchema } from '@/schemaValidations';
 import {
   ApiResponse,
-  ApiResponseList,
-  CategoryAutoResType,
   CategoryResType,
   Column,
   ProductBodyType,
@@ -44,27 +42,13 @@ import {
   notify,
   renderListPageUrl
 } from '@/utils';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { FileImage, RotateCcw } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ProductList({ queryKey }: { queryKey: string }) {
   const navigate = useNavigate();
   const { searchParams, serializeParams } = useQueryParams();
-  const categoryRes = useQuery({
-    queryKey: ['category-auto-complete'],
-    queryFn: () =>
-      http.get<ApiResponseList<CategoryAutoResType>>(
-        apiConfig.category.autoComplete
-      )
-  });
-  const publisherRes = useQuery({
-    queryKey: ['publisher-auto-complete'],
-    queryFn: () =>
-      http.get<ApiResponseList<PublisherResType>>(
-        apiConfig.publisher.autoComplete
-      )
-  });
   const recoverMutation = useMutation({
     mutationKey: [`${queryKey}-recover`],
     mutationFn: (id: string) =>

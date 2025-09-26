@@ -70,11 +70,11 @@ export default function SearchForm<S extends FieldValues>({
       defaultValues={defaultValues}
       schema={schema}
       initialValues={initialValues}
-      className='w-full'
+      className='w-full pl-0'
     >
       {(form) => (
         <>
-          <Row className='my-0 -ml-4 gap-2'>
+          <Row className='my-0 flex-wrap gap-2'>
             {searchFields.map((sf) => {
               switch (sf.type) {
                 case FieldTypes.SELECT: {

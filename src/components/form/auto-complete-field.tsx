@@ -128,6 +128,8 @@ export default function AutoCompleteField<
     enabled: false
   });
 
+  const loading = query.isLoading || query.isFetching;
+
   const isFirstFetch = useRef(false);
   useEffect(() => {
     if (open && !isFirstFetch.current) {
@@ -268,7 +270,7 @@ export default function AutoCompleteField<
                   disabled={disabled}
                   title={selectedOptions[0]?.label ?? ''}
                   className={cn(
-                    'w-full flex-nowrap justify-between truncate border-1 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
+                    'w-full flex-nowrap justify-between truncate border-1 px-3 py-0 text-black opacity-80 opacity-100 focus:ring-0 focus-visible:border-gray-200 focus-visible:shadow-none focus-visible:ring-0',
                     {
                       'disabled:cursor-not-allowed disabled:opacity-100 disabled:hover:bg-transparent disabled:[&>div>span]:opacity-80':
                         disabled,
@@ -331,11 +333,11 @@ export default function AutoCompleteField<
                     <span
                       onClick={(e) => {
                         e.stopPropagation();
-                        field.onChange(multiple ? [] : '');
+                        field.onChange(multiple ? [] : null);
                         setSelectedOptions([]);
                         setOpen(false);
                       }}
-                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full p-2 hover:opacity-80'
+                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full px-0 hover:opacity-80'
                     >
                       <X className='size-3' />
                     </span>
@@ -384,7 +386,7 @@ export default function AutoCompleteField<
                       }
                     }}
                   />
-                  {options.length === 0 ? (
+                  {options.length === 0 && !loading ? (
                     <CommandEmpty className='mx-auto pt-2 pb-4 text-center text-sm'>
                       <Image
                         src={emptyData.src}
@@ -397,7 +399,7 @@ export default function AutoCompleteField<
                     </CommandEmpty>
                   ) : (
                     <CommandGroup>
-                      {query.isLoading || query.isFetching ? (
+                      {loading ? (
                         <CircleLoading className='stroke-dodger-blue my-2 size-7' />
                       ) : (
                         combinedOptions.map((opt, idx) => (

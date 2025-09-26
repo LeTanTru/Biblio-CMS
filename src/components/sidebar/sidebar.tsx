@@ -1,4 +1,5 @@
 'use client';
+
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -206,7 +207,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                 style={{ top: pos.y, left: pos.x }}
                 className='fixed z-10 w-40 overflow-hidden pl-1'
               >
-                <div className='bg-sidebar rounded-lg px-1'>
+                <div className='bg-sidebar rounded-lg px-1 py-1'>
                   <SidebarMenu
                     className={cn({ 'bg-sidebar-active-menu': open })}
                   >
@@ -216,7 +217,7 @@ function CollapsibleMenuItem({ item }: { item: MenuItem }) {
                       ) : (
                         <SidebarMenuItem key={sub.key}>
                           <SidebarMenuButton
-                            className='m-1 min-h-10 rounded-none focus-visible:ring-0!'
+                            className='min-h-10 rounded-none focus-visible:ring-0!'
                             asChild
                           >
                             <Button

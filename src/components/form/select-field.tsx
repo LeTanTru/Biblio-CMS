@@ -122,7 +122,7 @@ export default function SelectField<
               ? Array.isArray(field.value)
                 ? field.value
                 : []
-              : [field.value];
+              : [field.value].filter(Boolean);
 
         const toggleValue = (val: string | number) => {
           if (multiple) {
@@ -159,7 +159,7 @@ export default function SelectField<
                   aria-label='Select'
                   disabled={disabled}
                   className={cn(
-                    'w-full flex-wrap justify-between truncate border-1 py-0 text-black focus:ring-0 focus-visible:shadow-none',
+                    'w-full flex-wrap justify-between truncate border-1 px-3 py-0 text-black focus:ring-0 focus-visible:shadow-none',
                     {
                       'pl-1!': selectedValues.length > 1,
                       'disabled:cursor-not-allowed disabled:opacity-100':
@@ -179,7 +179,7 @@ export default function SelectField<
                           return (
                             <div
                               key={val}
-                              className='bg-accent text-accent-foreground flex items-center rounded-lg px-3 py-1 text-sm'
+                              className='bg-accent text-accent-foreground flex items-center rounded-lg py-1 text-sm'
                             >
                               {getPrefix?.(opt) && (
                                 <span className='mr-1 font-mono text-xs opacity-70'>
@@ -228,10 +228,10 @@ export default function SelectField<
                     <span
                       onClick={(e) => {
                         e.stopPropagation();
-                        field.onChange(multiple ? [] : '');
+                        field.onChange(multiple ? [] : null);
                         setOpen(false);
                       }}
-                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full p-2 hover:opacity-80'
+                      className='bg-accent ml-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-full hover:opacity-80'
                     >
                       <X className='size-3' />
                     </span>
