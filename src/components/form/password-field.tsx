@@ -75,7 +75,6 @@ export default function PasswordField<T extends FieldValues>({
         return (
           <FormItem
             className={cn(
-              'relative',
               { 'cursor-not-allowed opacity-50': disabled },
               formItemClassName
             )}
@@ -127,14 +126,14 @@ export default function PasswordField<T extends FieldValues>({
                     <EyeIcon size={16} aria-hidden='true' />
                   )}
                 </Button>
+                {fieldState.error && (
+                  <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                    <FormMessage />
+                  </div>
+                )}
               </div>
             </FormControl>
             {description && <FormDescription>{description}</FormDescription>}
-            {fieldState.error && (
-              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
-                <FormMessage />
-              </div>
-            )}
 
             {/* Strength bar */}
             {/* <div

@@ -95,12 +95,12 @@ export default function InputField<T extends FieldValues>({
                   {suffixIcon}
                 </div>
               )}
+              {fieldState.error && (
+                <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                  <FormMessage />
+                </div>
+              )}
             </div>
-            {fieldState.error && (
-              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
-                <FormMessage />
-              </div>
-            )}
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
         </FormItem>
