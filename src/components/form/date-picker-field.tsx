@@ -72,13 +72,13 @@ export default function DatePickerField({
     <FormField
       control={control}
       name={name}
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         const parsedValue =
           typeof field.value === 'string' ? new Date(field.value) : field.value;
 
         return (
           <FormItem
-            className={cn(className, {
+            className={cn('relative', className, {
               'cursor-not-allowed opacity-50': disabled
             })}
           >
@@ -167,7 +167,11 @@ export default function DatePickerField({
               </PopoverContent>
             </Popover>
             {description && <FormDescription>{description}</FormDescription>}
-            <FormMessage className='mb-0 ml-1' />
+            {fieldState.error && (
+              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                <FormMessage />
+              </div>
+            )}
           </FormItem>
         );
       }}

@@ -47,7 +47,7 @@ export default function DateRangePickerField({
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <FormItem className={cn('flex flex-col', className)}>
+        <FormItem className={cn('relative flex flex-col', className)}>
           {label && (
             <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
               {label}
@@ -93,7 +93,11 @@ export default function DateRangePickerField({
             </PopoverContent>
           </Popover>
           {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage>{fieldState.error?.message}</FormMessage>
+          {fieldState.error && (
+            <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+              <FormMessage />
+            </div>
+          )}
         </FormItem>
       )}
     />

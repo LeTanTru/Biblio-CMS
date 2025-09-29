@@ -98,7 +98,7 @@ export default function DateTimePickerField({
         const { hour, minute, second } = getSelectedTime();
 
         return (
-          <FormItem>
+          <FormItem className='relative'>
             {label && (
               <FormLabel className={cn('ml-1 gap-1.5', labelClassName)}>
                 {label}
@@ -241,7 +241,11 @@ export default function DateTimePickerField({
               </PopoverContent>
             </Popover>
             {description && <FormDescription>{description}</FormDescription>}
-            <FormMessage>{fieldState.error?.message}</FormMessage>
+            {fieldState.error && (
+              <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+                <FormMessage />
+              </div>
+            )}
           </FormItem>
         );
       }}

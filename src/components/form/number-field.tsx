@@ -114,6 +114,7 @@ export default function NumberField<T extends FieldValues>({
       render={() => (
         <FormItem
           className={cn(
+            'relative',
             { 'cursor-not-allowed opacity-50': disabled },
             formItemClassName
           )}
@@ -222,7 +223,11 @@ export default function NumberField<T extends FieldValues>({
           </FormControl>
 
           {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage className='mb-0 ml-1' />
+          {fieldState.error && (
+            <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+              <FormMessage />
+            </div>
+          )}
         </FormItem>
       )}
     />

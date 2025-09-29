@@ -47,8 +47,8 @@ export default function RichTextField<T extends FieldValues>({
       control={control}
       name={name}
       rules={{ required }}
-      render={({ field }) => (
-        <FormItem className={cn('flex flex-col gap-1', className)}>
+      render={({ field, fieldState }) => (
+        <FormItem className={cn('relative flex flex-col gap-1', className)}>
           {label && (
             <FormLabel className='ml-1'>
               {label} {required && <span className='text-destructive'>*</span>}
@@ -152,7 +152,11 @@ export default function RichTextField<T extends FieldValues>({
             />
           </FormControl>
 
-          <FormMessage />
+          {fieldState.error && (
+            <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+              <FormMessage />
+            </div>
+          )}
         </FormItem>
       )}
     />

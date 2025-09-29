@@ -62,7 +62,7 @@ export default function TextAreaField<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem>
+        <FormItem className='relative'>
           <div className={cn('relative', floatLabel && 'group')}>
             {label && (
               <FormLabel
@@ -110,7 +110,11 @@ export default function TextAreaField<T extends FieldValues>({
               </div>
             )}
           </div>
-          <FormMessage className={'mb-0 ml-1'} />
+          {fieldState.error && (
+            <div className='animate-in fade-in absolute -bottom-6 left-2 z-0 mt-1 text-sm text-red-500'>
+              <FormMessage />
+            </div>
+          )}
         </FormItem>
       )}
     />
