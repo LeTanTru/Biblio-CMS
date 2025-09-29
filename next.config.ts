@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
       }
     ]
   },
+  outputFileTracingRoot: path.join(__dirname)
 };
 
 const withBundleAnalyzer = createBundleAnalyzer({

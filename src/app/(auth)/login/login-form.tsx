@@ -61,7 +61,7 @@ export default function LoginForm() {
     >
       {(form) => (
         <>
-          <Row className='mb-0'>
+          <Row>
             <Col className='items-center'>
               <Image
                 src={logoWithText.src}
@@ -71,7 +71,7 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row className='my-2'>
+          <Row>
             <Col>
               <InputField
                 name='email'
@@ -81,7 +81,7 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row className='my-2'>
+          <Row>
             <Col>
               <PasswordField
                 name='password'
@@ -92,7 +92,7 @@ export default function LoginForm() {
               />
             </Col>
           </Row>
-          <Row className='my-2'>
+          <Row className=''>
             <Col>
               <Button
                 disabled={!form.formState.isDirty || loginMutation.isPending}
