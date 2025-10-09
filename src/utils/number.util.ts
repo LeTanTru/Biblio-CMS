@@ -1,6 +1,6 @@
 export function formatMoney(
   value: string | number,
-  suffix: string = '₫'
+  suffix: string = ' ₫'
 ): string {
   if (value === null || value === undefined) return '';
 

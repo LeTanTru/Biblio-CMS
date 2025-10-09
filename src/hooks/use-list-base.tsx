@@ -87,7 +87,7 @@ type UseListBaseProps<T extends { id: string }, S extends BaseSearchType> = {
     getById?: ApiConfig;
     create?: ApiConfig;
     update?: ApiConfig;
-    delete: ApiConfig;
+    delete?: ApiConfig;
   };
   options: {
     queryKey: string;
@@ -177,7 +177,7 @@ export default function useListBase<
   const deleteMutation = useMutation({
     mutationKey: [`delete-${queryKey}`],
     mutationFn: (id: string) =>
-      http.delete<ApiResponse<any>>(apiConfig.delete, {
+      http.delete<ApiResponse<any>>(apiConfig.delete as ApiConfig, {
         pathParams: {
           id
         }
@@ -239,9 +239,7 @@ export default function useListBase<
 
   const actionColumn = () => ({
     edit: (record: T, buttonProps?: Record<string, any>) => {
-      if (!apiConfig.update)
-        throw new Error('apiConfig.update is not defined !');
-      if (!apiConfig.update.permissionCode) return null;
+      if (!apiConfig.update || !apiConfig.update.permissionCode) return null;
       return (
         <HasPermission
           requiredPermissions={[apiConfig.update.permissionCode as string]}
@@ -261,9 +259,7 @@ export default function useListBase<
       );
     },
     delete: (record: T, buttonProps?: Record<string, any>) => {
-      if (!apiConfig.delete)
-        throw new Error('apiConfig.delete is not defined !');
-      if (!apiConfig.delete.permissionCode) return null;
+      if (!apiConfig.delete || !apiConfig.delete.permissionCode) return null;
       return (
         <HasPermission requiredPermissions={[apiConfig.delete.permissionCode]}>
           <AlertDialog>
@@ -384,8 +380,7 @@ export default function useListBase<
   };
 
   const renderAddButton = () => {
-    if (!apiConfig.create) throw new Error('apiConfig.create is not defined !');
-    if (!apiConfig.create.permissionCode) return null;
+    if (!apiConfig.create || !apiConfig.create.permissionCode) return null;
     let path = `${pathname}/create`;
     if (Object.keys(searchParams).length > 0)
       path = `${path}?${serializeParams(searchParams)}`;

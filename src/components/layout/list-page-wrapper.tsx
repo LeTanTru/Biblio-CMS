@@ -21,11 +21,18 @@ export default function ListPageWrapper({
         className
       )}
     >
-      <div className='flex items-start justify-between rounded-tl-lg rounded-tr-lg bg-white px-4 py-4'>
+      <div
+        className={cn(
+          'flex items-start justify-between rounded-tl-lg rounded-tr-lg bg-white p-4',
+          {
+            'py-0': !(searchForm || addButton || reloadButton)
+          }
+        )}
+      >
         {searchForm && <div className='flex-1'>{searchForm}</div>}
         <div
           className={cn('flex gap-2', {
-            'my-4 ml-auto': !searchForm
+            'ml-auto': !searchForm
           })}
         >
           {reloadButton}

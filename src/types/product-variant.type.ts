@@ -2,6 +2,7 @@ import {
   productVariantSchema,
   productVariantSearchSchema
 } from '@/schemaValidations';
+import { ProductResType } from '@/types/product.type';
 import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
@@ -18,6 +19,8 @@ export type ProductVariantResType = {
   quantity: number;
   modifiedPrice: number;
   imageUrl: string;
-  productId: string;
+  product: ProductResType;
+  createdDate: string;
+  modifiedDate: string;
   status: number;
 };

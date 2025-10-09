@@ -492,6 +492,26 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'CP_U'
     }
+  },
+  order: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/private/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'ORD_L'
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/private/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'ORD_V'
+    },
+    updateStatus: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/update-status`,
+      method: 'PUT',
+      headers: baseHeader,
+      permissionCode: 'ORD_U'
+    }
   }
 });
 

@@ -152,7 +152,7 @@ export default function ProductVariantList({ queryKey }: { queryKey: string }) {
       align: 'center'
     },
     {
-      title: 'Giá',
+      title: 'Giá điều chỉnh',
       dataIndex: 'modifiedPrice',
       render: (value) => formatMoney(value),
       width: 150,

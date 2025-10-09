@@ -327,7 +327,7 @@ export default function PermissionList() {
                 <>
                   {isEditing ? (
                     <>
-                      <Row className='my-0'>
+                      <Row>
                         <Col span={12}>
                           <InputField
                             control={form.control}
@@ -352,7 +352,7 @@ export default function PermissionList() {
                     </>
                   ) : (
                     <>
-                      <Row className='my-0'>
+                      <Row>
                         <Col span={12}>
                           <SelectField
                             name='permissionGroupId'

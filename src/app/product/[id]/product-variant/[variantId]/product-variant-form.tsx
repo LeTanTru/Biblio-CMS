@@ -193,8 +193,8 @@ export default function ProductVariantForm({ queryKey }: { queryKey: string }) {
                 <NumberField
                   control={form.control}
                   name='modifiedPrice'
-                  label='Giá'
-                  placeholder='Giá'
+                  label='Giá điều chỉnh'
+                  placeholder='Giá điều chỉnh'
                 />
               </Col>
             </Row>

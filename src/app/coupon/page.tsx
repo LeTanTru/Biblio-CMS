@@ -1,4 +1,4 @@
-import CouponList from '@/app/coupon/_components/coupon-list';
+import { CouponList } from '@/app/coupon/_components';
 import { queryKeys } from '@/constants';
 
 export default function CouponPage() {

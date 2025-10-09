@@ -145,6 +145,18 @@ const route = defineRoute({
         apiConfig.coupon.update.permissionCode
       ]
     }
+  },
+  order: {
+    getList: {
+      path: '/order',
+      auth: true,
+      permissionCode: [apiConfig.order.getList.permissionCode]
+    },
+    savePage: {
+      path: '/order/:id',
+      auth: true,
+      permissionCode: [apiConfig.order.updateStatus.permissionCode]
+    }
   }
 });
 

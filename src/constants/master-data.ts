@@ -1,3 +1,4 @@
+import { cod, vnPAY } from '@/assets';
 import {
   AGE_RATING_0_2,
   AGE_RATING_12_15,
@@ -17,6 +18,24 @@ import {
   KIND_ADMIN,
   KIND_EMPLOYEE,
   KIND_USER,
+  ORDER_DETAIL_STATUS_COMPLETED,
+  ORDER_DETAIL_STATUS_DELIVERED,
+  ORDER_DETAIL_STATUS_PACKAGING,
+  ORDER_DETAIL_STATUS_PAID,
+  ORDER_DETAIL_STATUS_PLACED,
+  ORDER_DETAIL_STATUS_SHIPPING,
+  ORDER_DETAIL_STATUS_WAITING_CONFIRM,
+  ORDER_STATUS_CANCELED,
+  ORDER_STATUS_COMPLETE,
+  ORDER_STATUS_CONFIRMED,
+  ORDER_STATUS_PACKING,
+  ORDER_STATUS_REFUNDED,
+  ORDER_STATUS_REQUEST_REFUND,
+  ORDER_STATUS_SHIPPING,
+  ORDER_STATUS_WAITING,
+  ORDER_STATUS_WAITING_CONFIRMATION,
+  PAYMENT_COD,
+  PAYMENT_VNPAY,
   PRODUCT_VARIANT_CONDITION_NEW,
   PRODUCT_VARIANT_CONDITION_OLD,
   PRODUCT_VARIANT_FORMAT_HARD_COVER,
@@ -28,6 +47,16 @@ import {
   UPLOAD_AVATAR,
   UPLOAD_SYSTEM
 } from '@/constants/constant';
+
+import { PackageCheck } from 'lucide-react';
+import { FaMoneyBill } from 'react-icons/fa';
+import {
+  RiCheckLine,
+  RiPencilLine,
+  RiStarLine,
+  RiSurveyFill,
+  RiTruckLine
+} from 'react-icons/ri';
 
 export const uploadOptions = {
   SYSTEM: UPLOAD_SYSTEM,
@@ -460,7 +489,8 @@ export const queryKeys = {
   PRODUCT_VARIANT: 'product-variant',
   PUBLISHER: 'publisher',
   TRANSLATOR: 'translator',
-  COUPON: 'COUPON'
+  COUPON: 'coupon',
+  ORDER: 'order'
 };
 
 export const productVariantConditions = [
@@ -491,7 +521,7 @@ export const couponKinds = [
     value: COUPON_KIND_DISCOUNT
   },
   {
-    label: 'Miễn phí vận chuyển',
+    label: 'Miễn phí ship',
     value: COUPON_KIND_FREESHIP
   }
 ];
@@ -519,5 +549,100 @@ export const featureTypes = [
   {
     label: 'Nổi bật',
     value: FEATURED_PRODUCT
+  }
+];
+
+export const orderStatuses = [
+  {
+    label: 'Chờ thanh toán',
+    value: ORDER_STATUS_WAITING,
+    color: 'bg-yellow-100 text-yellow-600'
+  },
+  {
+    label: 'Chờ xác nhận',
+    value: ORDER_STATUS_WAITING_CONFIRMATION,
+    color: 'bg-amber-100 text-amber-800'
+  },
+  {
+    label: 'Đã xác nhận',
+    value: ORDER_STATUS_CONFIRMED,
+    color: 'bg-blue-100 text-blue-800'
+  },
+  {
+    label: 'Đang đóng gói',
+    value: ORDER_STATUS_PACKING,
+    color: 'bg-indigo-100 text-indigo-800'
+  },
+  {
+    label: 'Đang giao hàng',
+    value: ORDER_STATUS_SHIPPING,
+    color: 'bg-cyan-100 text-cyan-800'
+  },
+  {
+    label: 'Hoàn tất',
+    value: ORDER_STATUS_COMPLETE,
+    color: 'bg-green-100 text-green-800'
+  },
+  {
+    label: 'Đã hủy',
+    value: ORDER_STATUS_CANCELED,
+    color: 'bg-red-100 text-red-800'
+  },
+  {
+    label: 'Yêu cầu hoàn tiền',
+    value: ORDER_STATUS_REQUEST_REFUND,
+    color: 'bg-orange-100 text-orange-800'
+  },
+  {
+    label: 'Đã hoàn tiền',
+    value: ORDER_STATUS_REFUNDED,
+    color: 'bg-emerald-100 text-emerald-800'
+  }
+];
+
+export const orderDetailStatuses = [
+  {
+    label: 'Đơn hàng đã đặt',
+    value: ORDER_DETAIL_STATUS_PLACED,
+    icon: RiSurveyFill
+  },
+  {
+    label: 'Đã thanh toán',
+    value: ORDER_DETAIL_STATUS_PAID,
+    icon: FaMoneyBill
+  },
+  {
+    label: 'Chờ xác nhận',
+    value: ORDER_DETAIL_STATUS_WAITING_CONFIRM,
+    icon: RiPencilLine
+  },
+  {
+    label: 'Đang đóng gói',
+    value: ORDER_DETAIL_STATUS_PACKAGING,
+    icon: PackageCheck
+  },
+  {
+    label: 'Đang giao hàng',
+    value: ORDER_DETAIL_STATUS_SHIPPING,
+    icon: RiTruckLine
+  },
+  {
+    label: 'Giao hàng thành công',
+    value: ORDER_DETAIL_STATUS_DELIVERED,
+    icon: RiCheckLine
+  },
+  { label: 'Đánh giá', value: ORDER_DETAIL_STATUS_COMPLETED, icon: RiStarLine }
+];
+
+export const paymentMethods = [
+  {
+    label: 'Thanh toán khi nhận hàng',
+    icon: cod,
+    value: PAYMENT_COD
+  },
+  {
+    label: 'VNPAY',
+    icon: vnPAY,
+    value: PAYMENT_VNPAY
   }
 ];

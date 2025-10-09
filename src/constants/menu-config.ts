@@ -2,7 +2,14 @@ import apiConfig from '@/constants/api-config';
 import { STATUS_ACTIVE } from '@/constants/constant';
 import route from '@/routes';
 import { MenuItem } from '@/types';
-import { BookOpen, Settings, Tag, User, UsersRound } from 'lucide-react';
+import {
+  BookOpen,
+  Package,
+  Settings,
+  Tag,
+  User,
+  UsersRound
+} from 'lucide-react';
 
 const menuConfig: MenuItem[] = [
   {
@@ -25,17 +32,16 @@ const menuConfig: MenuItem[] = [
     ]
   },
   {
-    key: 'coupon-management',
-    label: 'Quản lý khuyến mãi',
-    icon: Tag,
-    permissionCode: [apiConfig.coupon.getList.permissionCode],
+    key: 'order-management',
+    label: 'Quản lý đơn hàng',
+    icon: Package,
+    permissionCode: [apiConfig.order.getList.permissionCode],
     children: [
       {
-        key: 'coupon-list',
-        label: 'Khuyến mãi',
-        path: route.coupon.getList.path,
-        permissionCode: [apiConfig.coupon.getList.permissionCode],
-        query: { status: STATUS_ACTIVE }
+        key: 'order-list',
+        label: 'Đơn hàng',
+        path: route.order.getList.path,
+        permissionCode: [apiConfig.order.getList.permissionCode]
       }
     ]
   },
@@ -57,6 +63,21 @@ const menuConfig: MenuItem[] = [
         label: 'Sách',
         path: route.product.getList.path,
         permissionCode: [apiConfig.product.getList.permissionCode],
+        query: { status: STATUS_ACTIVE }
+      }
+    ]
+  },
+  {
+    key: 'coupon-management',
+    label: 'Quản lý khuyến mãi',
+    icon: Tag,
+    permissionCode: [apiConfig.coupon.getList.permissionCode],
+    children: [
+      {
+        key: 'coupon-list',
+        label: 'Khuyến mãi',
+        path: route.coupon.getList.path,
+        permissionCode: [apiConfig.coupon.getList.permissionCode],
         query: { status: STATUS_ACTIVE }
       }
     ]

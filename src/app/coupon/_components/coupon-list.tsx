@@ -74,6 +74,7 @@ export default function CouponList({ queryKey }: { queryKey: string }) {
       });
     }
   });
+
   const columns: Column<CouponResType>[] = [
     {
       title: 'Tên khuyến mãi',
@@ -82,11 +83,12 @@ export default function CouponList({ queryKey }: { queryKey: string }) {
         <span title={value} className='block truncate'>
           {value}
         </span>
-      )
+      ),
+      width: 300
     },
     { title: 'Mã', dataIndex: 'code', width: 200, align: 'center' },
     {
-      title: 'Loại',
+      title: 'Kiểu',
       dataIndex: 'kind',
       render: (value) =>
         couponKinds.find((kind) => kind.value === value)?.label ?? '--',
@@ -109,7 +111,7 @@ export default function CouponList({ queryKey }: { queryKey: string }) {
       render: (value, record) =>
         record.type === COUPON_TYPE_FIXED
           ? formatMoney(value)
-          : formatNumber(value)
+          : formatNumber(value) + '%'
     },
     {
       title: 'Giá trị tối thiểu',
@@ -138,6 +140,7 @@ export default function CouponList({ queryKey }: { queryKey: string }) {
       }
     })
   ];
+
   const searchFields: SearchFormProps<CouponSearchType>['searchFields'] = [
     { key: 'name', placeholder: 'Tên khuyến mãi' },
     { key: 'code', placeholder: 'Mã khuyến mãi' },

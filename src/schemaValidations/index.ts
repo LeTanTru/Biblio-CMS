@@ -5,6 +5,7 @@ export * from './category.schema';
 export * from './coupon.schema';
 export * from './group-permission.schema';
 export * from './group.schema';
+export * from './order.schema';
 export * from './permission.schema';
 export * from './product-image.schema';
 export * from './product-variant.schema';
