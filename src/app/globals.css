@@ -40,7 +40,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --text-md: 16px;
   --color-sidebar-item-active: #1677ff;
   --color-sidebar: #001529;
   --color-sidebar-active-menu: #000c17;

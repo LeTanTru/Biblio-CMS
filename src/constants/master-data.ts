@@ -29,6 +29,7 @@ import {
   ORDER_STATUS_COMPLETE,
   ORDER_STATUS_CONFIRMED,
   ORDER_STATUS_PACKING,
+  ORDER_STATUS_RECEIVED,
   ORDER_STATUS_REFUNDED,
   ORDER_STATUS_REQUEST_REFUND,
   ORDER_STATUS_SHIPPING,
@@ -554,7 +555,7 @@ export const featureTypes = [
 
 export const orderStatuses = [
   {
-    label: 'Chờ thanh toán',
+    label: 'Đã đặt',
     value: ORDER_STATUS_WAITING,
     color: 'bg-yellow-100 text-yellow-600'
   },
@@ -581,6 +582,11 @@ export const orderStatuses = [
   {
     label: 'Hoàn tất',
     value: ORDER_STATUS_COMPLETE,
+    color: 'bg-green-100 text-green-800'
+  },
+  {
+    label: 'Đã nhận',
+    value: ORDER_STATUS_RECEIVED,
     color: 'bg-green-100 text-green-800'
   },
   {
@@ -631,7 +637,7 @@ export const orderDetailStatuses = [
     value: ORDER_DETAIL_STATUS_DELIVERED,
     icon: RiCheckLine
   },
-  { label: 'Đánh giá', value: ORDER_DETAIL_STATUS_COMPLETED, icon: RiStarLine }
+  { label: 'Đã nhận', value: ORDER_DETAIL_STATUS_COMPLETED, icon: RiStarLine }
 ];
 
 export const paymentMethods = [

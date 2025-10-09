@@ -1,5 +1,9 @@
 'use client';
 
+import ConfirmDelivered from '@/app/order/_components/confirm-delivered';
+import ConfirmOrderButton from '@/app/order/_components/confirm-order-button';
+import ConfirmPackageOrderButton from '@/app/order/_components/confirm-package-order-button';
+import ConfirmShippingOrder from '@/app/order/_components/confirm-shipping-order';
 import OrderDetailSkeleton from '@/app/order/_components/order-detail-skeleton';
 import { Button } from '@/components/form';
 import { PageWrapper } from '@/components/layout';
@@ -9,6 +13,10 @@ import {
   COUPON_KIND_DISCOUNT,
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
+  ORDER_STATUS_CONFIRMED,
+  ORDER_STATUS_PACKING,
+  ORDER_STATUS_SHIPPING,
+  ORDER_STATUS_WAITING_CONFIRMATION,
   orderDetailStatuses,
   orderStatuses,
   paymentMethods,
@@ -71,6 +79,7 @@ export default function OrderDetail() {
   const discount =
     order.coupons.find((coupon) => coupon.kind === COUPON_KIND_DISCOUNT)
       ?.value ?? 0;
+
   return (
     <PageWrapper
       breadcrumbs={[
@@ -169,7 +178,7 @@ export default function OrderDetail() {
             <Separator />
           </>
         )}
-        {orderItems.map((orderItem, index) => (
+        {orderItems.map((orderItem) => (
           <div key={orderItem.id}>
             <div className='flex items-center py-4'>
               <div className='flex h-20 w-full items-center'>
@@ -285,15 +294,32 @@ export default function OrderDetail() {
         />
         <SummaryRow title='Thành tiền' value={+order.total} />
 
-        <div className='mt-4 flex justify-end gap-x-2'>
-          <Button
-            variant={'outline'}
-            className='text-destructive border-destructive hover:text-destructive/80 hover:border-destructive/80 transition-all duration-200 ease-linear'
-          >
-            Từ chối
-          </Button>
-          <Button variant={'primary'}>Xác nhận đơn hàng</Button>
-        </div>
+        {orderStatus?.value === ORDER_STATUS_WAITING_CONFIRMATION && (
+          <div className='mt-4 flex justify-end gap-x-2'>
+            <Button
+              variant={'outline'}
+              className='text-destructive border-destructive hover:text-destructive/80 hover:border-destructive/80 transition-all duration-200 ease-linear'
+            >
+              Từ chối
+            </Button>
+            <ConfirmOrderButton orderId={order.id} />
+          </div>
+        )}
+        {orderStatus?.value === ORDER_STATUS_CONFIRMED && (
+          <div className='mt-4 flex justify-end gap-x-2'>
+            <ConfirmPackageOrderButton orderId={order.id} />
+          </div>
+        )}
+        {orderStatus?.value === ORDER_STATUS_PACKING && (
+          <div className='mt-4 flex justify-end gap-x-2'>
+            <ConfirmShippingOrder orderId={order.id} />
+          </div>
+        )}
+        {orderStatus?.value === ORDER_STATUS_SHIPPING && (
+          <div className='mt-4 flex justify-end gap-x-2'>
+            <ConfirmDelivered orderId={order.id} />
+          </div>
+        )}
       </div>
     </PageWrapper>
   );

@@ -98,7 +98,7 @@ export default function OrderList({ queryKey }: { queryKey: string }) {
       align: 'center',
       render: (value, record) => (
         <span
-          className='text-dodger-blue font-medium block w-full cursor-pointer truncate'
+          className='text-dodger-blue block w-full cursor-pointer truncate font-medium'
           onClick={() =>
             navigate(
               generatePath(route.order.savePage.path, {

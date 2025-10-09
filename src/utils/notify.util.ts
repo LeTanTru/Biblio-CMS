@@ -12,19 +12,31 @@ const defaultOptions: ToastOptions = {
   transition: Bounce
 };
 
-const showSuccess = (message: string, options?: ToastOptions) => {
+const showSuccess = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.success(message, { ...defaultOptions, ...options });
 };
 
-const showError = (message: string, options?: ToastOptions) => {
+const showError = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.error(message, { ...defaultOptions, ...options });
 };
 
-const showInfo = (message: string, options?: ToastOptions) => {
+const showInfo = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.info(message, { ...defaultOptions, ...options });
 };
 
-const showWarning = (message: string, options?: ToastOptions) => {
+const showWarning = (
+  message: string | React.ReactNode,
+  options?: ToastOptions
+) => {
   toast.warn(message, { ...defaultOptions, ...options });
 };
 
