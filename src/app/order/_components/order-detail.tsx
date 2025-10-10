@@ -13,6 +13,7 @@ import {
   COUPON_KIND_DISCOUNT,
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
+  ORDER_DETAIL_STATUS_CANCELLED,
   ORDER_STATUS_CONFIRMED,
   ORDER_STATUS_PACKING,
   ORDER_STATUS_SHIPPING,
@@ -93,69 +94,84 @@ export default function OrderDetail() {
       ]}
     >
       <div className='h-full rounded-lg bg-white px-4 pb-4 shadow-[0px_0px_10px_2px] shadow-gray-200'>
-        <div className='flex items-center justify-end py-4'>
+        <div className='flex items-center justify-between py-4'>
+          <span>
+            <span className='font-semibold'>Mã đơn hàng:</span> {order.id}
+          </span>
           <Badge className={cn(orderStatus?.color, 'py-1 text-sm')}>
             {orderStatus?.label}
           </Badge>
         </div>
         <Separator />
-        <div className='relative grid grid-cols-7 py-4'>
-          {orderDetailStatuses.map((item, index) => {
-            const isLast = index === orderDetailStatuses.length - 1;
-            const isActive = index <= currentIndex;
-            const isLineActive = index < currentIndex;
 
-            const borderDelay = index * 300;
-            const lineDelay = borderDelay + 100;
+        {order.currentStatus === ORDER_DETAIL_STATUS_CANCELLED ? (
+          <div className='py-8 pl-4'>
+            <span className='text-lg text-orange-600'>Đã hủy đơn hàng</span>
+            <br />
+            vào: {getStatusDate(order.currentStatus)}
+          </div>
+        ) : (
+          <div className='relative grid grid-cols-7 py-4'>
+            {orderDetailStatuses.map((item, index) => {
+              const isLast = index === orderDetailStatuses.length - 1;
+              const isActive = index <= currentIndex;
+              const isLineActive = index < currentIndex;
 
-            return (
-              <div
-                key={item.label}
-                className='relative flex flex-col items-center text-center select-none'
-              >
+              const borderDelay = index * 300;
+              const lineDelay = borderDelay + 100;
+
+              return (
                 <div
-                  style={{
-                    transitionDelay: `${borderDelay}ms`
-                  }}
-                  className={cn(
-                    'relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
-                    {
-                      'border-green-500 bg-green-50 text-green-600': isActive,
-                      'border-neutral-300 bg-white text-neutral-300': !isActive
-                    }
-                  )}
+                  key={item.label}
+                  className='relative flex flex-col items-center text-center select-none'
                 >
-                  <item.icon className='size-7' />
-                </div>
-
-                {!isLast && (
-                  <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
-                    <div
-                      style={{
-                        transitionDelay: `${lineDelay}ms`
-                      }}
-                      className={cn(
-                        'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
-                        {
-                          'scale-x-100': isLineActive,
-                          'scale-x-0': !isLineActive
-                        }
-                      )}
-                    />
+                  <div
+                    style={{
+                      transitionDelay: `${borderDelay}ms`
+                    }}
+                    className={cn(
+                      'relative z-1 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
+                      {
+                        'border-green-500 bg-green-50 text-green-600': isActive,
+                        'border-neutral-300 bg-white text-neutral-300':
+                          !isActive
+                      }
+                    )}
+                  >
+                    {item.icon && <item.icon className='size-7' />}
                   </div>
-                )}
 
-                <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
-                  {item.label}
-                </h3>
-                <span className='h-[14px] text-xs text-gray-400'>
-                  {getStatusDate(item.value)}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+                  {!isLast && (
+                    <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
+                      <div
+                        style={{
+                          transitionDelay: `${lineDelay}ms`
+                        }}
+                        className={cn(
+                          'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
+                          {
+                            'scale-x-100': isLineActive,
+                            'scale-x-0': !isLineActive
+                          }
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
+                    {item.label}
+                  </h3>
+                  <span className='h-[14px] text-xs text-gray-400'>
+                    {getStatusDate(item.value)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         <Separator />
+
         <div className='flex items-center py-4'>
           <MapPin className='size-5' />
           <span className='ml-1 font-semibold'>Địa chỉ giao hàng:</span>
@@ -164,7 +180,9 @@ export default function OrderDetail() {
           {order.address.ward}, {order.address.district}, &nbsp;
           {order.address.city}
         </div>
+
         <Separator />
+
         {order.note && (
           <>
             <div className='py-4'>
@@ -245,19 +263,23 @@ export default function OrderDetail() {
             <Separator />
           </div>
         ))}
+
         <SummaryRow
           title='Phương thức thanh toán'
           value={
             paymentMethods.find((pmth) => pmth.value === order.paymentMethod)
-              ?.label ?? ''
+              ?.label ?? 'Chưa thanh toán'
           }
         />
+
         <SummaryRow title='Tổng tiền' value={+total} hidden={false} />
+
         <SummaryRow
           title='Phí vận chuyển'
           value={+order.deliveryFee}
           hidden={+order.deliveryFee === 0}
         />
+
         <SummaryRow
           title='Giảm phí vận chuyển'
           prefix={
@@ -275,6 +297,7 @@ export default function OrderDetail() {
           }
           hidden={+freeShip === 0}
         />
+
         <SummaryRow
           title='Giảm giá sách'
           prefix={
@@ -292,6 +315,7 @@ export default function OrderDetail() {
           }
           hidden={+discount === 0}
         />
+
         <SummaryRow title='Thành tiền' value={+order.total} />
 
         {orderStatus?.value === ORDER_STATUS_WAITING_CONFIRMATION && (
@@ -305,16 +329,19 @@ export default function OrderDetail() {
             <ConfirmOrderButton orderId={order.id} />
           </div>
         )}
+
         {orderStatus?.value === ORDER_STATUS_CONFIRMED && (
           <div className='mt-4 flex justify-end gap-x-2'>
             <ConfirmPackageOrderButton orderId={order.id} />
           </div>
         )}
+
         {orderStatus?.value === ORDER_STATUS_PACKING && (
           <div className='mt-4 flex justify-end gap-x-2'>
             <ConfirmShippingOrder orderId={order.id} />
           </div>
         )}
+
         {orderStatus?.value === ORDER_STATUS_SHIPPING && (
           <div className='mt-4 flex justify-end gap-x-2'>
             <ConfirmDelivered orderId={order.id} />

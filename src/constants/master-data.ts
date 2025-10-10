@@ -555,7 +555,7 @@ export const featureTypes = [
 
 export const orderStatuses = [
   {
-    label: 'Đã đặt',
+    label: 'Đơn hàng đã đặt',
     value: ORDER_STATUS_WAITING,
     color: 'bg-yellow-100 text-yellow-600'
   },
@@ -580,12 +580,12 @@ export const orderStatuses = [
     color: 'bg-cyan-100 text-cyan-800'
   },
   {
-    label: 'Hoàn tất',
+    label: 'Giao hàng thành công',
     value: ORDER_STATUS_COMPLETE,
     color: 'bg-green-100 text-green-800'
   },
   {
-    label: 'Đã nhận',
+    label: 'Đã nhận được hàng',
     value: ORDER_STATUS_RECEIVED,
     color: 'bg-green-100 text-green-800'
   },
@@ -637,7 +637,11 @@ export const orderDetailStatuses = [
     value: ORDER_DETAIL_STATUS_DELIVERED,
     icon: RiCheckLine
   },
-  { label: 'Đã nhận', value: ORDER_DETAIL_STATUS_COMPLETED, icon: RiStarLine }
+  {
+    label: 'Đã nhận được hàng',
+    value: ORDER_DETAIL_STATUS_COMPLETED,
+    icon: RiStarLine
+  }
 ];
 
 export const paymentMethods = [
