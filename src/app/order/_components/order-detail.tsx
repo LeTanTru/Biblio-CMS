@@ -265,6 +265,12 @@ export default function OrderDetail() {
         ))}
 
         <SummaryRow
+          title='Yêu cầu bởi'
+          value='Nguời mua'
+          hidden={order.currentStatus < ORDER_DETAIL_STATUS_CANCELLED}
+        />
+
+        <SummaryRow
           title='Phương thức thanh toán'
           value={
             paymentMethods.find((pmth) => pmth.value === order.paymentMethod)
