@@ -1,6 +1,7 @@
 'use client';
 
 import ProductImageModal from '@/app/product/_components/product-image-modal';
+import ReviewModal from '@/app/product/_components/review-modal';
 import { Button, ToolTip } from '@/components/form';
 import { HasPermission } from '@/components/has-permission';
 import { PageWrapper } from '@/components/layout';
@@ -43,6 +44,7 @@ import {
   notify,
   renderListPageUrl
 } from '@/utils';
+import { StarFilledIcon } from '@radix-ui/react-icons';
 import { useMutation } from '@tanstack/react-query';
 import { FileImage, RotateCcw } from 'lucide-react';
 import { useState } from 'react';
@@ -59,7 +61,8 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
         }
       })
   });
-  const { opened, open, close } = useDisclosure(false);
+  const productImageModal = useDisclosure(false);
+  const reviewModal = useDisclosure(false);
   const [selectedRow, setSelectedRow] = useState<ProductResType | null>(null);
   const { data, loading, handlers, pagination, listQuery } = useListBase<
     ProductResType,
@@ -88,7 +91,7 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
               <ToolTip title={'Xem hình ảnh sách'}>
                 <span>
                   <Button
-                    onClick={() => handleOpen(record)}
+                    onClick={() => handleOpenProductImageModal(record)}
                     className='border-none bg-transparent shadow-none hover:bg-transparent'
                     {...buttonProps}
                   >
@@ -122,6 +125,25 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
                     {...buttonProps}
                   >
                     <RotateCcw className='stroke-dodger-blue size-3.5' />
+                  </Button>
+                </span>
+              </ToolTip>
+            </HasPermission>
+          );
+        },
+        review: (record: ProductResType, buttonProps?: Record<string, any>) => {
+          return (
+            <HasPermission
+              requiredPermissions={[apiConfig.review.getList.permissionCode]}
+            >
+              <ToolTip title={`Xem đánh giá`}>
+                <span>
+                  <Button
+                    onClick={() => handleOpenReviewModal(record)}
+                    className='border-none bg-transparent shadow-none hover:bg-transparent'
+                    {...buttonProps}
+                  >
+                    <StarFilledIcon className='size-3.5 text-yellow-500' />
                   </Button>
                 </span>
               </ToolTip>
@@ -241,11 +263,12 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
         viewProductImage: (record: ProductResType) =>
           record.status === STATUS_ACTIVE,
         recover: (record: ProductResType) => record.status === STATUS_DELETED,
+        review: true,
         delete: (record: ProductResType) => record.status === STATUS_ACTIVE
       },
       columnProps: {
         fixed: true,
-        width: 150
+        width: 200
       }
     })
   ];
@@ -304,13 +327,18 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
     }
   ];
 
-  const handleOpen = (record: ProductResType) => {
-    open();
+  const handleOpenProductImageModal = (record: ProductResType) => {
     setSelectedRow(record);
+    productImageModal.open();
   };
 
-  const handleClose = () => {
-    close();
+  const handleCloseImageModal = () => {
+    productImageModal.close();
+  };
+
+  const handleOpenReviewModal = (record: ProductResType) => {
+    setSelectedRow(record);
+    reviewModal.open();
   };
 
   return (
@@ -333,9 +361,16 @@ export default function ProductList({ queryKey }: { queryKey: string }) {
       </ListPageWrapper>
       <ProductImageModal
         data={selectedRow}
-        open={opened}
-        onClose={handleClose}
+        open={productImageModal.opened}
+        onClose={handleCloseImageModal}
       />
+      {selectedRow && (
+        <ReviewModal
+          open={reviewModal.opened}
+          onClose={reviewModal.close}
+          productId={selectedRow.id}
+        />
+      )}
     </PageWrapper>
   );
 }

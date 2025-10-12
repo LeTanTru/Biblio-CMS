@@ -491,7 +491,8 @@ export const queryKeys = {
   PUBLISHER: 'publisher',
   TRANSLATOR: 'translator',
   COUPON: 'coupon',
-  ORDER: 'order'
+  ORDER: 'order',
+  REVIEW: 'review'
 };
 
 export const productVariantConditions = [

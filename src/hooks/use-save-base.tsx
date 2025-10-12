@@ -3,6 +3,7 @@ import { Button, Col, Row } from '@/components/form';
 import { CircleLoading } from '@/components/loading';
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -200,7 +201,7 @@ export default function useSaveBase<
             </AlertDialogTrigger>
             <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] p-4'>
               <AlertDialogHeader>
-                <AlertDialogTitle className='flex items-center gap-2 font-normal'>
+                <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
                   <Info className='size-8 fill-orange-500 stroke-white' />
                   Bạn có chắc chắn muốn quay lại không ?
                 </AlertDialogTitle>
@@ -215,12 +216,12 @@ export default function useSaveBase<
                     Không
                   </Button>
                 </AlertDialogCancel>
-                <Button
+                <AlertDialogAction
                   onClick={() => navigate(listPageUrl)}
-                  variant={'primary'}
+                  className='bg-dodger-blue hover:bg-dodger-blue/80 cursor-pointer transition-all duration-200 ease-linear'
                 >
                   Có
-                </Button>
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

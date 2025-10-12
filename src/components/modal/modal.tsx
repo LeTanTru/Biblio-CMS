@@ -1,4 +1,5 @@
 'use client';
+
 import { ReactNode } from 'react';
 import { AnimatePresence, motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib';
@@ -43,6 +44,7 @@ export default function Modal({
     <AnimatePresence>
       {open && (
         <motion.div
+          onClick={(e) => e.stopPropagation()}
           className={cn(
             'fixed inset-0 top-0 z-10 flex items-center justify-center',
             className
@@ -63,11 +65,12 @@ export default function Modal({
           )}
 
           <motion.div
-            className='content relative rounded-lg bg-white shadow-lg'
+            className='content relative rounded-lg bg-white shadow-[0px_0px_10px_2px] shadow-black/40'
             initial={variants.initial}
             animate={variants.animate}
             exit={variants.exit}
             transition={{ duration: 0.15, ease: 'linear' }}
+            onClick={(e) => e.stopPropagation()}
           >
             {children}
           </motion.div>

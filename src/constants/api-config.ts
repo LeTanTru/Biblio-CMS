@@ -512,6 +512,19 @@ const apiConfig = defineApiConfig({
       headers: baseHeader,
       permissionCode: 'ORD_U'
     }
+  },
+  review: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/private/list`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'REV_L'
+    },
+    summary: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/summary/:productId`,
+      method: 'GET',
+      headers: baseHeader
+    }
   }
 });
 

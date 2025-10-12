@@ -24,3 +24,4 @@ export * from './store.type';
 export * from './table.type';
 export * from './translator.type';
 export * from './update-ordering.type';
+export * from './review.type';
