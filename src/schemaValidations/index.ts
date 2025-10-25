@@ -13,3 +13,4 @@ export * from './product.schema';
 export * from './publisher.schema';
 export * from './search.schema';
 export * from './translator.schema';
+export * from './notification.schema';

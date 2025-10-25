@@ -1,9 +1,10 @@
+import { DEFAULT_DATE_FORMAT } from '@/constants';
 import { logger } from '@/logger';
 import { format as formatFn, isValid } from 'date-fns';
 
 export const formatDate = (
   date: string | null,
-  outputFormat: string = 'dd/MM/yyyy'
+  outputFormat: string = DEFAULT_DATE_FORMAT
 ) => {
   if (!date) return '';
   try {

@@ -18,7 +18,7 @@ import {
   KIND_ADMIN,
   KIND_EMPLOYEE,
   KIND_USER,
-  ORDER_DETAIL_STATUS_COMPLETED,
+  ORDER_DETAIL_STATUS_RECEIVED,
   ORDER_DETAIL_STATUS_DELIVERED,
   ORDER_DETAIL_STATUS_PACKAGING,
   ORDER_DETAIL_STATUS_PAID,
@@ -492,7 +492,8 @@ export const queryKeys = {
   TRANSLATOR: 'translator',
   COUPON: 'coupon',
   ORDER: 'order',
-  REVIEW: 'review'
+  REVIEW: 'review',
+  NOTIFICATION: 'notification'
 };
 
 export const productVariantConditions = [
@@ -596,7 +597,7 @@ export const orderStatuses = [
     color: 'bg-red-100 text-red-800'
   },
   {
-    label: 'Yêu cầu hoàn tiền',
+    label: 'Yêu cầu trả hàng',
     value: ORDER_STATUS_REQUEST_REFUND,
     color: 'bg-orange-100 text-orange-800'
   },
@@ -640,7 +641,7 @@ export const orderDetailStatuses = [
   },
   {
     label: 'Đã nhận được hàng',
-    value: ORDER_DETAIL_STATUS_COMPLETED,
+    value: ORDER_DETAIL_STATUS_RECEIVED,
     icon: RiStarLine
   }
 ];

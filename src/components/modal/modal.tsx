@@ -46,7 +46,7 @@ export default function Modal({
         <motion.div
           onClick={(e) => e.stopPropagation()}
           className={cn(
-            'fixed inset-0 top-0 z-10 flex items-center justify-center',
+            'fixed inset-0 top-0 z-20 flex items-center justify-center',
             className
           )}
           initial={{ opacity: 0 }}

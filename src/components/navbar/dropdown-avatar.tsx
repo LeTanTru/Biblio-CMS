@@ -2,7 +2,7 @@
 
 import { AvatarField } from '@/components/form';
 import List from '@/components/list';
-import ListItem from '@/components/list/ListItem';
+import ListItem from '@/components/list/list-item';
 import { storageKeys } from '@/constants';
 import { useNavigate, useQueryParams } from '@/hooks';
 import { logger } from '@/logger';
@@ -66,7 +66,6 @@ export default function DropdownAvatar() {
       onMouseLeave={() => setOpen(false)}
     >
       <div className='flex cursor-pointer items-center gap-2'>
-        <span className='text-sm'>{profile?.fullName}</span>
         <AvatarField
           src={renderImageUrl(profile?.avatarPath)}
           disablePreview
@@ -85,7 +84,7 @@ export default function DropdownAvatar() {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             transition={{ duration: 0.1, ease: 'linear' }}
-            className='absolute top-full right-0 mt-4 w-45 rounded-md bg-white shadow-[0px_0px_10px_6px] shadow-gray-200'
+            className='absolute top-full right-0 mt-4 w-45 rounded-md bg-white shadow-[0px_0px_10px_8px] shadow-gray-200'
           >
             <div className='z-2 before:absolute before:-top-4 before:left-0 before:h-4 before:w-full before:bg-transparent'></div>
             <div className='absolute -top-2 right-9 border-r-8 border-b-8 border-l-8 border-r-transparent border-b-white border-l-transparent'></div>

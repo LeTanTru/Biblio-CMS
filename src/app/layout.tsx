@@ -3,8 +3,11 @@ import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import NextTopLoader from 'nextjs-toploader';
 import { Suspense } from 'react';
-import { AppProvider, QueryProvider } from '@/components/providers';
-import { ThemeProvider } from '@/components/providers/theme-provider';
+import {
+  AppProvider,
+  QueryProvider,
+  ThemeProvider
+} from '@/components/providers';
 import { Metadata } from 'next';
 import { PermissionGuard } from '@/components/permission-guard';
 

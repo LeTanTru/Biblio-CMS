@@ -6,3 +6,4 @@ export * from './group.query';
 export * from './order.query';
 export * from './permission.query';
 export * from './review.query';
+export * from './notification.query';

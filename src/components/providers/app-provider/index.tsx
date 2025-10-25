@@ -13,7 +13,8 @@ export default function AppProvider({
 }) {
   const accessToken = getData(storageKeys.ACCESS_TOKEN);
   const profileQuery = useProfileQuery();
-  const { setProfile, isAuthenticated, setLoading } = useAuthStore();
+  const { setProfile, isAuthenticated, setLoading, connectSocket } =
+    useAuthStore();
 
   useEffect(
     () => setLoading(profileQuery.isLoading || profileQuery.isFetching),
@@ -28,7 +29,12 @@ export default function AppProvider({
         setProfile(res.data.data);
       }
     };
+
     handleGetProfile();
+
+    connectSocket(accessToken);
+    const interval = setInterval(() => connectSocket(accessToken), 50 * 1000);
+    return () => clearInterval(interval);
   }, [accessToken, isAuthenticated]);
 
   return <>{children}</>;

@@ -1,4 +1,5 @@
 'use client';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PageWrapper } from '@/components/layout';
 import { GroupList } from '@/app/group-permission/_components';

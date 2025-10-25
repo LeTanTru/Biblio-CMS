@@ -2,6 +2,7 @@
 
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import DropdownAvatar from '@/components/navbar/dropdown-avatar';
+import DropDownNotification from '@/components/navbar/dropdown-notification';
 
 const Navbar = () => {
   return (
@@ -9,7 +10,10 @@ const Navbar = () => {
       {/* LEFT */}
       <SidebarTrigger className='[&>svg]:stroke-sidebar cursor-pointer transition-all duration-200 ease-linear hover:bg-transparent [&>svg]:size-6!' />
       {/* RIGHT */}
-      <DropdownAvatar />
+      <div className='flex gap-x-8'>
+        <DropDownNotification />
+        <DropdownAvatar />
+      </div>
     </nav>
   );
 };

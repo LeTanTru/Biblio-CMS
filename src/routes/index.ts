@@ -157,6 +157,12 @@ const route = defineRoute({
       auth: true,
       permissionCode: [apiConfig.order.updateStatus.permissionCode]
     }
+  },
+  notification: {
+    getList: {
+      path: '/notification',
+      auth: true
+    }
   }
 });
 

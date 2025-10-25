@@ -10,3 +10,4 @@ export * from './notify.util';
 export * from './number.util';
 export * from './storage.util';
 export * from './validate-permission.util';
+export * from './notification.util';

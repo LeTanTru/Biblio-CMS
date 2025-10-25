@@ -19,6 +19,7 @@ export type OrderResType = {
   total: string;
   createdDate: string;
   modifiedDate: string;
+  refundReason: string;
 };
 
 export type OrderStoreType = {

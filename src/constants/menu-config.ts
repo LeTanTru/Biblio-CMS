@@ -3,6 +3,7 @@ import { STATUS_ACTIVE } from '@/constants/constant';
 import route from '@/routes';
 import { MenuItem } from '@/types';
 import {
+  Bell,
   BookOpen,
   Package,
   Settings,
@@ -112,6 +113,18 @@ const menuConfig: MenuItem[] = [
         path: route.publisher.getList.path,
         permissionCode: [apiConfig.publisher.getList.permissionCode],
         query: { status: STATUS_ACTIVE }
+      }
+    ]
+  },
+  {
+    key: 'notification-management',
+    label: 'Quản lý thông báo',
+    icon: Bell,
+    children: [
+      {
+        key: 'notification-list',
+        label: 'Thông báo',
+        path: route.notification.getList.path
       }
     ]
   },

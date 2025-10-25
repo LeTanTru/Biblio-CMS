@@ -525,6 +525,38 @@ const apiConfig = defineApiConfig({
       method: 'GET',
       headers: baseHeader
     }
+  },
+  notification: {
+    getList: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/list`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    countUnread: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/count-unread`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    markRead: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/mark-read/:id`,
+      method: 'PUT',
+      headers: baseHeader
+    },
+    readAll: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/read-all`,
+      method: 'PUT',
+      headers: baseHeader
+    },
+    deleteAll: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/delete-all`,
+      method: 'DELETE',
+      headers: baseHeader
+    },
+    delete: {
+      baseUrl: `${AppConstants.apiUrl}v1/notification/delete/:id`,
+      method: 'DELETE',
+      headers: baseHeader
+    }
   }
 });
 

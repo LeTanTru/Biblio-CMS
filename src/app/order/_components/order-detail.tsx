@@ -5,6 +5,7 @@ import ConfirmOrderButton from '@/app/order/_components/confirm-order-button';
 import ConfirmPackageOrderButton from '@/app/order/_components/confirm-package-order-button';
 import ConfirmShippingOrder from '@/app/order/_components/confirm-shipping-order';
 import OrderDetailSkeleton from '@/app/order/_components/order-detail-skeleton';
+import RefundButton from '@/app/order/_components/refund-button';
 import { Button } from '@/components/form';
 import { PageWrapper } from '@/components/layout';
 import { Badge } from '@/components/ui/badge';
@@ -14,8 +15,11 @@ import {
   COUPON_KIND_FREESHIP,
   DATE_TIME_FORMAT,
   ORDER_DETAIL_STATUS_CANCELLED,
+  ORDER_DETAIL_STATUS_REFUNDED,
+  ORDER_DETAIL_STATUS_REQUEST_REFUND,
   ORDER_STATUS_CONFIRMED,
   ORDER_STATUS_PACKING,
+  ORDER_STATUS_REQUEST_REFUND,
   ORDER_STATUS_SHIPPING,
   ORDER_STATUS_WAITING_CONFIRMATION,
   orderDetailStatuses,
@@ -54,9 +58,13 @@ export default function OrderDetail() {
     (status) => status.value === order.currentStatus
   );
 
-  const currentIndex = orderDetailStatuses.findIndex(
-    (s) => s.value === order.currentStatus
-  );
+  const currentStatus = orderStatusList
+    .sort((a, b) => b.status - a.status)
+    .find((orderStatus) => {
+      return orderDetailStatuses
+        .map((item) => item.value)
+        .includes(orderStatus.status);
+    })?.status as number;
 
   const getStatusDate = (statusValue: number) => {
     const found = orderStatusList.find((s: any) => s.status === statusValue);
@@ -104,70 +112,111 @@ export default function OrderDetail() {
         </div>
         <Separator />
 
-        {order.currentStatus === ORDER_DETAIL_STATUS_CANCELLED ? (
-          <div className='py-8 pl-4'>
-            <span className='text-lg text-orange-600'>Đã hủy đơn hàng</span>
-            <br />
-            vào: {getStatusDate(order.currentStatus)}
-          </div>
-        ) : (
-          <div className='relative grid grid-cols-7 py-4'>
-            {orderDetailStatuses.map((item, index) => {
-              const isLast = index === orderDetailStatuses.length - 1;
-              const isActive = index <= currentIndex;
-              const isLineActive = index < currentIndex;
+        <div className='relative grid grid-cols-7 py-4'>
+          {orderDetailStatuses.map((item, index) => {
+            const isLast = index === orderDetailStatuses.length - 1;
+            const isActive = index <= currentStatus;
+            const isLineActive = index < currentStatus;
 
-              const borderDelay = index * 300;
-              const lineDelay = borderDelay + 100;
+            const borderDelay = index * 300;
+            const lineDelay = borderDelay + 100;
 
-              return (
+            return (
+              <div
+                key={item.label}
+                className='relative flex flex-col items-center text-center select-none'
+              >
                 <div
-                  key={item.label}
-                  className='relative flex flex-col items-center text-center select-none'
-                >
-                  <div
-                    style={{
-                      transitionDelay: `${borderDelay}ms`
-                    }}
-                    className={cn(
-                      'relative z-1 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
-                      {
-                        'border-green-500 bg-green-50 text-green-600': isActive,
-                        'border-neutral-300 bg-white text-neutral-300':
-                          !isActive
-                      }
-                    )}
-                  >
-                    {item.icon && <item.icon className='size-7' />}
-                  </div>
-
-                  {!isLast && (
-                    <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
-                      <div
-                        style={{
-                          transitionDelay: `${lineDelay}ms`
-                        }}
-                        className={cn(
-                          'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
-                          {
-                            'scale-x-100': isLineActive,
-                            'scale-x-0': !isLineActive
-                          }
-                        )}
-                      />
-                    </div>
+                  style={{
+                    transitionDelay: `${borderDelay}ms`
+                  }}
+                  className={cn(
+                    'relative z-1 flex h-14 w-14 items-center justify-center rounded-full border-4 border-solid transition-all duration-500 ease-in-out',
+                    {
+                      'border-green-500 bg-green-50 text-green-600': isActive,
+                      'border-neutral-300 bg-white text-neutral-300': !isActive
+                    }
                   )}
-
-                  <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
-                    {item.label}
-                  </h3>
-                  <span className='h-[14px] text-xs text-gray-400'>
-                    {getStatusDate(item.value)}
-                  </span>
+                >
+                  {item.icon && <item.icon className='size-7' />}
                 </div>
-              );
-            })}
-          </div>
+
+                {!isLast && (
+                  <div className='absolute top-[28px] left-1/2 -z-0 h-[4px] w-full bg-neutral-300'>
+                    <div
+                      style={{
+                        transitionDelay: `${lineDelay}ms`
+                      }}
+                      className={cn(
+                        'h-full w-full origin-left transform bg-green-500 transition-transform duration-700 ease-in-out',
+                        {
+                          'scale-x-100': isLineActive,
+                          'scale-x-0': !isLineActive
+                        }
+                      )}
+                    />
+                  </div>
+                )}
+
+                <h3 className='mt-4 mb-1 block text-center text-sm font-medium whitespace-nowrap text-slate-800'>
+                  {item.label}
+                </h3>
+                <span className='h-[14px] text-xs text-gray-400'>
+                  {getStatusDate(item.value)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {orderStatusList.find(
+          (orderStatus) => orderStatus.status === ORDER_DETAIL_STATUS_CANCELLED
+        ) && (
+          <>
+            <Separator />
+
+            <div className='ml-10 py-8 pl-4'>
+              <span className='text-base text-orange-600'>Đã hủy đơn hàng</span>
+              <br />
+              <span>vào: {getStatusDate(order.currentStatus)}</span>
+            </div>
+          </>
+        )}
+
+        {orderStatusList.find(
+          (orderStatus) =>
+            orderStatus.status === ORDER_DETAIL_STATUS_REQUEST_REFUND
+        ) && (
+          <>
+            <Separator />
+            <div className='ml-10 py-8 pl-4'>
+              <span className='text-base text-orange-600'>
+                Yêu cầu trả hàng, hoàn tiền
+              </span>
+              <br />
+              <span>vào: {getStatusDate(order.currentStatus)}</span>
+              <br />
+              <span className='text-base'>
+                <span className='font-bold'> Lí do:</span>{' '}
+                <span> {order.refundReason}</span>
+              </span>
+            </div>
+          </>
+        )}
+
+        {orderStatusList.find(
+          (orderStatus) => orderStatus.status === ORDER_DETAIL_STATUS_REFUNDED
+        ) && (
+          <>
+            <Separator />
+            <div className='ml-10 py-8 pl-4'>
+              <span className='text-base text-orange-600'>
+                Đã xác nhận trả hàng, hoàn tiền
+              </span>
+              <br />
+              <span>vào: {getStatusDate(order.currentStatus)}</span>
+            </div>
+          </>
         )}
 
         <Separator />
@@ -199,14 +248,14 @@ export default function OrderDetail() {
         {orderItems.map((orderItem) => (
           <div key={orderItem.id}>
             <div className='flex items-center py-4'>
-              <div className='flex h-20 w-full items-center'>
-                <div className='flex-shrink-0'>
+              <div className='flex h-22.5 w-full items-center'>
+                <div className='h-full flex-shrink-0'>
                   <Image
                     src={renderImageUrl(orderItem.productVariant.imageUrl)}
                     width={90}
                     height={90}
                     alt={'Sách'}
-                    className='rounded-lg object-contain'
+                    className='h-full rounded-lg object-contain'
                   />
                 </div>
                 <div className='ml-6 flex h-full w-full items-stretch justify-between'>
@@ -351,6 +400,12 @@ export default function OrderDetail() {
         {orderStatus?.value === ORDER_STATUS_SHIPPING && (
           <div className='mt-4 flex justify-end gap-x-2'>
             <ConfirmDelivered orderId={order.id} />
+          </div>
+        )}
+
+        {orderStatus?.value === ORDER_STATUS_REQUEST_REFUND && (
+          <div className='mt-4 flex justify-end gap-x-2'>
+            <RefundButton orderId={order.id} />
           </div>
         )}
       </div>

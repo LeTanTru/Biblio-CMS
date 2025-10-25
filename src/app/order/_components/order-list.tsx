@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   apiConfig,
   DATE_TIME_FORMAT,
+  FieldTypes,
   orderStatuses,
   paymentMethods,
   statusOptions
@@ -26,7 +27,6 @@ import {
 import { formatDate, formatMoney, generatePath } from '@/utils';
 import { Eye } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 export default function OrderList({ queryKey }: { queryKey: string }) {
   const navigate = useNavigate();
@@ -154,20 +154,33 @@ export default function OrderList({ queryKey }: { queryKey: string }) {
     handlers.renderStatusColumn({
       statusOptions: orderStatuses,
       columnProps: { width: 220 }
-    }),
-    handlers.renderActionColumn({
-      actions: {
-        view: true
-      }
     })
+    // handlers.renderActionColumn({
+    //   actions: {
+    //     view: true
+    //   }
+    // })
   ];
 
   const searchFields: SearchFormProps<OrderSearchType>['searchFields'] = [
-    { key: 'currentStatus', placeholder: 'Trạng thái' },
-    { key: 'accountId', placeholder: 'Người mua' },
+    {
+      key: 'currentStatus',
+      placeholder: 'Trạng thái',
+      type: FieldTypes.SELECT,
+      options: orderStatuses.map((item) => ({
+        label: item.label,
+        value: item.value.toString()
+      }))
+    },
+    // { key: 'accountId', placeholder: 'Người mua' },
     {
       key: 'paymentMethod',
-      placeholder: 'Phương thức thanh toán'
+      placeholder: 'Phương thức thanh toán',
+      type: FieldTypes.SELECT,
+      options: paymentMethods.map((pmt) => ({
+        label: pmt.label,
+        value: pmt.value.toString()
+      }))
     }
   ];
 

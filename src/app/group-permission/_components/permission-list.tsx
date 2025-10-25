@@ -240,7 +240,7 @@ export default function PermissionList() {
                                       </ToolTip>
                                     </span>
                                   </AlertDialogTrigger>
-                                  <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] p-4'>
+                                  <AlertDialogContent className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-0! data-[state=closed]:slide-out-to-top-0! data-[state=open]:slide-in-from-left-0! data-[state=open]:slide-in-from-top-0! top-[30%] max-w-lg p-4'>
                                     <AlertDialogHeader>
                                       <AlertDialogTitle className='flex items-center gap-2 text-sm font-normal'>
                                         <Info className='size-8 fill-orange-500 stroke-white' />
@@ -328,7 +328,7 @@ export default function PermissionList() {
                   {isEditing ? (
                     <>
                       <Row>
-                        <Col span={12}>
+                        <Col span={12} gutter={0}>
                           <InputField
                             control={form.control}
                             name='name'
@@ -338,7 +338,7 @@ export default function PermissionList() {
                             labelClassName='font-normal'
                           />
                         </Col>
-                        <Col span={12}>
+                        <Col span={12} gutter={0}>
                           <InputField
                             control={form.control}
                             name='pCode'
@@ -353,7 +353,7 @@ export default function PermissionList() {
                   ) : (
                     <>
                       <Row>
-                        <Col span={12}>
+                        <Col span={12} gutter={0}>
                           <SelectField
                             name='permissionGroupId'
                             control={form.control}
@@ -371,7 +371,7 @@ export default function PermissionList() {
                             placeholder='Chọn nhóm quyền'
                           />
                         </Col>
-                        <Col span={12}>
+                        <Col span={12} gutter={0}>
                           <InputField
                             control={form.control}
                             name='name'
@@ -383,7 +383,7 @@ export default function PermissionList() {
                         </Col>
                       </Row>
                       <Row>
-                        <Col span={12}>
+                        <Col span={12} gutter={0}>
                           <InputField
                             control={form.control}
                             name='pCode'
@@ -397,7 +397,7 @@ export default function PermissionList() {
                     </>
                   )}
                   <Row>
-                    <Col>
+                    <Col gutter={0}>
                       <TextAreaField
                         control={form.control}
                         name='description'
@@ -408,7 +408,7 @@ export default function PermissionList() {
                     </Col>
                   </Row>
                   <Row className='mb-0 justify-end'>
-                    <Col span={4}>
+                    <Col span={5}>
                       <Button
                         onClick={handleClose}
                         type='button'
@@ -418,7 +418,7 @@ export default function PermissionList() {
                         Hủy
                       </Button>
                     </Col>
-                    <Col span={4}>
+                    <Col span={5}>
                       <Button
                         disabled={
                           !form.formState.isDirty ||
@@ -427,6 +427,7 @@ export default function PermissionList() {
                         }
                         type='submit'
                         variant={'primary'}
+                        className='w-full'
                       >
                         {createPermissionMutation.isPending ||
                         updatePermissionMutation.isPending ? (

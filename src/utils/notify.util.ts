@@ -9,7 +9,13 @@ const defaultOptions: ToastOptions = {
   draggable: true,
   progress: undefined,
   theme: 'light',
-  transition: Bounce
+  transition: Bounce,
+  className: `
+    whitespace-nowrap
+    pr-10!
+    w-fit!
+    max-w-120!
+  `
 };
 
 const showSuccess = (
