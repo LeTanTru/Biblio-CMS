@@ -21,6 +21,8 @@ import {
   ORDER_DETAIL_STATUS_REQUEST_REFUND,
   ORDER_STATUS_CONFIRMED,
   ORDER_STATUS_PACKING,
+  ORDER_STATUS_REJECT_ORDER,
+  ORDER_STATUS_REJECT_REFUND,
   ORDER_STATUS_REQUEST_REFUND,
   ORDER_STATUS_SHIPPING,
   ORDER_STATUS_WAITING_CONFIRMATION,
@@ -217,6 +219,46 @@ export default function OrderDetail() {
               </span>
               <br />
               <span>vào: {getStatusDate(order.currentStatus)}</span>
+            </div>
+          </>
+        )}
+
+        {orderStatusList.find(
+          (orderStatus) => orderStatus.status === ORDER_STATUS_REJECT_ORDER
+        ) && (
+          <>
+            <Separator />
+            <div className='ml-10 py-8 pl-4'>
+              <span className='text-base text-orange-600'>
+                Đơn hàng bị từ chối
+              </span>
+              <br />
+              <span>vào: {getStatusDate(order.currentStatus)}</span>
+              <br />
+              <span className='text-base'>
+                <span className='font-bold'> Lí do:</span>
+                <span> {order.rejectReason}</span>
+              </span>
+            </div>
+          </>
+        )}
+
+        {orderStatusList.find(
+          (orderStatus) => orderStatus.status === ORDER_STATUS_REJECT_REFUND
+        ) && (
+          <>
+            <Separator />
+            <div className='ml-10 py-8 pl-4'>
+              <span className='text-base text-orange-600'>
+                Đơn hàng bị từ chối hoàn trả
+              </span>
+              <br />
+              <span>vào: {getStatusDate(order.currentStatus)}</span>
+              <br />
+              <span className='text-base'>
+                <span className='font-bold'> Lí do:</span>
+                <span> {order.rejectReason}</span>
+              </span>
             </div>
           </>
         )}
