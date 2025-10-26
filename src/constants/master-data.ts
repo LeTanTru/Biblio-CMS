@@ -635,7 +635,7 @@ export const orderDetailStatuses = [
     icon: FaMoneyBill
   },
   {
-    label: 'Chờ xác nhận',
+    label: 'Đã xác nhận',
     value: ORDER_DETAIL_STATUS_WAITING_CONFIRM,
     icon: RiPencilLine
   },

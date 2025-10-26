@@ -11,11 +11,11 @@ export const updateProfileSchema = z.object({
 });
 
 export const accountSearchSchema = z.object({
-  email: z.string().optional(),
-  fullName: z.string().optional(),
-  phone: z.string().optional(),
-  kind: z.number().optional(),
-  isSuperAdmin: z.boolean().optional()
+  email: z.string().optional().nullable(),
+  fullName: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  kind: z.number().optional().nullable(),
+  isSuperAdmin: z.boolean().optional().nullable()
 });
 
 export const accountSchema = z.object({
