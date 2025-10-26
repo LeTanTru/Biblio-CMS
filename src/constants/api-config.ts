@@ -8,6 +8,18 @@ const defineApiConfig = <T extends ApiConfigGroup>(config: T) => config;
 
 const apiConfig = defineApiConfig({
   account: {
+    createEmployee: {
+      baseUrl: `${AppConstants.apiUrl}v1/account/create-employee`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'ACC_C_EMP'
+    },
+    updateEmployee: {
+      baseUrl: `${AppConstants.apiUrl}v1/account/update-employee`,
+      method: 'POST',
+      headers: baseHeader,
+      permissionCode: 'ACC_U_EMP'
+    },
     getList: {
       baseUrl: `${AppConstants.apiUrl}v1/account/list`,
       method: 'GET',
@@ -41,6 +53,12 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/account/statistics/daily`,
       method: 'GET',
       headers: baseHeader
+    },
+    getById: {
+      baseUrl: `${AppConstants.apiUrl}v1/account/get/:id`,
+      method: 'GET',
+      headers: baseHeader,
+      permissionCode: 'ACC_V'
     }
   },
   auth: {

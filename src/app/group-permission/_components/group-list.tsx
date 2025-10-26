@@ -47,7 +47,7 @@ export default function GroupList({ queryKey }: { queryKey: string }) {
     handlers.renderActionColumn({
       actions: {
         edit: true,
-        delete: true
+        delete: (record) => !record.isSystemRole
       }
     })
   ];

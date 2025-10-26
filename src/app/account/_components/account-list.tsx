@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { apiConfig, groupKinds } from '@/constants';
+import { apiConfig, FieldTypes, groupKinds, KIND_EMPLOYEE } from '@/constants';
 import { useListBase } from '@/hooks';
 import { cn } from '@/lib';
 import { logger } from '@/logger';
@@ -47,7 +47,11 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
     AccountResType,
     AccountSearchType
   >({
-    apiConfig: apiConfig.account,
+    apiConfig: {
+      ...apiConfig.account,
+      create: apiConfig.account.createEmployee,
+      update: apiConfig.account.updateEmployee
+    },
     options: {
       queryKey,
       objectName: 'tài khoản'
@@ -65,7 +69,7 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
                     <ToolTip title={`Xóa tài khoản`}>
                       <Button
                         className='border-none bg-transparent shadow-none hover:bg-transparent'
-                        disabled={record.isSuperAdmin}
+                        disabled={record.kind !== KIND_EMPLOYEE}
                         {...buttonProps}
                       >
                         <Trash className='size-3.5 stroke-red-600' />
@@ -183,7 +187,7 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn(),
     handlers.renderActionColumn({
-      actions: { delete: true }
+      actions: { edit: (record) => record.kind === KIND_EMPLOYEE, delete: true }
     })
   ];
 
@@ -196,6 +200,12 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
     {
       key: 'phone',
       placeholder: 'Số điện thoại'
+    },
+    {
+      key: 'kind',
+      placeholder: 'Nhóm',
+      type: FieldTypes.SELECT,
+      options: groupKinds
     }
   ];
 
@@ -206,6 +216,7 @@ export default function AccountList({ queryKey }: { queryKey: string }) {
           searchFields,
           schema: accountSearchSchema
         })}
+        addButton={handlers.renderAddButton()}
         reloadButton={handlers.renderReloadButton()}
       >
         <BaseTable

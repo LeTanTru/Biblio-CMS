@@ -9,6 +9,10 @@ export const KIND_ADMIN = 1;
 export const KIND_EMPLOYEE = 2;
 export const KIND_USER = 3;
 
+export const GROUP_KIND_ADMIN = 1;
+export const GROUP_KIND_EMPLOYEE = 2;
+export const GROUP_KIND_USER = 3;
+
 export const STATUS_PENDING = 0;
 export const STATUS_ACTIVE = 1;
 export const STATUS_LOCK = -1;

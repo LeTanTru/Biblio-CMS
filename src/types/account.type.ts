@@ -1,4 +1,5 @@
 import {
+  accountSchema,
   accountSearchSchema,
   updateProfileSchema
 } from '@/schemaValidations/account.schema';
@@ -6,7 +7,7 @@ import { BaseSearchType } from '@/types/search.type';
 import z from 'zod';
 
 export type Group = {
-  id: number;
+  id: string;
   name: string;
   kind: number;
   subKind: number;
@@ -80,3 +81,5 @@ export type AccountStatisticsResType = {
     total: string;
   }[];
 };
+
+export type AccountBodyType = z.infer<typeof accountSchema>;
