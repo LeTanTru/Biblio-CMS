@@ -153,7 +153,7 @@ export default function OrderList({ queryKey }: { queryKey: string }) {
     },
     handlers.renderStatusColumn({
       statusOptions: orderStatuses,
-      columnProps: { width: 220 }
+      columnProps: { width: 300 }
     })
     // handlers.renderActionColumn({
     //   actions: {
