@@ -163,6 +163,12 @@ const route = defineRoute({
       path: '/notification',
       auth: true
     }
+  },
+  statistics: {
+    getList: {
+      path: '/statistics',
+      auth: true
+    }
   }
 });
 

@@ -49,3 +49,8 @@ export type UpdateStatusBodyType = {
   id: string;
   cmd: string;
 };
+
+export type RevenueResType = {
+  totalRevenue: string;
+  totalOrders: number;
+};

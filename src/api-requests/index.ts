@@ -6,3 +6,4 @@ export { default as groupPermissionApiRequest } from './group-permission.api-req
 export { default as permissionApiRequest } from './permission.api-request';
 export { default as reviewApiRequest } from './review.api-request';
 export { default as notificationApiRequest } from './notification.api-request';
+export { default as productApiRequest } from './product.api-request';

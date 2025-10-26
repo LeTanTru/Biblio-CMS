@@ -1,5 +1,10 @@
 import { apiConfig } from '@/constants';
-import { ApiResponse, OrderResType, UpdateStatusBodyType } from '@/types';
+import {
+  ApiResponse,
+  OrderResType,
+  RevenueResType,
+  UpdateStatusBodyType
+} from '@/types';
 import { http } from '@/utils';
 
 const orderApiRequest = {
@@ -12,7 +17,13 @@ const orderApiRequest = {
   updateStatus: (body: UpdateStatusBodyType) =>
     http.put<ApiResponse<any>>(apiConfig.order.updateStatus, {
       body
-    })
+    }),
+  getRevenue: () =>
+    http.get<ApiResponse<RevenueResType>>(apiConfig.order.revenue),
+  getNewCustomerCount: () =>
+    http.get<ApiResponse<{ totalAccounts: number }>>(
+      apiConfig.account.countNewUser
+    )
 };
 
 export default orderApiRequest;

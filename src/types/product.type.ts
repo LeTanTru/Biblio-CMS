@@ -1,6 +1,6 @@
 import { productSchema, productSearchSchema } from '@/schemaValidations';
 import { AuthorResType } from '@/types/author.type';
-import { CategoryResType } from '@/types/category.type';
+import { CategoryAutoResType, CategoryResType } from '@/types/category.type';
 import { ProductImageResType } from '@/types/product-image.type';
 import { PublisherResType } from '@/types/publisher.type';
 import { BaseSearchType } from '@/types/search.type';
@@ -27,7 +27,35 @@ export type ProductResType = {
   images: ProductImageResType[];
   publisher: PublisherResType;
   contributors: AuthorResType[] | TranslatorResType[];
+  totalViews: number;
+  totalReviews: number;
+  averageReview: number;
+  totalSold: number;
   createdDate: string;
   modifiedDate: string;
+  status: number;
+};
+
+export type ProductAutoType = {
+  id: string;
+  name: string;
+  image: ProductImageAutoType;
+  category: CategoryAutoResType;
+  price: number;
+  slug: string;
+  isFeatured: boolean;
+  discount: number;
+  totalViews: number;
+  status: number;
+  totalReviews: number;
+  averageReview: number;
+  totalSold: number;
+};
+
+export type ProductImageAutoType = {
+  id: string;
+  url: string;
+  ordering: number;
+  isDefault: boolean;
   status: number;
 };

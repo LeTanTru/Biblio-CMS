@@ -1,0 +1,1 @@
+export { default as StatisticsList } from './statistics-list';

@@ -31,6 +31,11 @@ const apiConfig = defineApiConfig({
       method: 'DELETE',
       headers: baseHeader,
       permissionCode: 'ACC_D'
+    },
+    countNewUser: {
+      baseUrl: `${AppConstants.apiUrl}v1/account/statistics/new-customer`,
+      method: 'GET',
+      headers: baseHeader
     }
   },
   auth: {
@@ -242,6 +247,26 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'PRD_U'
+    },
+    getTopView: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/top-views`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    getLatest: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/latest`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getTopDiscount: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/top-discount`,
+      headers: baseHeader,
+      method: 'GET'
+    },
+    getBestSeller: {
+      baseUrl: `${AppConstants.apiUrl}v1/product/best-seller`,
+      headers: baseHeader,
+      method: 'GET'
     }
   },
   productVariant: {
@@ -511,6 +536,11 @@ const apiConfig = defineApiConfig({
       method: 'PUT',
       headers: baseHeader,
       permissionCode: 'ORD_U'
+    },
+    revenue: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/revenue`,
+      method: 'GET',
+      headers: baseHeader
     }
   },
   review: {

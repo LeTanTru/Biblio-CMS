@@ -7,3 +7,5 @@ export * from './order.query';
 export * from './permission.query';
 export * from './review.query';
 export * from './notification.query';
+export * from './statistics.query';
+export * from './product.query';

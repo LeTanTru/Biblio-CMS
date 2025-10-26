@@ -6,6 +6,8 @@ import ConfirmPackageOrderButton from '@/app/order/_components/confirm-package-o
 import ConfirmShippingOrder from '@/app/order/_components/confirm-shipping-order';
 import OrderDetailSkeleton from '@/app/order/_components/order-detail-skeleton';
 import RefundButton from '@/app/order/_components/refund-button';
+import RejectOrderButton from '@/app/order/_components/reject-order-button';
+import RejectRefundOrderButton from '@/app/order/_components/reject-refund-order-button';
 import { Button } from '@/components/form';
 import { PageWrapper } from '@/components/layout';
 import { Badge } from '@/components/ui/badge';
@@ -375,12 +377,7 @@ export default function OrderDetail() {
 
         {orderStatus?.value === ORDER_STATUS_WAITING_CONFIRMATION && (
           <div className='mt-4 flex justify-end gap-x-2'>
-            <Button
-              variant={'outline'}
-              className='text-destructive border-destructive hover:text-destructive/80 hover:border-destructive/80 transition-all duration-200 ease-linear'
-            >
-              Từ chối
-            </Button>
+            <RejectOrderButton orderId={order.id} />
             <ConfirmOrderButton orderId={order.id} />
           </div>
         )}
@@ -405,6 +402,7 @@ export default function OrderDetail() {
 
         {orderStatus?.value === ORDER_STATUS_REQUEST_REFUND && (
           <div className='mt-4 flex justify-end gap-x-2'>
+            <RejectRefundOrderButton orderId={order.id} />
             <RefundButton orderId={order.id} />
           </div>
         )}

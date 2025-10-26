@@ -5,6 +5,7 @@ import { MenuItem } from '@/types';
 import {
   Bell,
   BookOpen,
+  ChartNoAxesCombined,
   Package,
   Settings,
   Tag,
@@ -30,6 +31,18 @@ const menuConfig: MenuItem[] = [
       //   label: 'Nhân viên',
       //   path: route.employee.path
       // }
+    ]
+  },
+  {
+    key: 'statistics-management',
+    label: 'Quản lý thống kê',
+    icon: ChartNoAxesCombined,
+    children: [
+      {
+        key: 'statistics-list',
+        label: 'Thống kê',
+        path: route.statistics.getList.path
+      }
     ]
   },
   {
