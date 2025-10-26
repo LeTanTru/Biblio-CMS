@@ -73,3 +73,10 @@ export type AccountResType = {
   modifiedDate: string;
   status: number;
 };
+
+export type AccountStatisticsResType = {
+  items: {
+    date: string;
+    total: string;
+  }[];
+};

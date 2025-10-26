@@ -25,3 +25,5 @@ export * from './translator.type';
 export * from './update-ordering.type';
 export * from './review.type';
 export * from './notification.type';
+export * from './favorite-product.type';
+export * from './viewed-product.type';

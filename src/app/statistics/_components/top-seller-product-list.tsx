@@ -5,15 +5,20 @@ import { ProductAutoType } from '@/types';
 import { formatMoney, renderImageUrl } from '@/utils';
 import { Eye } from 'lucide-react';
 import Image from 'next/image';
+import { useInView } from 'react-intersection-observer';
 
 export default function TopSellerProductList() {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    rootMargin: '100px'
+  });
   const { data, isLoading } = useBestSellerProductListQuery({
-    enabled: true
+    enabled: inView
   });
   const products: ProductAutoType[] = data?.data?.content || [];
 
   return (
-    <div className='space-y-4 pb-4'>
+    <div className='space-y-4 pb-4' ref={ref}>
       <div className='flex items-center justify-between'>
         <h2 className='text-lg font-semibold text-gray-800'>
           📚 Top sách bán chạy

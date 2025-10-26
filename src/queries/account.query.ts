@@ -1,6 +1,7 @@
 'use client';
 
 import { accountApiRequest } from '@/api-requests';
+import { queryKeys } from '@/constants';
 import { logger } from '@/logger';
 import { useAuthStore } from '@/store';
 import { AccountSearchType, ProfileBodyType } from '@/types';
@@ -55,5 +56,17 @@ export const useDeleteAccountMutation = () => {
       logger.error(`Error while deleting category: `, error);
       notify.error('Xóa danh mục thất bại');
     }
+  });
+};
+
+export const useAccountStatisticsQuery = ({
+  enabled
+}: {
+  enabled: boolean;
+}) => {
+  return useQuery({
+    queryKey: [`${queryKeys.ACCOUNT}-statistics`],
+    queryFn: () => accountApiRequest.getAccountStatistics(),
+    enabled
   });
 };

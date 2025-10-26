@@ -494,7 +494,9 @@ export const queryKeys = {
   ORDER: 'order',
   REVIEW: 'review',
   NOTIFICATION: 'notification',
-  STATISTICS: 'statistics'
+  STATISTICS: 'statistics',
+  FAVORITE_PRODUCT: 'favorite_product',
+  VIEWED_PRODUCT: 'viewed_product'
 };
 
 export const productVariantConditions = [

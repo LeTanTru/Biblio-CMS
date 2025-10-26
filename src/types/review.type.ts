@@ -1,4 +1,5 @@
 import { AccountResType } from '@/types/account.type';
+import { CategoryAutoResType } from '@/types/category.type';
 import { BaseSearchType } from '@/types/search.type';
 
 export type ReviewBodyType = {
@@ -25,4 +26,16 @@ export type ReviewSearchType = {
 export type ReviewSummaryResType = {
   rate: number;
   total: number;
+};
+
+export type TopReviewResType = {
+  productId: string;
+  name: string;
+  slug: string;
+  price: number;
+  discount: number;
+  category: CategoryAutoResType;
+  image: string;
+  averageRating: string;
+  totalReviews: number;
 };

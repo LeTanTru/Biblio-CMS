@@ -2,7 +2,9 @@ import { apiConfig } from '@/constants';
 import {
   ApiResponse,
   OrderResType,
+  OrderStatusRatioResType,
   RevenueResType,
+  RevenueStatisticsResType,
   UpdateStatusBodyType
 } from '@/types';
 import { http } from '@/utils';
@@ -23,6 +25,14 @@ const orderApiRequest = {
   getNewCustomerCount: () =>
     http.get<ApiResponse<{ totalAccounts: number }>>(
       apiConfig.account.countNewUser
+    ),
+  getStatusRatio: () =>
+    http.get<ApiResponse<OrderStatusRatioResType>>(
+      apiConfig.order.getStatusRatio
+    ),
+  getRevenueStatistics: () =>
+    http.get<ApiResponse<{ items: RevenueStatisticsResType }>>(
+      apiConfig.order.getRevenueStatistics
     )
 };
 

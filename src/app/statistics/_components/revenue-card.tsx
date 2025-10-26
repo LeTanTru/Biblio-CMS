@@ -29,7 +29,6 @@ export default function RevenueCard() {
           <CountUp
             className='text-sm font-semibold text-green-600'
             start={0}
-            prefix='+'
             end={+(revenue?.totalOrders ?? 0)}
             suffix=' đơn hàng'
           />

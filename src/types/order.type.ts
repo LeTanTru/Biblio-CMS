@@ -48,9 +48,22 @@ export type OrderSearchType = {
 export type UpdateStatusBodyType = {
   id: string;
   cmd: string;
+  rejectReason?: string;
 };
 
 export type RevenueResType = {
   totalRevenue: string;
   totalOrders: number;
+};
+
+export type OrderStatusRatioResType = {
+  status: { status: number; total: number; percentage: number }[];
+  totalOrders: number;
+};
+
+export type RevenueStatisticsResType = {
+  items: {
+    date: string;
+    total: string;
+  }[];
 };

@@ -65,7 +65,7 @@ function RejectOrderModal({
 
   const handleRejectRefundOrder = async () => {
     await updateOrderStatusMutation.mutateAsync(
-      { id: orderId, cmd: CMD_REJECT_ORDER },
+      { id: orderId, cmd: CMD_REJECT_ORDER, rejectReason },
       {
         onSuccess: (res) => {
           if (res.result) {

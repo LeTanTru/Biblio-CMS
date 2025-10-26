@@ -36,6 +36,11 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/account/statistics/new-customer`,
       method: 'GET',
       headers: baseHeader
+    },
+    getAccountStatistics: {
+      baseUrl: `${AppConstants.apiUrl}v1/account/statistics/daily`,
+      method: 'GET',
+      headers: baseHeader
     }
   },
   auth: {
@@ -541,6 +546,16 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/order/revenue`,
       method: 'GET',
       headers: baseHeader
+    },
+    getStatusRatio: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/statistics/order-status`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    getRevenueStatistics: {
+      baseUrl: `${AppConstants.apiUrl}v1/order/statistics/revenue`,
+      method: 'GET',
+      headers: baseHeader
     }
   },
   review: {
@@ -552,6 +567,11 @@ const apiConfig = defineApiConfig({
     },
     summary: {
       baseUrl: `${AppConstants.apiUrl}v1/review/summary/:productId`,
+      method: 'GET',
+      headers: baseHeader
+    },
+    getTopReviewList: {
+      baseUrl: `${AppConstants.apiUrl}v1/review/top-review`,
       method: 'GET',
       headers: baseHeader
     }
@@ -586,6 +606,20 @@ const apiConfig = defineApiConfig({
       baseUrl: `${AppConstants.apiUrl}v1/notification/delete/:id`,
       method: 'DELETE',
       headers: baseHeader
+    }
+  },
+  favorite: {
+    getTopFavoriteList: {
+      baseUrl: `${AppConstants.apiUrl}v1/favorite-product/top-favorite`,
+      headers: baseHeader,
+      method: 'GET'
+    }
+  },
+  viewedProduct: {
+    getTopViewedList: {
+      baseUrl: `${AppConstants.apiUrl}v1/viewed-product/top-viewed`,
+      headers: baseHeader,
+      method: 'GET'
     }
   }
 });

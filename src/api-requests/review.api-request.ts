@@ -1,5 +1,9 @@
 import { apiConfig } from '@/constants';
-import { ApiResponseList, ReviewSummaryResType } from '@/types';
+import {
+  ApiResponseList,
+  ReviewSummaryResType,
+  TopReviewResType
+} from '@/types';
 import { http } from '@/utils';
 
 const reviewApiRequest = {
@@ -8,7 +12,11 @@ const reviewApiRequest = {
       pathParams: {
         productId
       }
-    })
+    }),
+  getTopReview: () =>
+    http.get<ApiResponseList<TopReviewResType>>(
+      apiConfig.review.getTopReviewList
+    )
 };
 
 export default reviewApiRequest;

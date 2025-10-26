@@ -15,3 +15,11 @@ export const useReviewSummaryQuery = ({
     enabled
   });
 };
+
+export const useTopReviewListQuery = ({ enabled }: { enabled: boolean }) => {
+  return useQuery({
+    queryKey: [`top-${queryKeys.REVIEW}-list`],
+    queryFn: () => reviewApiRequest.getTopReview(),
+    enabled
+  });
+};

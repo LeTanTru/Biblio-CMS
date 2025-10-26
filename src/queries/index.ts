@@ -9,3 +9,5 @@ export * from './review.query';
 export * from './notification.query';
 export * from './statistics.query';
 export * from './product.query';
+export * from './favorite-product.query';
+export * from './viewed-product.query';

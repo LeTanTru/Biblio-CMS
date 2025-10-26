@@ -1,25 +1,27 @@
 'use client';
 
-import Image from 'next/image';
-import { useTopViewProductListQuery } from '@/queries';
+import { StarRating } from '@/components/star-rating';
+import { useTopReviewListQuery } from '@/queries';
+import { TopReviewResType } from '@/types';
 import { formatMoney, renderImageUrl } from '@/utils';
-import type { ProductAutoType } from '@/types';
-import { Eye } from 'lucide-react';
+import Image from 'next/image';
 import { useInView } from 'react-intersection-observer';
 
-export default function TopViewProductList() {
+export default function TopReviewProductList() {
   const { ref, inView } = useInView({
     triggerOnce: true,
     rootMargin: '100px'
   });
-  const { data, isLoading } = useTopViewProductListQuery({ enabled: inView });
-  const products: ProductAutoType[] = data?.data?.content || [];
+  const { data, isLoading } = useTopReviewListQuery({
+    enabled: inView
+  });
+  const products: TopReviewResType[] = data?.data?.content || [];
 
   return (
     <div className='space-y-4 pb-4' ref={ref}>
       <div className='flex items-center justify-between'>
         <h2 className='text-lg font-semibold text-gray-800'>
-          📚 Top sách được xem nhiều nhất
+          📚 Top sách được đánh giá cao
         </h2>
         <span className='text-sm text-gray-500'>
           {products.length > 0 && `Tổng: ${products.length} sản phẩm`}
@@ -43,7 +45,7 @@ export default function TopViewProductList() {
         </div>
       ) : products.length === 0 ? (
         <p className='text-sm text-gray-500 italic'>
-          Không có sản phẩm nào được xem nhiều trong tháng này.
+          Không có sản phẩm nào được đánh giá cao.
         </p>
       ) : (
         <div className='space-y-3'>
@@ -55,12 +57,12 @@ export default function TopViewProductList() {
 
             return (
               <div
-                key={product.id}
+                key={product.productId}
                 className='flex items-center gap-4 rounded-lg border bg-white p-3 transition-all duration-200 hover:shadow-md'
               >
                 <div className='relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-50'>
                   <Image
-                    src={renderImageUrl(product.image?.url)}
+                    src={renderImageUrl(product.image)}
                     alt={product.name}
                     fill
                     className='object-contain'
@@ -83,7 +85,7 @@ export default function TopViewProductList() {
                     {product.category?.name}
                   </p>
 
-                  <div className='flex items-baseline gap-2'>
+                  <div className='mb-2 flex items-baseline gap-2'>
                     <p className='text-base font-bold text-gray-900'>
                       {formatMoney(discountedPrice)}
                     </p>
@@ -94,10 +96,10 @@ export default function TopViewProductList() {
                     )}
                   </div>
 
-                  <p className='flex items-center gap-x-1 text-xs text-gray-500'>
-                    <Eye className='size-4' />{' '}
-                    {product.totalViews.toLocaleString()} lượt xem
-                  </p>
+                  <div className='flex items-center gap-x-2'>
+                    <StarRating size={15} value={+product.averageRating} /> (
+                    {product.totalReviews} đánh giá)
+                  </div>
                 </div>
               </div>
             );

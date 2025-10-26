@@ -2,6 +2,7 @@ import { apiConfig } from '@/constants';
 import {
   AccountResType,
   AccountSearchType,
+  AccountStatisticsResType,
   ApiResponse,
   ApiResponseList,
   ProfileBodyType,
@@ -23,7 +24,11 @@ const accountApiRequest = {
   delete: async (id: string) =>
     await http.delete<ApiResponse<any>>(apiConfig.account.delete, {
       pathParams: { id }
-    })
+    }),
+  getAccountStatistics: () =>
+    http.get<ApiResponse<{ items: AccountStatisticsResType }>>(
+      apiConfig.account.getAccountStatistics
+    )
 };
 
 export default accountApiRequest;
